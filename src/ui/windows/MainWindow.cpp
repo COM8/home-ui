@@ -50,11 +50,24 @@ void MainWindow::prep_window() {
 }
 
 void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
-    Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
     mainBox->set_halign(Gtk::Align::ALIGN_FILL);
     mainBox->set_valign(Gtk::Align::ALIGN_FILL);
     mainBox->set_vexpand(true);
-    mainBox->set_homogeneous(false);
+    mainBox->set_homogeneous(true);
+
+    // Actions:
+    mainBox->add(actions);
+
+    Gtk::Box* rightBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    rightBox->override_background_color(Gdk::RGBA("#00FF00"));
+    rightBox->set_homogeneous(true);
+    mainBox->add(*rightBox);
+    // MVG:
+    rightBox->add(mvg);
+
+    // Weather:
+    rightBox->add(weather);
 
     stack->add(*mainBox, "overview", "Overview");
 }
