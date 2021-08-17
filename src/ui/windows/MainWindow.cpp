@@ -60,7 +60,6 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     mainBox->add(actions);
 
     Gtk::Box* rightBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    rightBox->override_background_color(Gdk::RGBA("#00FF00"));
     rightBox->set_homogeneous(true);
     mainBox->add(*rightBox);
     // MVG:

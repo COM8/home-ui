@@ -26,6 +26,6 @@ struct Departure {
     std::string platform;
     std::string infoMessage;
 
-    static std::unique_ptr<Departure> from_json(const nlohmann::json& j);
+    static std::shared_ptr<Departure> from_json(const nlohmann::json& j);
 } __attribute__((aligned(128)));
 }  // namespace backend::mvg

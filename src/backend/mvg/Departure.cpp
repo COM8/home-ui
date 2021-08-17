@@ -8,7 +8,7 @@
 #include <spdlog/spdlog.h>
 
 namespace backend::mvg {
-std::unique_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
+std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
     if (!j.contains("departureTime")) {
         SPDLOG_ERROR("Failed to parse departure. 'departureTime' filed missing.");
         return nullptr;
@@ -86,7 +86,7 @@ std::unique_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
     // std::string infoMessages;
     // j.at("infoMessages").get_to(infoMessages);
 
-    return std::make_unique<Departure>(Departure{departureTimeTp,
+    return std::make_shared<Departure>(Departure{departureTimeTp,
                                                  pType,
                                                  label,
                                                  destination,
