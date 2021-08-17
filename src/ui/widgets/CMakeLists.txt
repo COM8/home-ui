@@ -6,4 +6,5 @@ add_library(ui_widgets STATIC MvgWidget.cpp
                               WeatherWidget.hpp
                               ActionsWidget.cpp
                               ActionsWidget.hpp)
-target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM)
+target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM
+                                 PRIVATE backend_mvg)
