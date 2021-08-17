@@ -1,5 +1,10 @@
 #pragma once
 
+#include "backend/mvg/Departure.hpp"
+#include <memory>
+#include <mutex>
+#include <thread>
+#include <glibmm/dispatcher.h>
 #include <gtkmm/box.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/listbox.h>
@@ -16,16 +21,30 @@ class MvgWidget : public Gtk::Box {
     Gtk::CheckButton sbahnCBtn{"S-Bahn"};
     Gtk::CheckButton tramCBtn{"Tram"};
 
+    bool shouldRun{false};
+    std::unique_ptr<std::thread> updateThread{nullptr};
+    Glib::Dispatcher disp;
+    std::vector<std::shared_ptr<backend::mvg::Departure>> departures{};
+    std::mutex departuresMutex{};
+
  public:
     MvgWidget();
-    MvgWidget(MvgWidget&&) = default;
+    MvgWidget(MvgWidget&&) = delete;
     MvgWidget(const MvgWidget&) = delete;
-    MvgWidget& operator=(MvgWidget&&) = default;
+    MvgWidget& operator=(MvgWidget&&) = delete;
     MvgWidget& operator=(const MvgWidget&) = delete;
-    ~MvgWidget() override = default;
+    ~MvgWidget() override;
 
  private:
     void prep_widget();
-    void update();
+    void start_thread();
+    void stop_thread();
+
+    void update_departures();
+    void update_departures_ui();
+    void thread_run();
+
+    //-----------------------------Events:-----------------------------
+    void on_notification_from_update_thread();
 };
 }  // namespace ui::widgets
