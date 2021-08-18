@@ -17,18 +17,18 @@
 #define JSON_HAS_CPP_17
 
 namespace backend::storage {
-struct Metadata;
-void to_json(nlohmann::json& j, const Metadata& m);
-void from_json(const nlohmann::json& j, Metadata& m);
+struct SettingsData;
+void to_json(nlohmann::json& j, const SettingsData& d);
+void from_json(const nlohmann::json& j, SettingsData& d);
 }  // namespace backend::storage
 
 namespace backend::storage {
 class Settings;
-struct UserProfileStorage;
+struct SettingsData;
 class Serializer {
  private:
     friend Settings;
-    friend UserProfileStorage;
+    friend SettingsData;
     const std::filesystem::path filename;
     nlohmann::json js_int = nlohmann::json::object();
 

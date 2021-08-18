@@ -1,49 +1,31 @@
 #include "backend/storage/Settings.hpp"
+#include "backend/storage/Serializer.hpp"
+#include "logger/Logger.hpp"
 #include <string_view>
+#include <spdlog/spdlog.h>
 
 namespace backend::storage {
-Settings::Settings(const std::filesystem::path& settings_file) : file_handl(settings_file) {
-    SPDLOG_DEBUG("Initializing Settings, this should only happen once per execution");
-    if (std::filesystem::exists(settings_file)) {
-        SPDLOG_INFO("Settings file {} exists, trying to read it", settings_file.string());
-        if (this->file_handl.read_in()) {
-            this->data = this->file_handl.js_int.get<Settings::SettingsData>();
-            if (this->data.version != SETTINGS_VERSION) {
-                SPDLOG_ERROR("Settings version: \"{}\" does not match!", this->data.version, SETTINGS_VERSION);
-                this->data.version = SETTINGS_VERSION;
-                this->write_settings();
-            }
-            SPDLOG_DEBUG("Settings loaded successfully");
+Settings::Settings(const std::filesystem::path& configFilePath) : fileHandle(configFilePath) {
+    SPDLOG_DEBUG("Initializing ConfigurationStorage, this should only happen once per execution.");
+    if (std::filesystem::exists(configFilePath)) {
+        SPDLOG_DEBUG("Configuration file '{}' exists, trying to read it...", configFilePath.string());
+        if (fileHandle.read_in()) {
+            data = fileHandle.js_int.get<SettingsData>();
+            SPDLOG_DEBUG("Configuration loaded successfully.");
         }
     } else {
-        SPDLOG_ERROR("Cannot read the Settings file {}", settings_file.string());
-        this->data.version = SETTINGS_VERSION;
-        this->write_settings();
+        SPDLOG_ERROR("Configuration file '{}' does not exist. Creating a new, empty one.", configFilePath.string());
+        write_settings();
     }
 }
 
-Settings::SettingsData& Settings::access_data() {
-    return this->data;
-}
-
 void Settings::write_settings() {
-    this->file_handl.js_int = this->data;
-    this->file_handl.write_out();
+    fileHandle.js_int = data;
+    fileHandle.write_out();
 }
 
-Settings& get_settings_instance() {
-    static Settings settings_instance("Settings.json");
-    return settings_instance;
-}
-
-void to_json(nlohmann::json& j, const Settings::SettingsData& s) {
-    // Store settings:
-    j = nlohmann::json{{"version", s.version} /*, {"some_setting", s.some_setting}*/};
-}
-
-void from_json(const nlohmann::json& j, Settings::SettingsData& s) {
-    j.at("version").get_to(s.version);
-    // Load settings:
-    // if (j.contains("some_setting")) { j.at("some_setting").get_to(s.user_name); }
+Settings* get_settings_instance() {
+    static Settings settingsInstance("home_ui_settings.json");
+    return &settingsInstance;
 }
 }  // namespace backend::storage

@@ -7,6 +7,8 @@ add_library(ui_widgets STATIC MvgWidget.cpp
                               ActionsWidget.cpp
                               ActionsWidget.hpp
                               DepartureWidget.cpp
-                              DepartureWidget.hpp)
+                              DepartureWidget.hpp
+                              SettingsWidget.cpp
+                              SettingsWidget.hpp)
 target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM backend_mvg
-                                 PRIVATE logger)
+                                 PRIVATE logger backend_storage)

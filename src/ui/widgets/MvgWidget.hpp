@@ -13,13 +13,7 @@ namespace ui::widgets {
 class MvgWidget : public Gtk::Box {
  private:
     Gtk::ListBox departureslistBox{};
-    Gtk::Box departuresBox{Gtk::Orientation::ORIENTATION_VERTICAL};
     Gtk::Box loadingBox{Gtk::Orientation::ORIENTATION_VERTICAL};
-
-    Gtk::CheckButton busCBtn{"Bus"};
-    Gtk::CheckButton ubanCBtn{"U-Bahn"};
-    Gtk::CheckButton sbahnCBtn{"S-Bahn"};
-    Gtk::CheckButton tramCBtn{"Tram"};
 
     bool shouldRun{false};
     std::unique_ptr<std::thread> updateThread{nullptr};

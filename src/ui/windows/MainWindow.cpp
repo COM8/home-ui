@@ -72,8 +72,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
 }
 
 void MainWindow::prep_setting_stack_page(Gtk::Stack* stack) {
-    Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL, 0);
-    stack->add(*mainBox, "settings", "Settings");
+    stack->add(settings, "settings", "Settings");
 }
 
 //-----------------------------Events:-----------------------------

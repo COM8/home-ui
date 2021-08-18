@@ -2,6 +2,7 @@
 
 #include "ui/widgets/ActionsWidget.hpp"
 #include "ui/widgets/MvgWidget.hpp"
+#include "ui/widgets/SettingsWidget.hpp"
 #include "ui/widgets/WeatherWidget.hpp"
 #include <gtkmm.h>
 
@@ -14,6 +15,7 @@ class MainWindow : public Gtk::Window {
     widgets::MvgWidget mvg{};
     widgets::WeatherWidget weather{};
     widgets::ActionsWidget actions{};
+    widgets::SettingsWidget settings{};
 
  public:
     MainWindow();
@@ -26,7 +28,7 @@ class MainWindow : public Gtk::Window {
  private:
     void prep_window();
     void prep_overview_stack_page(Gtk::Stack* stack);
-    static void prep_setting_stack_page(Gtk::Stack* stack);
+    void prep_setting_stack_page(Gtk::Stack* stack);
 
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();

@@ -1,21 +1,28 @@
 #include "backend/storage/Serializer.hpp"
-#include "backend/storage/Metadata.hpp"
+#include "backend/storage/Settings.hpp"
 
 #include <chrono>
 #include <cstddef>
 #include <functional>
 namespace backend::storage {
+void to_json(nlohmann::json& j, const SettingsData& d) {
+    j = nlohmann::json{{"mvgLocation", d.mvgLocation},
+                       {"mvgBusEnabled", d.mvgBusEnabled},
+                       {"mvgSBahnEnabled", d.mvgSBahnEnabled},
+                       {"mvgUBahnEnabled", d.mvgUBahnEnabled},
+                       {"mvgTramEnabled", d.mvgTramEnabled},
 
-void to_json(nlohmann::json& j, const Metadata& m) {
-    j = nlohmann::json{{"version", m.version},
-                       {"datetime", std::chrono::system_clock::to_time_t(m.datetime)},
-                       {"sysFingerprint", m.sysFingerprint}};
+                       {"weatherLocation", d.weatherLocation}};
 }
 
-void from_json(const nlohmann::json& j, Metadata& m) {
-    j.at("version").get_to(m.version);
-    j.at("datetime").get_to(m.datetime);
-    j.at("sysFingerprint").get_to(m.sysFingerprint);
+void from_json(const nlohmann::json& j, SettingsData& d) {
+    j.at("mvgLocation").get_to(d.mvgLocation);
+    j.at("mvgBusEnabled").get_to(d.mvgBusEnabled);
+    j.at("mvgSBahnEnabled").get_to(d.mvgSBahnEnabled);
+    j.at("mvgUBahnEnabled").get_to(d.mvgUBahnEnabled);
+    j.at("mvgTramEnabled").get_to(d.mvgTramEnabled);
+
+    j.at("weatherLocation").get_to(d.weatherLocation);
 }
 }  // namespace backend::storage
 

@@ -2,7 +2,9 @@
 #include "DepartureWidget.hpp"
 #include "backend/mvg/Departure.hpp"
 #include "backend/mvg/MvgHelper.hpp"
+#include "backend/storage/Serializer.hpp"
 #include "logger/Logger.hpp"
+#include <backend/storage/Settings.hpp>
 #include <cassert>
 #include <memory>
 #include <thread>
@@ -26,27 +28,12 @@ MvgWidget::~MvgWidget() {
 }
 
 void MvgWidget::prep_widget() {
-    ubanCBtn.set_active(true);
-    sbahnCBtn.set_active(true);
-    busCBtn.set_active(true);
-    tramCBtn.set_active(true);
-
-    Gtk::FlowBox* productGrid = Gtk::make_managed<Gtk::FlowBox>();
-    productGrid->set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
-    productGrid->set_homogeneous(false);
-    productGrid->set_hexpand(true);
-    productGrid->add(ubanCBtn);
-    productGrid->add(sbahnCBtn);
-    productGrid->add(busCBtn);
-    productGrid->add(tramCBtn);
-
-    departuresBox.add(*productGrid);
     Gtk::ScrolledWindow* scroll = Gtk::make_managed<Gtk::ScrolledWindow>();
     departureslistBox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
     scroll->add(departureslistBox);
     scroll->set_vexpand(true);
-    departuresBox.add(*scroll);
-    add(departuresBox);
+    scroll->set_hexpand(true);
+    add(*scroll);
 }
 
 void MvgWidget::update_departures_ui() {
@@ -70,7 +57,8 @@ void MvgWidget::update_departures() {
     SPDLOG_INFO("Updating departures...");
     std::vector<std::shared_ptr<backend::mvg::Departure>> departures;
     try {
-        departures = backend::mvg::request_departures("de:09162:530", busCBtn.get_active(), ubanCBtn.get_active(), sbahnCBtn.get_active(), tramCBtn.get_active());
+        backend::storage::Settings* settings = backend::storage::get_settings_instance();
+        departures = backend::mvg::request_departures(settings->data.mvgLocation, settings->data.mvgBusEnabled, settings->data.mvgUBahnEnabled, settings->data.mvgSBahnEnabled, settings->data.mvgTramEnabled);
     } catch (const std::exception& e) {
         SPDLOG_ERROR("Failed to update departures with: {}", e.what());
     }
