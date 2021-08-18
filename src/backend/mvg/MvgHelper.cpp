@@ -3,6 +3,7 @@
 #include "logger/Logger.hpp"
 #include <nlohmann/json.hpp>
 #include <nlohmann/json_fwd.hpp>
+#include <string>
 #include <cpr/api.h>
 #include <cpr/cpr.h>
 #include <cpr/cprtypes.h>
@@ -23,6 +24,7 @@ std::vector<std::shared_ptr<Departure>> parse_response(const std::string& respon
         // Departures:
         if (!j.contains("departures")) {
             SPDLOG_ERROR("Failed to parse departures. 'departures' filed missing.");
+            SPDLOG_DEBUG("Response: {}", response);
             return std::vector<std::shared_ptr<Departure>>();
         }
 
@@ -34,6 +36,8 @@ std::vector<std::shared_ptr<Departure>> parse_response(const std::string& respon
             std::shared_ptr<Departure> dep = Departure::from_json(jDep);
             if (dep) {
                 result.push_back(std::move(dep));
+            } else {
+                SPDLOG_DEBUG("Departure: {}", jDep.dump());
             }
         }
         SPDLOG_DEBUG("Found {} departures.", result.size());
