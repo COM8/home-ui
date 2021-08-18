@@ -14,5 +14,6 @@ class WeatherWidget : public Gtk::Box {
 
  private:
     void prep_widget();
+    static void update();
 };
 }  // namespace ui::widgets

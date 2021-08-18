@@ -69,13 +69,30 @@ void SettingsWidget::prep_widget() {
     weatherSectionLabel->set_halign(Gtk::Align::ALIGN_START);
     weatherSectionLabel->set_margin_top(10);
     contentBox->add(*weatherSectionLabel);
-    Gtk::Label* weatherLocationLabel = Gtk::make_managed<Gtk::Label>();
-    weatherLocationLabel->set_text("Location for forecast:");
-    weatherLocationLabel->set_margin_top(10);
-    weatherLocationLabel->set_halign(Gtk::Align::ALIGN_START);
-    contentBox->add(*weatherLocationLabel);
-    weatherLocation.set_placeholder_text("München");
-    contentBox->add(weatherLocation);
+
+    Gtk::Label* weatherLatLabel = Gtk::make_managed<Gtk::Label>();
+    weatherLatLabel->set_text("Latitude:");
+    weatherLatLabel->set_margin_top(10);
+    weatherLatLabel->set_halign(Gtk::Align::ALIGN_START);
+    contentBox->add(*weatherLatLabel);
+    weatherLat.set_placeholder_text("48.137154");
+    contentBox->add(weatherLat);
+
+    Gtk::Label* weatherLongLabel = Gtk::make_managed<Gtk::Label>();
+    weatherLongLabel->set_text("Longitude:");
+    weatherLongLabel->set_margin_top(10);
+    weatherLongLabel->set_halign(Gtk::Align::ALIGN_START);
+    contentBox->add(*weatherLongLabel);
+    weatherLong.set_placeholder_text("11.576124");
+    contentBox->add(weatherLong);
+
+    Gtk::Label* openWeatherApiKeyLabel = Gtk::make_managed<Gtk::Label>();
+    openWeatherApiKeyLabel->set_text("API Key:");
+    openWeatherApiKeyLabel->set_margin_top(10);
+    openWeatherApiKeyLabel->set_halign(Gtk::Align::ALIGN_START);
+    contentBox->add(*openWeatherApiKeyLabel);
+    openWeatherApiKey.set_placeholder_text("API Key");
+    contentBox->add(openWeatherApiKey);
 
     // Actions:
     Gtk::Label* actionsSectionLabel = Gtk::make_managed<Gtk::Label>();
@@ -94,7 +111,9 @@ void SettingsWidget::load_settings() {
     mvgTramCBtn.set_active(settings->mvgTramEnabled);
     mvgLocation.set_text(settings->mvgLocation);
 
-    weatherLocation.set_text(settings->weatherLocation);
+    weatherLat.set_text(settings->weatherLat);
+    weatherLong.set_text(settings->weatherLong);
+    openWeatherApiKey.set_text(settings->openWeatherApiKey);
     SPDLOG_INFO("Settings loaded.");
 }
 
@@ -107,7 +126,9 @@ void SettingsWidget::save_settings() {
     settings->mvgTramEnabled = mvgTramCBtn.get_active();
     settings->mvgLocation = mvgLocation.get_text();
 
-    settings->weatherLocation = weatherLocation.get_text();
+    settings->weatherLat = weatherLat.get_text();
+    settings->weatherLong = weatherLong.get_text();
+    settings->openWeatherApiKey = openWeatherApiKey.get_text();
     SPDLOG_INFO("Settings saved.");
 }
 

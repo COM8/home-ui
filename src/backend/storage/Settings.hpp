@@ -23,7 +23,9 @@ struct SettingsData {
     /**
      * The open weather map location for the weather forecast. 
      **/
-    std::string weatherLocation{"München"};
+    std::string weatherLat{"48.137154"};
+    std::string weatherLong{"11.576124"};
+    std::string openWeatherApiKey{"https://openweathermap.org/price"};
 
 } __attribute__((aligned(128)));
 

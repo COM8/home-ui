@@ -12,7 +12,9 @@ void to_json(nlohmann::json& j, const SettingsData& d) {
                        {"mvgUBahnEnabled", d.mvgUBahnEnabled},
                        {"mvgTramEnabled", d.mvgTramEnabled},
 
-                       {"weatherLocation", d.weatherLocation}};
+                       {"weatherLat", d.weatherLat},
+                       {"weatherLong", d.weatherLong},
+                       {"openWeatherApiKey", d.openWeatherApiKey}};
 }
 
 void from_json(const nlohmann::json& j, SettingsData& d) {
@@ -22,7 +24,9 @@ void from_json(const nlohmann::json& j, SettingsData& d) {
     j.at("mvgUBahnEnabled").get_to(d.mvgUBahnEnabled);
     j.at("mvgTramEnabled").get_to(d.mvgTramEnabled);
 
-    j.at("weatherLocation").get_to(d.weatherLocation);
+    j.at("weatherLat").get_to(d.weatherLat);
+    j.at("weatherLong").get_to(d.weatherLong);
+    j.at("openWeatherApiKey").get_to(d.openWeatherApiKey);
 }
 }  // namespace backend::storage
 

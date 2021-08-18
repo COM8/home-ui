@@ -13,7 +13,9 @@ class SettingsWidget : public Gtk::Box {
     Gtk::CheckButton mvgTramCBtn{"Tram"};
     Gtk::Entry mvgLocation;
 
-    Gtk::Entry weatherLocation;
+    Gtk::Entry weatherLat;
+    Gtk::Entry weatherLong;
+    Gtk::Entry openWeatherApiKey;
 
  public:
     SettingsWidget();
