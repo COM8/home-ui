@@ -50,12 +50,11 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
     std::string destination;
     j.at("destination").get_to(destination);
 
-    if (!j.contains("delay")) {
-        SPDLOG_ERROR("Failed to parse departure. 'delay' filed missing.");
-        return nullptr;
-    }
+    // Delay is optional:
     int delay = 0;
-    j.at("delay").get_to(delay);
+    if (j.contains("delay")) {
+        j.at("delay").get_to(delay);
+    }
 
     if (!j.contains("cancelled")) {
         SPDLOG_ERROR("Failed to parse departure. 'cancelled' filed missing.");
