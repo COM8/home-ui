@@ -129,6 +129,7 @@ void SettingsWidget::save_settings() {
     settings->weatherLat = weatherLat.get_text();
     settings->weatherLong = weatherLong.get_text();
     settings->openWeatherApiKey = openWeatherApiKey.get_text();
+    backend::storage::get_settings_instance()->write_settings();
     SPDLOG_INFO("Settings saved.");
 }
 

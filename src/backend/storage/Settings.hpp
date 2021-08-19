@@ -34,11 +34,10 @@ class Settings {
     explicit Settings(const std::filesystem::path& configFilePath);
 
     SettingsData data{};
+    void write_settings();
 
  private:
     storage::Serializer fileHandle;
-
-    void write_settings();
 };
 
 Settings* get_settings_instance();

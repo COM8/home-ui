@@ -9,7 +9,7 @@ MainWindow::MainWindow() {
 
 void MainWindow::prep_window() {
     set_title("Home UI");
-    set_default_size(800, 550);
+    set_default_size(800, 480);
     signal_key_press_event().connect(sigc::mem_fun(this, &MainWindow::on_key_pressed));
     signal_window_state_event().connect(sigc::mem_fun(this, &MainWindow::on_window_state_changed));
     // fullscreen();

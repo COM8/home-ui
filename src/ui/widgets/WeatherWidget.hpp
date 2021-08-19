@@ -1,19 +1,54 @@
 #pragma once
 
+#include "backend/weather/Forecast.hpp"
+#include <memory>
+#include <mutex>
+#include <thread>
 #include <gtkmm.h>
+#include <gtkmm/box.h>
+#include <gtkmm/enums.h>
+#include <gtkmm/image.h>
+#include <gtkmm/label.h>
 
 namespace ui::widgets {
 class WeatherWidget : public Gtk::Box {
+ private:
+    Gtk::Box currentImageBox;
+    Gtk::Label currentDescription;
+    Gtk::Label currentTemp;
+    Gtk::Box todayImageBox;
+    Gtk::Label todayDescription;
+    Gtk::Label todayMinMaxTemp;
+    Gtk::Box courseBox{Gtk::Orientation::ORIENTATION_HORIZONTAL};
+    Gtk::Label suggestedOutfit;
+
+    bool shouldRun{false};
+    std::unique_ptr<std::thread> updateThread{nullptr};
+    Glib::Dispatcher disp;
+    std::shared_ptr<backend::weather::Forecast> forecast{nullptr};
+    std::mutex forecastMutex{};
+
  public:
     WeatherWidget();
-    WeatherWidget(WeatherWidget&&) = default;
+    WeatherWidget(WeatherWidget&&) = delete;
     WeatherWidget(const WeatherWidget&) = delete;
-    WeatherWidget& operator=(WeatherWidget&&) = default;
+    WeatherWidget& operator=(WeatherWidget&&) = delete;
     WeatherWidget& operator=(const WeatherWidget&) = delete;
     ~WeatherWidget() override = default;
 
  private:
     void prep_widget();
-    static void update();
+    void start_thread();
+    void stop_thread();
+
+    void update_weather();
+    void update_weather_ui();
+    void thread_run();
+
+    static Glib::RefPtr<Gdk::Pixbuf> scale_image(const Glib::RefPtr<Gdk::Pixbuf>& pixBuf, double factor);
+    static void replace_image(Gtk::Box* container, const Glib::RefPtr<Gdk::Pixbuf>& pixBuf);
+
+    //-----------------------------Events:-----------------------------
+    void on_notification_from_update_thread();
 };
 }  // namespace ui::widgets

@@ -26,6 +26,7 @@ Forecast Forecast::from_json(const nlohmann::json& j) {
     return Forecast{
         temp,
         feelsLike,
+        Weather::from_json(current["weather"][0]),
         std::move(daily),
         std::move(hourly)};
 }
@@ -40,13 +41,11 @@ Hour Hour::from_json(const nlohmann::json& j) {
     double feelsLike = 0;
     j.at("feels_like").get_to(feelsLike);
 
-    Weather weather = Weather::from_json(j["weather"][0]);
-
     return Hour{
         timeTp,
         temp,
         feelsLike,
-        std::move(weather)};
+        Weather::from_json(j["weather"][0])};
 }
 
 Day Day::from_json(const nlohmann::json& j) {
@@ -54,10 +53,16 @@ Day Day::from_json(const nlohmann::json& j) {
     j.at("dt").get_to(time);
     std::chrono::system_clock::time_point timeTp = std::chrono::system_clock::from_time_t(static_cast<time_t>(time));
 
+    double rain = 0;
+    if (j.contains("rain")) {
+        j.at("rain").get_to(rain);
+    }
+
     return Day{
         timeTp,
         Temp::from_json(j["temp"]),
-        Weather::from_json(j["weather"][0])};
+        Weather::from_json(j["weather"][0]),
+        rain};
 }
 
 Weather Weather::from_json(const nlohmann::json& j) {

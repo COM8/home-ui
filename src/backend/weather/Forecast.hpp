@@ -30,6 +30,7 @@ struct Day {
     std::chrono::system_clock::time_point time;
     Temp temp;
     Weather weather;
+    double rain;
 
     static Day from_json(const nlohmann::json& j);
 };
@@ -46,6 +47,7 @@ struct Hour {
 struct Forecast {
     double temp;
     double feelsLike;
+    Weather weather;
 
     std::vector<Day> daily;
     std::vector<Hour> hourly;

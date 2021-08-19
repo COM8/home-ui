@@ -2,5 +2,23 @@
 <gresources>
   <gresource prefix="/ui/">
     <file>theme.css</file>
+    <file>openWeather/4x/01n.png</file>
+    <file>openWeather/4x/02n.png</file>
+    <file>openWeather/4x/03n.png</file>
+    <file>openWeather/4x/04n.png</file>
+    <file>openWeather/4x/09n.png</file>
+    <file>openWeather/4x/10n.png</file>
+    <file>openWeather/4x/11n.png</file>
+    <file>openWeather/4x/13n.png</file>
+    <file>openWeather/4x/50n.png</file>
+    <file>openWeather/4x/01d.png</file>
+    <file>openWeather/4x/02d.png</file>
+    <file>openWeather/4x/03d.png</file>
+    <file>openWeather/4x/04d.png</file>
+    <file>openWeather/4x/09d.png</file>
+    <file>openWeather/4x/10d.png</file>
+    <file>openWeather/4x/11d.png</file>
+    <file>openWeather/4x/13d.png</file>
+    <file>openWeather/4x/50d.png</file>
   </gresource>
 </gresources>
