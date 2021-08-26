@@ -19,9 +19,9 @@ class MainWindow : public Gtk::Window {
 
  public:
     MainWindow();
-    MainWindow(MainWindow&&) = default;
+    MainWindow(MainWindow&&) = delete;
     MainWindow(const MainWindow&) = delete;
-    MainWindow& operator=(MainWindow&&) = default;
+    MainWindow& operator=(MainWindow&&) = delete;
     MainWindow& operator=(const MainWindow&) = delete;
     ~MainWindow() override = default;
 
