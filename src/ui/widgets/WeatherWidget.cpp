@@ -37,10 +37,8 @@ void WeatherWidget::prep_widget() {
     Gtk::Label* currentLabel = Gtk::make_managed<Gtk::Label>();
     currentBox->add(*currentLabel);
     currentLabel->set_markup("<span font_weight='bold'>Current</span>");
-    currentImageBox.set_margin_top(5);
     currentBox->add(currentImageBox);
     currentImageBox.set_halign(Gtk::Align::ALIGN_CENTER);
-    currentDescription.set_margin_top(5);
     currentBox->add(currentDescription);
     currentBox->add(currentTemp);
 
@@ -57,10 +55,8 @@ void WeatherWidget::prep_widget() {
     Gtk::Label* todayLabel = Gtk::make_managed<Gtk::Label>();
     todayBox->add(*todayLabel);
     todayLabel->set_markup("<span font_weight='bold'>Today</span>");
-    todayImageBox.set_margin_top(5);
     todayImageBox.set_halign(Gtk::Align::ALIGN_CENTER);
     todayBox->add(todayImageBox);
-    todayDescription.set_margin_top(5);
     todayBox->add(todayDescription);
     todayBox->add(todayMinMaxTemp);
 
