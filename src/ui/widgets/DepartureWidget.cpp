@@ -1,6 +1,7 @@
 #include "DepartureWidget.hpp"
 #include <chrono>
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <gtkmm/box.h>
 #include <gtkmm/enums.h>
@@ -46,7 +47,7 @@ void DepartureWidget::prep_widget() {
         std::string depInfoStr;
         std::chrono::system_clock::duration diff = departure->time - std::chrono::system_clock::now();
         diff += std::chrono::minutes(departure->delay);
-        size_t minutes = static_cast<size_t>(std::chrono::duration_cast<std::chrono::minutes>(diff).count());
+        int64_t minutes = static_cast<int64_t>(std::chrono::duration_cast<std::chrono::minutes>(diff).count());
         if (minutes <= 0) {
             depInfoStr += "NOW";
         } else {
