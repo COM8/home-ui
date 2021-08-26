@@ -25,14 +25,14 @@ WeatherWidget::WeatherWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL
 void WeatherWidget::prep_widget() {
     Gtk::Box* todayCurrentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
     add(*todayCurrentBox);
-    todayCurrentBox->set_homogeneous(true);
+    todayCurrentBox->set_homogeneous(false);
     todayCurrentBox->set_hexpand(true);
     todayCurrentBox->set_margin_start(10);
     todayCurrentBox->set_margin_end(10);
 
     // Current:
     Gtk::Box* currentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    todayCurrentBox->add(*currentBox);
+    todayCurrentBox->pack_start(*currentBox);
     currentBox->set_halign(Gtk::Align::ALIGN_CENTER);
     Gtk::Label* currentLabel = Gtk::make_managed<Gtk::Label>();
     currentBox->add(*currentLabel);
@@ -46,11 +46,13 @@ void WeatherWidget::prep_widget() {
 
     // Suggested Outfit:
     suggestedOutfit.set_valign(Gtk::Align::ALIGN_CENTER);
-    todayCurrentBox->add(suggestedOutfit);
+    suggestedOutfit.set_margin_start(10);
+    suggestedOutfit.set_margin_end(10);
+    todayCurrentBox->set_center_widget(suggestedOutfit);
 
     // Today:
     Gtk::Box* todayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    todayCurrentBox->add(*todayBox);
+    todayCurrentBox->pack_end(*todayBox);
     todayBox->set_halign(Gtk::Align::ALIGN_CENTER);
     Gtk::Label* todayLabel = Gtk::make_managed<Gtk::Label>();
     todayBox->add(*todayLabel);
@@ -110,7 +112,7 @@ void WeatherWidget::update_weather_ui() {
     } else {
         outfit += "🧥\n👖";
     }
-    suggestedOutfit.set_markup("<span size='xx-large'>" + outfit + "</span>");
+    suggestedOutfit.set_markup("<span size='x-large'>" + outfit + "</span>");
 
     // Course:
     // Clear existing items:
