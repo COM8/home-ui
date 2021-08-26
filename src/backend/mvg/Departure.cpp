@@ -2,6 +2,7 @@
 #include "logger/Logger.hpp"
 #include <chrono>
 #include <cstddef>
+#include <cstdint>
 #include <ctime>
 #include <memory>
 #include <bits/types/time_t.h>
@@ -13,7 +14,7 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
         SPDLOG_ERROR("Failed to parse departure. 'departureTime' filed missing.");
         return nullptr;
     }
-    size_t departureTime = 0;  // In ms Unix time
+    int64_t departureTime = 0;  // In ms Unix time
     j.at("departureTime").get_to(departureTime);
     std::chrono::system_clock::time_point departureTimeTp = std::chrono::system_clock::from_time_t(static_cast<time_t>(departureTime / 1000));
 
