@@ -2,6 +2,8 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <ctime>
+#include <iostream>
 #include <string>
 #include <gtkmm/box.h>
 #include <gtkmm/enums.h>
@@ -10,6 +12,13 @@
 namespace ui::widgets {
 DepartureWidget::DepartureWidget(std::shared_ptr<backend::mvg::Departure> departure) : departure(std::move(departure)) {
     prep_widget();
+}
+
+static std::string timePointAsString(const std::chrono::system_clock::time_point& tp) {
+    std::time_t t = std::chrono::system_clock::to_time_t(tp);
+    std::string ts = std::ctime(&t);
+    ts.resize(ts.size() - 1);
+    return ts;
 }
 
 void DepartureWidget::prep_widget() {
@@ -49,6 +58,9 @@ void DepartureWidget::prep_widget() {
         diff += std::chrono::minutes(departure->delay);
         auto a = diff / std::chrono::minutes(1);
         auto minutes = std::chrono::duration_cast<std::chrono::minutes>(diff).count();
+
+        std::cout << "NOW: " << timePointAsString(std::chrono::system_clock::now()) << std::endl;
+        std::cout << "TIME: " << timePointAsString(departure->time) << std::endl;
 
         if (minutes <= 0) {
             depInfoStr += "NOW";
