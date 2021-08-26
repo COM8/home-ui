@@ -45,13 +45,14 @@ void DepartureWidget::prep_widget() {
     mainBox->add(*infoBox);
     if (!departure->canceled) {
         std::string depInfoStr;
-        std::chrono::system_clock::duration diff = departure->time.time_since_epoch() - std::chrono::system_clock::now().time_since_epoch();
-        diff += std::chrono::minutes(departure->delay);
+        std::chrono::system_clock::duration diff = departure->time - std::chrono::system_clock::now();
+        // diff += std::chrono::minutes(departure->delay);
         auto minutes = std::chrono::duration_cast<std::chrono::minutes>(diff).count();
+        auto m2 = diff.count() / 60;
 
         if (minutes <= 0) {
             depInfoStr += "NOW";
-            depInfoStr += " " + std::to_string(minutes);
+            depInfoStr += " " + std::to_string(minutes) + " " + std::to_string(m2);
         } else {
             depInfoStr += std::to_string(minutes) + " min.";
         }
