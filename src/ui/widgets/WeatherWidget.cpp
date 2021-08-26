@@ -135,8 +135,11 @@ void WeatherWidget::update_weather_ui() {
         Gtk::Label* hourLabel = Gtk::make_managed<Gtk::Label>();
         hourBox->add(*hourLabel);
 
-        std::chrono::system_clock::time_point daysTp = std::chrono::floor<std::chrono::duration<int64_t, std::ratio<86400>>>(hour.time);
-        std::chrono::system_clock::time_point hoursTp = std::chrono::floor<std::chrono::duration<int64_t, std::ratio<3600>>>(hour.time);
+        // Ensure the definition for days exists on the PI:
+        using days = std::chrono::duration<int64_t, std::ratio<86400>>;
+
+        std::chrono::system_clock::time_point daysTp = std::chrono::floor<days>(hour.time);
+        std::chrono::system_clock::time_point hoursTp = std::chrono::floor<std::chrono::hours>(hour.time);
         std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(hoursTp - daysTp);
         hourLabel->set_markup("<span font_weight='bold'>" + std::to_string(hours.count()) + "</span>");
 
