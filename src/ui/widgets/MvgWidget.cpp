@@ -30,6 +30,7 @@ MvgWidget::~MvgWidget() {
 void MvgWidget::prep_widget() {
     Gtk::ScrolledWindow* scroll = Gtk::make_managed<Gtk::ScrolledWindow>();
     departureslistBox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
+    departureslistBox.set_margin_top(10);
     scroll->add(departureslistBox);
     scroll->set_vexpand(true);
     scroll->set_hexpand(true);

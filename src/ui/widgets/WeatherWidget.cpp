@@ -65,11 +65,6 @@ void WeatherWidget::prep_widget() {
     todayBox->add(todayMinMaxTemp);
 
     // Course:
-    Gtk::Label* courseLabel = Gtk::make_managed<Gtk::Label>();
-    add(*courseLabel);
-    courseLabel->set_markup("<span font_weight='bold'>Course</span>");
-    courseLabel->set_margin_top(10);
-
     courseBox.set_homogeneous(true);
     courseBox.set_margin_bottom(10);
     courseBox.set_margin_top(10);
