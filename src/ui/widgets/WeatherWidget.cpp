@@ -72,6 +72,10 @@ void WeatherWidget::prep_widget() {
 }
 
 void WeatherWidget::update_weather_ui() {
+    if (!forecast) {
+        return;
+    }
+
     // Add new items:
     forecastMutex.lock();
     // Current:
