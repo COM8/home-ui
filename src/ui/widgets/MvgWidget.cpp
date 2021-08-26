@@ -30,7 +30,6 @@ MvgWidget::~MvgWidget() {
 void MvgWidget::prep_widget() {
     Gtk::ScrolledWindow* scroll = Gtk::make_managed<Gtk::ScrolledWindow>();
     departureslistBox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
-    departureslistBox.set_margin_top(10);
     scroll->add(departureslistBox);
     scroll->set_vexpand(true);
     scroll->set_hexpand(true);
@@ -45,10 +44,15 @@ void MvgWidget::update_departures_ui() {
     }
 
     // Add new items:
+    bool first = true;
     departuresMutex.lock();
     for (const std::shared_ptr<backend::mvg::Departure>& departure : departures) {
         DepartureWidget* depW = Gtk::make_managed<DepartureWidget>(departure);
         departureslistBox.add(*depW);
+        if (first) {
+            depW->set_margin_top(5);
+            first = false;
+        }
     }
     departuresMutex.unlock();
     departureslistBox.show_all();
