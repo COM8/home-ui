@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ui/widgets/ActionsWidget.hpp"
+#include "ui/widgets/DeviceStatusWidget.hpp"
 #include "ui/widgets/MvgWidget.hpp"
 #include "ui/widgets/SettingsWidget.hpp"
 #include "ui/widgets/WeatherWidget.hpp"
@@ -15,6 +16,7 @@ class MainWindow : public Gtk::Window {
     widgets::MvgWidget mvg{};
     widgets::WeatherWidget weather{};
     widgets::ActionsWidget actions{};
+    widgets::DeviceStatusWidget deviceStatus{};
     widgets::SettingsWidget settings{};
 
  public:

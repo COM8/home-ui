@@ -12,7 +12,7 @@ void MainWindow::prep_window() {
     set_default_size(800, 480);
     signal_key_press_event().connect(sigc::mem_fun(this, &MainWindow::on_key_pressed));
     signal_window_state_event().connect(sigc::mem_fun(this, &MainWindow::on_window_state_changed));
-    // fullscreen();
+    fullscreen();
 
     // Content:
     stack = Gtk::make_managed<Gtk::Stack>();
@@ -57,7 +57,10 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     mainBox->set_homogeneous(true);
 
     // Actions:
-    mainBox->add(actions);
+    Gtk::Box* leftBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    mainBox->add(*leftBox);
+    leftBox->add(actions);
+    leftBox->pack_end(deviceStatus);
 
     Gtk::Box* rightBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
     rightBox->set_homogeneous(true);

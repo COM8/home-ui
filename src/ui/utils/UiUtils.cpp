@@ -12,4 +12,20 @@ Glib::RefPtr<Gtk::CssProvider> get_css_provider() {
     }
     return cssProvider;
 }
+
+Glib::RefPtr<Gdk::Pixbuf> scale_image(const Glib::RefPtr<Gdk::Pixbuf>& pixBuf, double factor) {
+    int width = static_cast<int>(std::round(static_cast<double>(pixBuf->get_width()) * factor));
+    int height = static_cast<int>(std::round(static_cast<double>(pixBuf->get_height()) * factor));
+    return pixBuf->scale_simple(width, height, Gdk::InterpType::INTERP_BILINEAR);
+}
+
+void replace_image(Gtk::Box* container, const Glib::RefPtr<Gdk::Pixbuf>& pixBuf) {
+    // Clear existing items:
+    std::vector<Gtk::Widget*> neg_children = container->get_children();
+    for (Gtk::Widget* child : neg_children) {
+        container->remove(*child);
+    }
+    Gtk::Image* img = Gtk::make_managed<Gtk::Image>(pixBuf);
+    container->add(*img);
+}
 }  // namespace ui

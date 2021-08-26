@@ -45,9 +45,6 @@ class WeatherWidget : public Gtk::Box {
     void update_weather_ui();
     void thread_run();
 
-    static Glib::RefPtr<Gdk::Pixbuf> scale_image(const Glib::RefPtr<Gdk::Pixbuf>& pixBuf, double factor);
-    static void replace_image(Gtk::Box* container, const Glib::RefPtr<Gdk::Pixbuf>& pixBuf);
-
     //-----------------------------Events:-----------------------------
     void on_notification_from_update_thread();
 };
