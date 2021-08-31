@@ -14,6 +14,7 @@ void MainWindow::prep_window() {
     signal_key_press_event().connect(sigc::mem_fun(this, &MainWindow::on_key_pressed));
     signal_window_state_event().connect(sigc::mem_fun(this, &MainWindow::on_window_state_changed));
     fullscreen();
+    hide_cursor();
 
     // Content:
     stack = Gtk::make_managed<Gtk::Stack>();
@@ -105,14 +106,17 @@ bool MainWindow::on_key_pressed(GdkEventKey* event) {
     if (event->keyval == GDK_KEY_Escape && inFullScreen) {
         unfullscreen();
         maximize();
+        show_cursor();
         return true;
     }
     if (event->keyval == GDK_KEY_F11) {
         if (inFullScreen) {
             unfullscreen();
             maximize();
+            show_cursor();
         } else {
             fullscreen();
+            hide_cursor();
         }
         return true;
     }
