@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui/utils/UiUtils.hpp"
 #include <memory>
+#include <spdlog/spdlog.h>
 
 namespace ui::windows {
 MainWindow::MainWindow() {
@@ -78,6 +79,18 @@ void MainWindow::prep_setting_stack_page(Gtk::Stack* stack) {
     stack->add(settings, "settings", "Settings");
 }
 
+void MainWindow::hide_cursor() {
+    get_window()->set_cursor(Gdk::Cursor::create(Gdk::CursorType::BLANK_CURSOR));
+    cursorHidden = true;
+    SPDLOG_INFO("Cursor hidden.");
+}
+
+void MainWindow::show_cursor() {
+    get_window()->set_cursor();
+    cursorHidden = false;
+    SPDLOG_INFO("Cursor shown.");
+}
+
 //-----------------------------Events:-----------------------------
 void MainWindow::on_inspector_clicked() {
     viewMoreBtn->get_popover()->popdown();
@@ -100,6 +113,14 @@ bool MainWindow::on_key_pressed(GdkEventKey* event) {
             maximize();
         } else {
             fullscreen();
+        }
+        return true;
+    }
+    if (event->keyval == GDK_KEY_F12) {
+        if (cursorHidden) {
+            show_cursor();
+        } else {
+            hide_cursor();
         }
         return true;
     }

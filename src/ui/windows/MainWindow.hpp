@@ -11,6 +11,7 @@ namespace ui::windows {
 class MainWindow : public Gtk::Window {
  private:
     bool inFullScreen{false};
+    bool cursorHidden{false};
     Gtk::Stack* stack{nullptr};
     Gtk::MenuButton* viewMoreBtn{nullptr};
     widgets::MvgWidget mvg{};
@@ -31,6 +32,8 @@ class MainWindow : public Gtk::Window {
     void prep_window();
     void prep_overview_stack_page(Gtk::Stack* stack);
     void prep_setting_stack_page(Gtk::Stack* stack);
+    void hide_cursor();
+    void show_cursor();
 
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
