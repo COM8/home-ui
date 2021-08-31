@@ -1,6 +1,7 @@
 #pragma once
 
 #include "backend/weather/Forecast.hpp"
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -13,6 +14,9 @@
 namespace ui::widgets {
 class WeatherWidget : public Gtk::Box {
  private:
+    // Ensure the definition for days exists on the PI:
+    using days = std::chrono::duration<int64_t, std::ratio<86400>>;
+
     Gtk::Box currentImageBox;
     Gtk::Label currentDescription;
     Gtk::Label currentTemp;
@@ -44,6 +48,9 @@ class WeatherWidget : public Gtk::Box {
     void update_weather();
     void update_weather_ui();
     void thread_run();
+
+    static uint8_t get_hour_of_the_day(const std::chrono::system_clock::time_point& tp);
+    static std::chrono::system_clock::time_point to_local_time(const std::chrono::system_clock::time_point& tp);
 
     //-----------------------------Events:-----------------------------
     void on_notification_from_update_thread();

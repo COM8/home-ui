@@ -5,6 +5,7 @@
 #include "ui/utils/UiUtils.hpp"
 #include <chrono>
 #include <cmath>
+#include <cstdint>
 #include <ctime>
 #include <memory>
 #include <string>
@@ -117,9 +118,20 @@ void WeatherWidget::update_weather_ui() {
         courseBox.remove(*child);
     }
 
+    std::chrono::system_clock::time_point curTime = to_local_time(std::chrono::system_clock::now());
+    uint8_t curHour = get_hour_of_the_day(curTime);
+    std::chrono::system_clock::time_point curDays = std::chrono::floor<days>(curTime);
     // Add new items:
-    size_t count = 0;
     for (const backend::weather::Hour& hour : forecast->hourly) {
+        // Show only those in the future and for the next 24 hours:
+        std::chrono::system_clock::time_point weatherTime = to_local_time(hour.time);
+        uint8_t weatherHour = get_hour_of_the_day(weatherTime);
+        std::chrono::system_clock::time_point weatherDays = std::chrono::floor<days>(weatherTime);
+        // NOLINTNEXTLINE (modernize-use-nullptr)
+        if ((weatherDays > curDays && weatherHour > curHour) || (weatherDays == curDays && weatherHour < curHour)) {
+            continue;
+        }
+
         Gtk::Box* hourBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
         courseBox.add(*hourBox);
         hourBox->set_margin_left(5);
@@ -132,24 +144,30 @@ void WeatherWidget::update_weather_ui() {
         hourTempLabel->set_markup("<span font_weight='bold' size='small'>" + std::to_string(static_cast<int>(std::round(hour.temp))) + "°C" + "</span>");
         Gtk::Label* hourLabel = Gtk::make_managed<Gtk::Label>();
         hourBox->add(*hourLabel);
-
-        // Ensure the definition for days exists on the PI:
-        using days = std::chrono::duration<int64_t, std::ratio<86400>>;
-
-        std::chrono::system_clock::time_point daysTp = std::chrono::floor<days>(hour.time);
-        std::chrono::system_clock::time_point hoursTp = std::chrono::floor<std::chrono::hours>(hour.time);
-        std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(hoursTp - daysTp);
-        hourLabel->set_markup("<span font_weight='bold'>" + std::to_string(hours.count()) + "</span>");
-
-        // Only show the next 24 hours:
-        if (++count >= 24) {
-            break;
-        }
+        hourLabel->set_markup("<span font_weight='bold'>" + std::to_string(weatherHour) + "</span>");
     }
     forecastMutex.unlock();
     courseBox.show_all();
     currentImageBox.show_all();
     todayImageBox.show_all();
+}
+
+uint8_t WeatherWidget::get_hour_of_the_day(const std::chrono::system_clock::time_point& tp) {
+    std::chrono::system_clock::time_point daysTp = std::chrono::floor<days>(tp);
+    std::chrono::system_clock::time_point hoursTp = std::chrono::floor<std::chrono::hours>(tp);
+    std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(hoursTp - daysTp);
+    return static_cast<uint8_t>(hours.count());
+}
+
+std::chrono::system_clock::time_point WeatherWidget::to_local_time(const std::chrono::system_clock::time_point& tp) {
+    static bool tzsetCalled = false;
+    if (!tzsetCalled) {
+        tzset();
+        tzsetCalled = true;
+    }
+    std::chrono::seconds offsetUtc(-timezone);
+    std::chrono::hours daylightUtc(daylight);
+    return tp + offsetUtc + offsetUtc;
 }
 
 void WeatherWidget::update_weather() {
