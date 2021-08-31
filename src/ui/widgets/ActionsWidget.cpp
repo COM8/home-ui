@@ -6,6 +6,6 @@ ActionsWidget::ActionsWidget() {
 }
 
 void ActionsWidget::prep_widget() {
-    override_background_color(Gdk::RGBA("#FF0000"));
+    // override_background_color(Gdk::RGBA("#FF0000"));
 }
 }  // namespace ui::widgets
