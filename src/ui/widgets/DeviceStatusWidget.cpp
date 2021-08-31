@@ -48,7 +48,7 @@ void DeviceStatusWidget::update_available_devices_ui() {
 void DeviceStatusWidget::update_available_devices() {
     SPDLOG_INFO("Updating available devices...");
 
-    const std::array<std::string, 3> devices{"10.0.0.17", "10.0.0.27"};
+    const std::array<std::string, 2> devices{"192.168.178.21", "192.168.178.60"};
     devicesAvailMutex.lock();
     devicesAvail.clear();
     for (const std::string& device : devices) {
