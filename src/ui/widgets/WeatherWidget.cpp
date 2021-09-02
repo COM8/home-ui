@@ -13,6 +13,7 @@
 #include <gtkmm/enums.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
+#include <spdlog/spdlog.h>
 
 namespace ui::widgets {
 WeatherWidget::WeatherWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL) {
@@ -39,8 +40,8 @@ void WeatherWidget::prep_widget() {
     Gtk::Label* currentLabel = Gtk::make_managed<Gtk::Label>();
     currentBox->add(*currentLabel);
     currentLabel->set_markup("<span font_weight='bold'>Current</span>");
-    currentBox->add(currentImageBox);
-    currentImageBox.set_halign(Gtk::Align::ALIGN_CENTER);
+    currentBox->add(currentImage);
+    currentImage.set_halign(Gtk::Align::ALIGN_CENTER);
     currentBox->add(currentDescription);
     currentBox->add(currentTemp);
 
@@ -57,8 +58,8 @@ void WeatherWidget::prep_widget() {
     Gtk::Label* todayLabel = Gtk::make_managed<Gtk::Label>();
     todayBox->add(*todayLabel);
     todayLabel->set_markup("<span font_weight='bold'>Today</span>");
-    todayImageBox.set_halign(Gtk::Align::ALIGN_CENTER);
-    todayBox->add(todayImageBox);
+    todayImage.set_halign(Gtk::Align::ALIGN_CENTER);
+    todayBox->add(todayImage);
     todayBox->add(todayDescription);
     todayBox->add(todayMinMaxTemp);
 
@@ -83,7 +84,7 @@ void WeatherWidget::update_weather_ui() {
     // Current:
     Glib::RefPtr<Gdk::Pixbuf> currentImagePixBuf = Gdk::Pixbuf::create_from_resource("/ui/openWeather/4x/" + forecast->weather.icon + ".png");
     currentImagePixBuf = scale_image(currentImagePixBuf, 0.6);
-    replace_image(&currentImageBox, currentImagePixBuf);
+    currentImage.set(currentImagePixBuf);
 
     currentDescription.set_label(forecast->weather.description);
     currentTemp.set_text(std::to_string(static_cast<int>(std::round(forecast->temp))) + "°C (" + std::to_string(static_cast<int>(std::round(forecast->feelsLike))) + "°C)");
@@ -92,7 +93,7 @@ void WeatherWidget::update_weather_ui() {
     const backend::weather::Day* todayWeather = &(forecast->daily[0]);
     Glib::RefPtr<Gdk::Pixbuf> todayImagePixBuf = Gdk::Pixbuf::create_from_resource("/ui/openWeather/4x/" + todayWeather->weather.icon + ".png");
     todayImagePixBuf = scale_image(todayImagePixBuf, 0.6);
-    replace_image(&todayImageBox, todayImagePixBuf);
+    todayImage.set(todayImagePixBuf);
     todayDescription.set_label(todayWeather->weather.description);
     todayMinMaxTemp.set_label("Min: " + std::to_string(static_cast<int>(std::round(todayWeather->temp.min))) + "°C Max: " + std::to_string(static_cast<int>(std::round(todayWeather->temp.max))) + "°C");
 
@@ -113,10 +114,11 @@ void WeatherWidget::update_weather_ui() {
 
     // Course:
     // Clear existing items:
-    std::vector<Gtk::Widget*> neg_children = courseBox.get_children();
-    for (Gtk::Widget* child : neg_children) {
+    std::vector<Gtk::Widget*> remChildren = courseBox.get_children();
+    for (Gtk::Widget* child : remChildren) {
         courseBox.remove(*child);
     }
+    hourBoxes.clear();
 
     std::chrono::system_clock::time_point curTime = to_local_time(std::chrono::system_clock::now());
     uint8_t curHour = get_hour_of_the_day(curTime);
@@ -132,7 +134,8 @@ void WeatherWidget::update_weather_ui() {
             continue;
         }
 
-        Gtk::Box* hourBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+        hourBoxes.emplace_back(Gtk::Orientation::ORIENTATION_VERTICAL);
+        Gtk::Box* hourBox = &hourBoxes.back();
         courseBox.add(*hourBox);
         hourBox->set_margin_left(5);
         Glib::RefPtr<Gdk::Pixbuf> pixBuf = Gdk::Pixbuf::create_from_resource("/ui/openWeather/4x/" + hour.weather.icon + ".png");
@@ -148,8 +151,6 @@ void WeatherWidget::update_weather_ui() {
     }
     forecastMutex.unlock();
     courseBox.show_all();
-    currentImageBox.show_all();
-    todayImageBox.show_all();
 }
 
 uint8_t WeatherWidget::get_hour_of_the_day(const std::chrono::system_clock::time_point& tp) {
@@ -213,5 +214,4 @@ void WeatherWidget::stop_thread() {
 
 //-----------------------------Events:-----------------------------
 void WeatherWidget::on_notification_from_update_thread() { update_weather_ui(); }
-
 }  // namespace ui::widgets

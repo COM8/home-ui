@@ -1,9 +1,11 @@
 #pragma once
 
 #include "backend/mvg/Departure.hpp"
+#include "ui/widgets/DepartureWidget.hpp"
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <vector>
 #include <glibmm/dispatcher.h>
 #include <gtkmm/box.h>
 #include <gtkmm/checkbutton.h>
@@ -19,6 +21,7 @@ class MvgWidget : public Gtk::Box {
     std::unique_ptr<std::thread> updateThread{nullptr};
     Glib::Dispatcher disp;
     std::vector<std::shared_ptr<backend::mvg::Departure>> departures{};
+    std::vector<DepartureWidget> departureWidgets{};
     std::mutex departuresMutex{};
 
  public:

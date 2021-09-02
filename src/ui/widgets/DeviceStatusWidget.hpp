@@ -16,6 +16,7 @@ class DeviceStatusWidget : public Gtk::Box {
     std::unique_ptr<std::thread> updateThread{nullptr};
     Glib::Dispatcher disp;
     std::vector<std::string> devicesAvail{};
+    std::vector<Gtk::Label> deviceLabels{};
     std::mutex devicesAvailMutex{};
 
  public:

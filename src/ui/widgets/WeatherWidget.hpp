@@ -5,6 +5,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <vector>
 #include <gtkmm.h>
 #include <gtkmm/box.h>
 #include <gtkmm/enums.h>
@@ -17,14 +18,16 @@ class WeatherWidget : public Gtk::Box {
     // Ensure the definition for days exists on the PI:
     using days = std::chrono::duration<int64_t, std::ratio<86400>>;
 
-    Gtk::Box currentImageBox;
+    Gtk::Image currentImage;
     Gtk::Label currentDescription;
     Gtk::Label currentTemp;
-    Gtk::Box todayImageBox;
+    Gtk::Image todayImage;
     Gtk::Label todayDescription;
     Gtk::Label todayMinMaxTemp;
     Gtk::Box courseBox{Gtk::Orientation::ORIENTATION_HORIZONTAL};
     Gtk::Label suggestedOutfit;
+
+    std::vector<Gtk::Box> hourBoxes{};
 
     bool shouldRun{false};
     std::unique_ptr<std::thread> updateThread{nullptr};

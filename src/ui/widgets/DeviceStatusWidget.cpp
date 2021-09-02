@@ -24,15 +24,17 @@ void DeviceStatusWidget::prep_widget() {
 
 void DeviceStatusWidget::update_available_devices_ui() {
     // Clear existing items:
-    std::vector<Gtk::Widget*> neg_children = devicesBox.get_children();
-    for (Gtk::Widget* child : neg_children) {
+    std::vector<Gtk::Widget*> remChildren = devicesBox.get_children();
+    for (Gtk::Widget* child : remChildren) {
         devicesBox.remove(*child);
     }
+    deviceLabels.clear();
 
     // Add new items:
     devicesAvailMutex.lock();
     for (const std::string& device : devicesAvail) {
-        Gtk::Label* devLabel = Gtk::make_managed<Gtk::Label>();
+        deviceLabels.emplace_back();
+        Gtk::Label* devLabel = &deviceLabels.back();
         devLabel->set_markup("<span size='xx-large'>📱</span>");
         devLabel->set_tooltip_text(device);
         devLabel->set_margin_start(5);

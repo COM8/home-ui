@@ -38,16 +38,18 @@ void MvgWidget::prep_widget() {
 
 void MvgWidget::update_departures_ui() {
     // Clear existing items:
-    std::vector<Gtk::Widget*> neg_children = departureslistBox.get_children();
-    for (Gtk::Widget* child : neg_children) {
+    std::vector<Gtk::Widget*> remChildren = departureslistBox.get_children();
+    for (Gtk::Widget* child : remChildren) {
         departureslistBox.remove(*child);
     }
+    departureWidgets.clear();
 
     // Add new items:
     bool first = true;
     departuresMutex.lock();
     for (const std::shared_ptr<backend::mvg::Departure>& departure : departures) {
-        DepartureWidget* depW = Gtk::make_managed<DepartureWidget>(departure);
+        departureWidgets.emplace_back(departure);
+        DepartureWidget* depW = &departureWidgets.back();
         departureslistBox.add(*depW);
         if (first) {
             depW->set_margin_top(5);
