@@ -37,6 +37,7 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 include(sanitizer)
 include(gcc_analyze)
 include(glib-resource-compiler)
+include(clear_variable)
 include(FetchContent)
 
 if (${HOME_UI_ENABLE_LINTING})
@@ -48,23 +49,6 @@ endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-
-get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if (NOT isMultiConfig)
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "${ALLOWED_BUILD_TYPES}")
-    if (NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
-    elseif(NOT CMAKE_BUILD_TYPE IN_LIST ALLOWED_BUILD_TYPES)
-        message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
-    endif()
-else ()
-    unset(CMAKE_BUILD_TYPE)
-    foreach(TYPE ${ALLOWED_BUILD_TYPES})
-    if (NOT ${TYPE} IN_LIST CMAKE_CONFIGURATION_TYPES)
-        list(APPEND CMAKE_CONFIGURATION_TYPES ${TYPE})
-    endif()  
-    endforeach()  
-endif()
 
 # gtk3 stuff
 find_package(PkgConfig REQUIRED)
@@ -82,12 +66,15 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-set(CONAN_CONFIGS"Release;Debug;RelWithDebInfo")
+set(CONAN_CONFIGS"Release;Debug;RelWithDebInfo;MinSizeRel")
 if(NOT CMAKE_BUILD_TYPE IN_LIST CONAN_CONFIGS)
     set(CONAN_BUILD_TYPE "Debug")
 else()
     set(CONAN_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 endif()
+
+# Prevent an unknown build type for conan:
+clear_variable(DESTINATION CMAKE_BUILD_TYPE BACKUP CMAKE_BUILD_TYPE_BKP REPLACE ${CONAN_BUILD_TYPE})
 
 conan_cmake_run(REQUIRES catch2/2.13.4
                          nlohmann_json/3.9.1
@@ -95,7 +82,8 @@ conan_cmake_run(REQUIRES catch2/2.13.4
                 GENERATORS cmake_find_package
                 BUILD missing)
 
-conan_cmake_autodetect(settings)
+conan_cmake_autodetect(settings build_type ${CONAN_BUILD_TYPE})
+restore_variable(DESTINATION CMAKE_BUILD_TYPE BACKUP CMAKE_BUILD_TYPE_BKP)
 conan_cmake_install(PATH_OR_REFERENCE .
                     BUILD missing
                     REMOTE conan-center
@@ -106,8 +94,6 @@ find_package(nlohmann_json REQUIRED)
 find_package(spdlog REQUIRED)
 
 FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/whoshuu/cpr.git)
-set(CPR_FORCE_OPENSSL_BACKEND ${UNIX} CACHE INTERNAL "" FORCE)
-set(CPR_FORCE_WINSSL_BACKEND ${WIN32} CACHE INTERNAL "" FORCE)
 set(CPR_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
 set(CURL_CA_FALLBACK ON CACHE INTERNAL "" FORCE) # Workaround for failing SSL requests
 FetchContent_GetProperties(cpr)
