@@ -7,6 +7,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace backend::storage {
 struct SettingsData {
@@ -26,6 +27,19 @@ struct SettingsData {
     std::string weatherLat{"48.137154"};
     std::string weatherLong{"11.576124"};
     std::string openWeatherApiKey{"https://openweathermap.org/price"};
+
+    /**
+     * A list of all device IPs there status should be displayed.
+     **/
+    std::vector<std::string> devices;
+
+    /**
+     * The Home Assistent (hass) configuration and devices.
+     **/
+    std::string hassIp{"IP of your hass installation"};
+    std::string hassPort{"8123"};
+    std::string hassBearerToken{"Your hass bearer token"};
+    std::vector<std::string> hassLights;
 
 } __attribute__((aligned(128)));
 

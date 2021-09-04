@@ -11,6 +11,8 @@ add_library(ui_widgets STATIC MvgWidget.cpp
                               SettingsWidget.cpp
                               SettingsWidget.hpp
                               DeviceStatusWidget.cpp
-                              DeviceStatusWidget.hpp)
-target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM backend_mvg backend_weather backend_deviceStatus
+                              DeviceStatusWidget.hpp
+                              LightWidget.cpp
+                              LightWidget.hpp)
+target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM backend_mvg backend_weather backend_deviceStatus backend_hass
                                  PRIVATE logger backend_storage ui_utils)
