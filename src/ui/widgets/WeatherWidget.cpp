@@ -20,12 +20,19 @@ WeatherWidget::WeatherWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL
     prep_widget();
     disp.connect(sigc::mem_fun(*this, &WeatherWidget::on_notification_from_update_thread));
     start_thread();
-    set_valign(Gtk::Align::ALIGN_FILL);
-    set_halign(Gtk::Align::ALIGN_FILL);
-    set_margin_top(10);
+}
+
+WeatherWidget::~WeatherWidget() {
+    if (shouldRun) {
+        stop_thread();
+    }
 }
 
 void WeatherWidget::prep_widget() {
+    set_valign(Gtk::Align::ALIGN_FILL);
+    set_halign(Gtk::Align::ALIGN_FILL);
+    set_margin_top(10);
+
     Gtk::Box* todayCurrentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
     add(*todayCurrentBox);
     todayCurrentBox->set_homogeneous(false);

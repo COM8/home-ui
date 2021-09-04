@@ -1,5 +1,6 @@
 #include "DeviceStatusWidget.hpp"
 #include "backend/deviceStatus/DeviceStatus.hpp"
+#include "backend/storage/Settings.hpp"
 #include "logger/Logger.hpp"
 #include <array>
 #include <chrono>
@@ -12,12 +13,19 @@ DeviceStatusWidget::DeviceStatusWidget() : Gtk::Box(Gtk::Orientation::ORIENTATIO
     prep_widget();
     disp.connect(sigc::mem_fun(*this, &DeviceStatusWidget::on_notification_from_update_thread));
     start_thread();
-    set_valign(Gtk::Align::ALIGN_END);
-    set_halign(Gtk::Align::ALIGN_FILL);
-    set_margin_top(10);
+}
+
+DeviceStatusWidget::~DeviceStatusWidget() {
+    if (shouldRun) {
+        stop_thread();
+    }
 }
 
 void DeviceStatusWidget::prep_widget() {
+    set_valign(Gtk::Align::ALIGN_END);
+    set_halign(Gtk::Align::ALIGN_FILL);
+    set_margin_top(10);
+
     add(devicesBox);
     devicesBox.set_halign(Gtk::Align::ALIGN_CENTER);
 }
@@ -49,11 +57,10 @@ void DeviceStatusWidget::update_available_devices_ui() {
 
 void DeviceStatusWidget::update_available_devices() {
     SPDLOG_INFO("Updating available devices...");
-
-    const std::array<std::string, 2> devices{"192.168.178.21", "192.168.178.60"};
+    const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
     devicesAvailMutex.lock();
     devicesAvail.clear();
-    for (const std::string& device : devices) {
+    for (const std::string& device : settings->devices) {
         if (backend::deviceStatus::ping(device)) {
             devicesAvail.push_back(device);
         }

@@ -24,7 +24,9 @@ MvgWidget::MvgWidget() {
 }
 
 MvgWidget::~MvgWidget() {
-    stop_thread();
+    if (shouldRun) {
+        stop_thread();
+    }
 }
 
 void MvgWidget::prep_widget() {

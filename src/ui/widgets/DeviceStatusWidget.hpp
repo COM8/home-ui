@@ -25,7 +25,7 @@ class DeviceStatusWidget : public Gtk::Box {
     DeviceStatusWidget(const DeviceStatusWidget&) = delete;
     DeviceStatusWidget& operator=(DeviceStatusWidget&&) = delete;
     DeviceStatusWidget& operator=(const DeviceStatusWidget&) = delete;
-    ~DeviceStatusWidget() override = default;
+    ~DeviceStatusWidget() override;
 
  private:
     void prep_widget();

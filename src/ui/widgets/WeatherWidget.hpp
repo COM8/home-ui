@@ -41,7 +41,7 @@ class WeatherWidget : public Gtk::Box {
     WeatherWidget(const WeatherWidget&) = delete;
     WeatherWidget& operator=(WeatherWidget&&) = delete;
     WeatherWidget& operator=(const WeatherWidget&) = delete;
-    ~WeatherWidget() override = default;
+    ~WeatherWidget() override;
 
  private:
     void prep_widget();
