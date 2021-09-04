@@ -62,6 +62,14 @@ void SettingsWidget::prep_widget() {
     contentBox->add(*mvgLocationLabel);
     mvgLocation.set_placeholder_text("de:09162:530");
     contentBox->add(mvgLocation);
+    Gtk::Label* mvgDestRegexLabel = Gtk::make_managed<Gtk::Label>();
+    mvgDestRegexLabel->set_text("Destination regex:");
+    mvgDestRegexLabel->set_margin_top(10);
+    mvgDestRegexLabel->set_halign(Gtk::Align::ALIGN_START);
+    contentBox->add(*mvgDestRegexLabel);
+    mvgDestRegex.set_placeholder_text("Garching, Forschungszentrum");
+    contentBox->add(mvgDestRegex);
+    contentBox->add(mvgDestRegexCBtn);
 
     // Weather:
     Gtk::Label* weatherSectionLabel = Gtk::make_managed<Gtk::Label>();
@@ -110,6 +118,8 @@ void SettingsWidget::load_settings() {
     mvgSbahnCBtn.set_active(settings->mvgSBahnEnabled);
     mvgTramCBtn.set_active(settings->mvgTramEnabled);
     mvgLocation.set_text(settings->mvgLocation);
+    mvgDestRegex.set_text(settings->mvgDestRegex);
+    mvgDestRegexCBtn.set_active(settings->mvgDestRegexEnabled);
 
     weatherLat.set_text(settings->weatherLat);
     weatherLong.set_text(settings->weatherLong);
@@ -125,6 +135,8 @@ void SettingsWidget::save_settings() {
     settings->mvgSBahnEnabled = mvgSbahnCBtn.get_active();
     settings->mvgTramEnabled = mvgTramCBtn.get_active();
     settings->mvgLocation = mvgLocation.get_text();
+    settings->mvgDestRegex = mvgDestRegex.get_text();
+    settings->mvgDestRegexEnabled = mvgDestRegexCBtn.get_active();
 
     settings->weatherLat = weatherLat.get_text();
     settings->weatherLong = weatherLong.get_text();

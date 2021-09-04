@@ -20,6 +20,8 @@ struct SettingsData {
     bool mvgTramEnabled = true;
     bool mvgSBahnEnabled = true;
     bool mvgUBahnEnabled = true;
+    std::string mvgDestRegex{"Garching, Forschungszentrum"};
+    bool mvgDestRegexEnabled = true;
 
     /**
      * The open weather map location for the weather forecast. 

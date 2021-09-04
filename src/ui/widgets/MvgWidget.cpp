@@ -6,7 +6,9 @@
 #include "logger/Logger.hpp"
 #include <backend/storage/Settings.hpp>
 #include <cassert>
+#include <cstddef>
 #include <memory>
+#include <optional>
 #include <thread>
 #include <vector>
 #include <gtkmm/checkbutton.h>
@@ -14,6 +16,7 @@
 #include <gtkmm/flowbox.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/scrolledwindow.h>
+#include <re2/re2.h>
 #include <spdlog/spdlog.h>
 
 namespace ui::widgets {
@@ -46,10 +49,19 @@ void MvgWidget::update_departures_ui() {
     }
     departureWidgets.clear();
 
+    std::optional<re2::RE2> reg = std::nullopt;
+    backend::storage::Settings* settings = backend::storage::get_settings_instance();
+    if (settings->data.mvgDestRegexEnabled) {
+        reg.emplace(settings->data.mvgDestRegex);
+    }
+
     // Add new items:
     bool first = true;
     departuresMutex.lock();
     for (const std::shared_ptr<backend::mvg::Departure>& departure : departures) {
+        if (settings->data.mvgDestRegexEnabled && !re2::RE2::FullMatch(departure->destination, *reg)) {
+            continue;
+        }
         departureWidgets.emplace_back(departure);
         DepartureWidget* depW = &departureWidgets.back();
         departureslistBox.add(*depW);

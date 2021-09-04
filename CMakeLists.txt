@@ -79,6 +79,7 @@ clear_variable(DESTINATION CMAKE_BUILD_TYPE BACKUP CMAKE_BUILD_TYPE_BKP REPLACE 
 conan_cmake_run(REQUIRES catch2/2.13.4
                          nlohmann_json/3.9.1
                          spdlog/1.8.5
+                         re2/20210601
                 GENERATORS cmake_find_package
                 BUILD missing)
 
@@ -92,6 +93,7 @@ conan_cmake_install(PATH_OR_REFERENCE .
 find_package(Catch2 REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(re2 REQUIRED)
 
 FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/whoshuu/cpr.git)
 set(CPR_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)

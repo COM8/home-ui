@@ -12,6 +12,8 @@ void to_json(nlohmann::json& j, const SettingsData& d) {
         {"mvgSBahnEnabled", d.mvgSBahnEnabled},
         {"mvgUBahnEnabled", d.mvgUBahnEnabled},
         {"mvgTramEnabled", d.mvgTramEnabled},
+        {"mvgDestRegex", d.mvgDestRegex},
+        {"mvgDestRegexEnabled", d.mvgDestRegexEnabled},
 
         {"weatherLat", d.weatherLat},
         {"weatherLong", d.weatherLong},
@@ -31,6 +33,8 @@ void from_json(const nlohmann::json& j, SettingsData& d) {
     j.at("mvgSBahnEnabled").get_to(d.mvgSBahnEnabled);
     j.at("mvgUBahnEnabled").get_to(d.mvgUBahnEnabled);
     j.at("mvgTramEnabled").get_to(d.mvgTramEnabled);
+    j.at("mvgDestRegex").get_to(d.mvgDestRegex);
+    j.at("mvgDestRegexEnabled").get_to(d.mvgDestRegexEnabled);
 
     j.at("weatherLat").get_to(d.weatherLat);
     j.at("weatherLong").get_to(d.weatherLong);
