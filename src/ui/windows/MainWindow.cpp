@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui/utils/UiUtils.hpp"
 #include <memory>
+#include <gtkmm/enums.h>
 #include <spdlog/spdlog.h>
 
 namespace ui::windows {
@@ -60,8 +61,29 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     // Actions:
     Gtk::Box* leftBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
     mainBox->add(*leftBox);
+    leftBox->set_homogeneous(false);
+    leftBox->set_vexpand(true);
     leftBox->add(actions);
-    leftBox->pack_end(deviceStatus);
+    Gtk::Box* leftBottomBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    leftBox->pack_end(*leftBottomBox);
+    leftBottomBox->add(deviceStatus);
+    leftBottomBox->set_valign(Gtk::Align::ALIGN_END);
+    deviceStatus.set_valign(Gtk::Align::ALIGN_END);
+
+    // Quick actions:
+    leftBottomBox->add(quickActionsBox);
+    quickActionsBox.set_halign(Gtk::Align::ALIGN_CENTER);
+    quickActionsBox.set_valign(Gtk::Align::ALIGN_END);
+    quickActionsBox.set_margin_bottom(10);
+    quickActionsBox.add(fullscreenBtn);
+    fullscreenBtn.set_image_from_icon_name("view-fullscreen", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
+    fullscreenBtn.set_tooltip_text("Toggle fullscreen");
+    fullscreenBtn.signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_toggle_full_screen_clicked));
+    quickActionsBox.add(cursorBtn);
+    cursorBtn.set_image_from_icon_name("input-mouse", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
+    cursorBtn.set_tooltip_text("Toggle cursor visibility");
+    cursorBtn.set_margin_start(10);
+    cursorBtn.signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_toggle_cursor_clicked));
 
     Gtk::Box* rightBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
     rightBox->set_homogeneous(true);
@@ -97,9 +119,25 @@ void MainWindow::on_inspector_clicked() {
     gtk_window_set_interactive_debugging(true);
 }
 
-void MainWindow::on_full_screen_clicked() {
-    fullscreen();
-}
+void MainWindow::on_full_screen_clicked() { fullscreen(); }
+
+void MainWindow::on_toggle_full_screen_clicked() {
+    if (inFullScreen) {
+        unfullscreen();
+        inFullScreen = false;
+    } else {
+        fullscreen();
+        inFullScreen = true;
+    }
+};
+
+void MainWindow::on_toggle_cursor_clicked() {
+    if (cursorHidden) {
+        show_cursor();
+    } else {
+        hide_cursor();
+    }
+};
 
 bool MainWindow::on_key_pressed(GdkEventKey* event) {
     if (event->keyval == GDK_KEY_Escape && inFullScreen) {

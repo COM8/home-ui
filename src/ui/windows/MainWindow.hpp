@@ -6,6 +6,9 @@
 #include "ui/widgets/SettingsWidget.hpp"
 #include "ui/widgets/WeatherWidget.hpp"
 #include <gtkmm.h>
+#include <gtkmm/box.h>
+#include <gtkmm/button.h>
+#include <gtkmm/enums.h>
 
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
@@ -19,6 +22,9 @@ class MainWindow : public Gtk::Window {
     widgets::ActionsWidget actions{};
     widgets::DeviceStatusWidget deviceStatus{};
     widgets::SettingsWidget settings{};
+    Gtk::Button fullscreenBtn{};
+    Gtk::Button cursorBtn{};
+    Gtk::Box quickActionsBox{Gtk::Orientation::ORIENTATION_HORIZONTAL};
 
  public:
     MainWindow();
@@ -38,6 +44,8 @@ class MainWindow : public Gtk::Window {
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
     void on_full_screen_clicked();
+    void on_toggle_full_screen_clicked();
+    void on_toggle_cursor_clicked();
     bool on_window_state_changed(GdkEventWindowState* state);
     bool on_key_pressed(GdkEventKey* event);
 };
