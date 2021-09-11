@@ -9,6 +9,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
+#include <gtkmm/scalebutton.h>
 
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
@@ -24,6 +25,8 @@ class MainWindow : public Gtk::Window {
     widgets::SettingsWidget settings{};
     Gtk::Button fullscreenBtn{};
     Gtk::Button cursorBtn{};
+    Gtk::Button screenSaverBtn{};
+    Gtk::ScaleButton screenBrightnessBtn;
     Gtk::Box quickActionsBox{Gtk::Orientation::ORIENTATION_HORIZONTAL};
 
  public:
@@ -46,6 +49,8 @@ class MainWindow : public Gtk::Window {
     void on_full_screen_clicked();
     void on_toggle_full_screen_clicked();
     void on_toggle_cursor_clicked();
+    static void on_screen_saver_clicked();
+    static void on_screen_brightness_value_changed(double value);
     bool on_window_state_changed(GdkEventWindowState* state);
     bool on_key_pressed(GdkEventKey* event);
 };

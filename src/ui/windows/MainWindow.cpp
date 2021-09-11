@@ -1,11 +1,14 @@
 #include "MainWindow.hpp"
+#include "backend/systemUtils/SystemUtils.hpp"
 #include "ui/utils/UiUtils.hpp"
+#include <cstdint>
 #include <memory>
+#include <gtkmm/adjustment.h>
 #include <gtkmm/enums.h>
 #include <spdlog/spdlog.h>
 
 namespace ui::windows {
-MainWindow::MainWindow() {
+MainWindow::MainWindow() : screenBrightnessBtn(Gtk::BuiltinIconSize::ICON_SIZE_DIALOG, 32, 255, 1) {
     prep_window();
 }
 
@@ -84,6 +87,17 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     cursorBtn.set_tooltip_text("Toggle cursor visibility");
     cursorBtn.set_margin_start(10);
     cursorBtn.signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_toggle_cursor_clicked));
+    quickActionsBox.add(screenSaverBtn);
+    screenSaverBtn.set_image_from_icon_name("preferences-desktop-screensaver", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
+    screenSaverBtn.set_tooltip_text("Enable screen saver");
+    screenSaverBtn.set_margin_start(10);
+    screenSaverBtn.signal_clicked().connect(sigc::ptr_fun(&MainWindow::on_screen_saver_clicked));
+    quickActionsBox.add(screenBrightnessBtn);
+    screenBrightnessBtn.set_image_from_icon_name("display-brightness", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
+    screenBrightnessBtn.set_tooltip_text("Change the screen brightness");
+    screenBrightnessBtn.set_margin_start(10);
+    screenBrightnessBtn.set_value(static_cast<double>(backend::systemUtils::get_screen_brightness()));
+    screenBrightnessBtn.signal_value_changed().connect(sigc::ptr_fun(&MainWindow::on_screen_brightness_value_changed));
 
     Gtk::Box* rightBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
     rightBox->set_homogeneous(true);
@@ -138,6 +152,19 @@ void MainWindow::on_toggle_cursor_clicked() {
         hide_cursor();
     }
 };
+
+void MainWindow::on_screen_saver_clicked() {
+    backend::systemUtils::activate_screensaver();
+};
+
+void MainWindow::on_screen_brightness_value_changed(double value) {
+    if (value < 32) {
+        value = 32;
+    } else if (value > 255) {
+        value = 255;
+    }
+    backend::systemUtils::set_screen_brightness(static_cast<uint8_t>(value));
+}
 
 bool MainWindow::on_key_pressed(GdkEventKey* event) {
     if (event->keyval == GDK_KEY_Escape && inFullScreen) {
