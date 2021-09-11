@@ -6,7 +6,9 @@
 #include <thread>
 #include <gtkmm.h>
 #include <gtkmm/button.h>
+#include <gtkmm/colorbutton.h>
 #include <gtkmm/label.h>
+#include <gtkmm/scalebutton.h>
 
 namespace ui::widgets {
 class LightWidget : public Gtk::Box {
@@ -14,6 +16,9 @@ class LightWidget : public Gtk::Box {
 
     Gtk::Button toggleBtn{"Toggle"};
     Gtk::Label nameLabel{};
+    Gtk::ColorButton colorBtn{};
+    Gtk::ScaleButton brightnessBtn;
+    Gtk::ScaleButton colorTempBtn;
 
     bool shouldRun{false};
     std::unique_ptr<std::thread> updateThread{nullptr};
@@ -42,5 +47,8 @@ class LightWidget : public Gtk::Box {
     //-----------------------------Events:-----------------------------
     void on_toggle_clicked();
     void on_notification_from_update_thread();
+    void on_brightness_value_changed(double value);
+    void on_color_temp_value_changed(double value);
+    void on_color_set();
 };
 }  // namespace ui::widgets
