@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <fstream>
+#include <string>
 #include <spdlog/spdlog.h>
 
 namespace backend::systemUtils {
@@ -16,11 +17,11 @@ uint8_t get_screen_brightness() {
     std::ifstream file("/sys/class/backlight/rpi_backlight/brightness");
     if (file.is_open()) {
         try {
-            uint8_t brightness = 128;
-            if (file >> brightness) {
+            std::string brightnessStr;
+            if (file >> brightnessStr) {
                 file.close();
-                SPDLOG_DEBUG("Read screen brightness: {}", brightness);
-                return brightness;
+                SPDLOG_DEBUG("Read screen brightness: {}", brightnessStr);
+                return static_cast<uint8_t>(std::strtoul(brightnessStr.c_str(), nullptr, 10));
             }
             SPDLOG_ERROR("Invalid screen brightness file content.");
         } catch (const std::exception& e) {
@@ -36,7 +37,7 @@ void set_screen_brightness(uint8_t brightness) {
     std::ofstream file("/sys/class/backlight/rpi_backlight/brightness");
     if (file.is_open()) {
         try {
-            if (file << brightness) {
+            if (file << std::to_string(brightness)) {
                 file.close();
                 SPDLOG_DEBUG("Wrote screen brightness: {}", brightness);
                 return;
