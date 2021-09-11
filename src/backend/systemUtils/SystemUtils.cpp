@@ -21,7 +21,7 @@ uint8_t get_screen_brightness() {
             if (file >> brightnessStr) {
                 file.close();
                 SPDLOG_DEBUG("Read screen brightness: {}", brightnessStr);
-                return static_cast<uint8_t>(std::strtoul(brightnessStr.c_str(), nullptr, 10));
+                return static_cast<uint8_t>(std::stoul(brightnessStr));
             }
             SPDLOG_ERROR("Invalid screen brightness file content.");
         } catch (const std::exception& e) {
