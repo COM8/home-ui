@@ -35,6 +35,7 @@ MvgWidget::~MvgWidget() {
 void MvgWidget::prep_widget() {
     Gtk::ScrolledWindow* scroll = Gtk::make_managed<Gtk::ScrolledWindow>();
     departureslistBox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
+    departureslistBox.override_background_color(Gdk::RGBA("#00000000"));  // Transparent background
     scroll->add(departureslistBox);
     scroll->set_vexpand(true);
     scroll->set_hexpand(true);
