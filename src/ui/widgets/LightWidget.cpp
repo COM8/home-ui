@@ -36,6 +36,7 @@ void LightWidget::prep_widget() {
 
     // Color:
     Gtk::Box* colorBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+    colorBox->set_halign(Gtk::Align::ALIGN_CENTER);
     add(*colorBox);
     colorBox->add(colorBtn);
     colorBtn.signal_color_set().connect(sigc::mem_fun(this, &LightWidget::on_color_set));
