@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace ui::widgets {
-DeviceStatusWidget::DeviceStatusWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL) {
+DeviceStatusWidget::DeviceStatusWidget() : Gtk::Box(Gtk::Orientation::VERTICAL) {
     prep_widget();
     disp.connect(sigc::mem_fun(*this, &DeviceStatusWidget::on_notification_from_update_thread));
     start_thread();
@@ -22,19 +22,18 @@ DeviceStatusWidget::~DeviceStatusWidget() {
 }
 
 void DeviceStatusWidget::prep_widget() {
-    set_valign(Gtk::Align::ALIGN_END);
-    set_halign(Gtk::Align::ALIGN_FILL);
+    set_valign(Gtk::Align::END);
+    set_halign(Gtk::Align::FILL);
     set_margin_top(10);
 
-    add(devicesBox);
-    devicesBox.set_halign(Gtk::Align::ALIGN_CENTER);
+    append(devicesBox);
+    devicesBox.set_halign(Gtk::Align::CENTER);
 }
 
 void DeviceStatusWidget::update_available_devices_ui() {
     // Clear existing items:
-    std::vector<Gtk::Widget*> remChildren = devicesBox.get_children();
-    for (Gtk::Widget* child : remChildren) {
-        devicesBox.remove(*child);
+    for (Gtk::Widget* remChildren = devicesBox.get_first_child(); remChildren; remChildren = remChildren->get_next_sibling()) {
+        devicesBox.remove(*remChildren);
     }
     deviceLabels.clear();
 
@@ -49,10 +48,9 @@ void DeviceStatusWidget::update_available_devices_ui() {
         devLabel->set_margin_end(5);
         devLabel->set_margin_top(5);
         devLabel->set_margin_bottom(5);
-        devicesBox.add(*devLabel);
+        devicesBox.append(*devLabel);
     }
     devicesAvailMutex.unlock();
-    devicesBox.show_all();
 }
 
 void DeviceStatusWidget::update_available_devices() {

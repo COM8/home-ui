@@ -24,7 +24,7 @@ class WeatherWidget : public Gtk::Box {
     Gtk::Image todayImage;
     Gtk::Label todayDescription;
     Gtk::Label todayMinMaxTemp;
-    Gtk::Box courseBox{Gtk::Orientation::ORIENTATION_HORIZONTAL};
+    Gtk::Box courseBox{Gtk::Orientation::HORIZONTAL};
     Gtk::Label suggestedOutfit;
 
     std::vector<Gtk::Box> hourBoxes{};

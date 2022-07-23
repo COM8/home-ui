@@ -1,9 +1,17 @@
 #include "UiContext.hpp"
+#include <adwaita.h>
 
 namespace ui {
 int UiContext::run(int argc, char** argv) {
+    // Initialize Adwaita:
+    adw_init();
+
     // Create the main GTK application:
     app = Gtk::Application::create("org.home_ui");
+
+    // Add icon paths:
+    Gtk::IconTheme::get_for_display(Gdk::Display::get_default())->add_resource_path("/ui/icons/scalable/action");
+
     app->signal_startup().connect([&] {
         add_main_window();
     });

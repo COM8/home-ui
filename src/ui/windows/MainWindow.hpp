@@ -14,7 +14,6 @@
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
  private:
-    bool inFullScreen{false};
     bool cursorHidden{false};
     Gtk::Stack* stack{nullptr};
     Gtk::MenuButton* viewMoreBtn{nullptr};
@@ -27,7 +26,7 @@ class MainWindow : public Gtk::Window {
     Gtk::Button cursorBtn{};
     Gtk::Button screenSaverBtn{};
     Gtk::ScaleButton screenBrightnessBtn;
-    Gtk::Box quickActionsBox{Gtk::Orientation::ORIENTATION_HORIZONTAL};
+    Gtk::Box quickActionsBox{Gtk::Orientation::HORIZONTAL};
 
  public:
     MainWindow();
@@ -51,7 +50,8 @@ class MainWindow : public Gtk::Window {
     void on_toggle_cursor_clicked();
     static void on_screen_saver_clicked();
     static void on_screen_brightness_value_changed(double value);
-    bool on_window_state_changed(GdkEventWindowState* state);
-    bool on_key_pressed(GdkEventKey* event);
+    void on_window_state_changed();
+    bool on_key_pressed(guint keyVal, guint keyCode, Gdk::ModifierType modifier);
+    void on_full_screen_changed();
 };
 }  // namespace ui::windows

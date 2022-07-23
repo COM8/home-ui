@@ -16,6 +16,6 @@ Glib::RefPtr<Gtk::CssProvider> get_css_provider() {
 Glib::RefPtr<Gdk::Pixbuf> scale_image(const Glib::RefPtr<Gdk::Pixbuf>& pixBuf, double factor) {
     int width = static_cast<int>(std::round(static_cast<double>(pixBuf->get_width()) * factor));
     int height = static_cast<int>(std::round(static_cast<double>(pixBuf->get_height()) * factor));
-    return pixBuf->scale_simple(width, height, Gdk::InterpType::INTERP_BILINEAR);
+    return pixBuf->scale_simple(width, height, Gdk::InterpType::BILINEAR);
 }
 }  // namespace ui

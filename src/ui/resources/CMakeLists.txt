@@ -21,4 +21,13 @@ set(RESOURCE_DEPS ${CMAKE_CURRENT_SOURCE_DIR}/theme.css
                   ${CMAKE_CURRENT_SOURCE_DIR}/openWeather/4x/11d.png
                   ${CMAKE_CURRENT_SOURCE_DIR}/openWeather/4x/13d.png
                   ${CMAKE_CURRENT_SOURCE_DIR}/openWeather/4x/50d.png
+
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/display-brightness-high-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/keyboard-brightness-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/mouse-wireless-disabled-filled-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/mouse-wireless-filled-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/screen-privacy-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/sun-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/window-grow-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/window-shrink-symbolic.svg
      PARENT_SCOPE)

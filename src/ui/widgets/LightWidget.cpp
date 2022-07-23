@@ -4,17 +4,17 @@
 #include <chrono>
 #include <cstdint>
 #include <string>
-#include <gdkmm/color.h>
 #include <gdkmm/pixbuf.h>
+#include <gdkmm/rgba.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/orientable.h>
 
 namespace ui::widgets {
-LightWidget::LightWidget(std::string&& entity) : Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL), entity(std::move(entity)),
-                                                 brightnessBtn(Gtk::BuiltinIconSize::ICON_SIZE_DIALOG, 0, 255, 1),
-                                                 colorTempBtn(Gtk::BuiltinIconSize::ICON_SIZE_DIALOG, 1, 127, 1) {
+LightWidget::LightWidget(std::string&& entity) : Gtk::Box(Gtk::Orientation::VERTICAL), entity(std::move(entity)),
+                                                 brightnessBtn(0, 255, 1),
+                                                 colorTempBtn(1, 127, 1) {
     prep_widget();
     disp.connect(sigc::mem_fun(*this, &LightWidget::on_notification_from_update_thread));
     start_thread();
@@ -27,29 +27,29 @@ LightWidget::~LightWidget() {
 }
 
 void LightWidget::prep_widget() {
-    add(nameLabel);
+    append(nameLabel);
     nameLabel.set_markup("<span font_weight='bold'>" + entity + "</span>");
 
-    add(toggleBtn);
-    toggleBtn.signal_clicked().connect(sigc::mem_fun(this, &LightWidget::on_toggle_clicked));
+    append(toggleBtn);
+    toggleBtn.signal_clicked().connect(sigc::mem_fun(*this, &LightWidget::on_toggle_clicked));
     toggleBtn.set_margin_top(5);
 
     // Color:
-    Gtk::Box* colorBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-    colorBox->set_halign(Gtk::Align::ALIGN_CENTER);
-    add(*colorBox);
-    colorBox->add(colorBtn);
-    colorBtn.signal_color_set().connect(sigc::mem_fun(this, &LightWidget::on_color_set));
-    colorBox->add(brightnessBtn);
+    Gtk::Box* colorBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL);
+    colorBox->set_halign(Gtk::Align::CENTER);
+    append(*colorBox);
+    colorBox->append(colorBtn);
+    colorBtn.signal_color_set().connect(sigc::mem_fun(*this, &LightWidget::on_color_set));
+    colorBox->append(brightnessBtn);
     brightnessBtn.set_margin_start(10);
-    brightnessBtn.set_image_from_icon_name("keyboard-brightness-symbolic", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
+    // brightnessBtn.set_image_from_icon_name("keyboard-brightness-symbolic", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
     brightnessBtn.set_tooltip_text("Change the light brightness");
-    brightnessBtn.signal_value_changed().connect(sigc::mem_fun(this, &LightWidget::on_brightness_value_changed));
-    colorBox->add(colorTempBtn);
+    brightnessBtn.signal_value_changed().connect(sigc::mem_fun(*this, &LightWidget::on_brightness_value_changed));
+    colorBox->append(colorTempBtn);
     colorTempBtn.set_margin_start(10);
-    colorTempBtn.set_image_from_icon_name("weather-clear", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
+    // colorTempBtn.set_image_from_icon_name("weather-clear", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
     colorTempBtn.set_tooltip_text("Change the color temperature");
-    colorTempBtn.signal_value_changed().connect(sigc::mem_fun(this, &LightWidget::on_color_temp_value_changed));
+    colorTempBtn.signal_value_changed().connect(sigc::mem_fun(*this, &LightWidget::on_color_temp_value_changed));
 }
 
 void LightWidget::toggle() {
@@ -132,11 +132,11 @@ void LightWidget::on_color_temp_value_changed(double value) {
 }
 
 void LightWidget::on_color_set() {
-    Gdk::Color color = colorBtn.get_color();
-    gdouble h = 0;
-    gdouble s = 0;
-    gdouble v = 0;
-    gtk_rgb_to_hsv(color.get_red_p(), color.get_green_p(), color.get_blue_p(), &h, &s, &v);
+    Gdk::RGBA color = colorBtn.property_rgba();
+    float h = 0;
+    float s = 0;
+    float v = 0;
+    gtk_rgb_to_hsv(color.get_red(), color.get_green(), color.get_blue(), &h, &s, &v);
     h *= 360;
     s *= 100;
     const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);

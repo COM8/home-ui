@@ -50,11 +50,17 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 
-# gtk3 stuff
+# gtk4 stuff
+include(glib-resource-compiler)
 find_package(PkgConfig REQUIRED)
-# Additional search path since gtkmm-3.0 will usually be installed in /usr
+# Additional search path since gtkmm-4.0 will usually be installed in /usr
 set(ENV{PKG_CONFIG_PATH} "/usr/lib/pkgconfig")
-pkg_check_modules(GTKMM gtkmm-3.0>=3.22 REQUIRED IMPORTED_TARGET)
+pkg_check_modules(GTKMM gtkmm-4.0>=4.4.0 REQUIRED IMPORTED_TARGET)
+pkg_check_modules(EPOXY epoxy REQUIRED IMPORTED_TARGET)
+
+# Lib adwaita
+pkg_check_modules(ADWAITA REQUIRED libadwaita-1>=1.1.0)
+include_directories(${ADWAITA_INCLUDE_DIRS})
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
   message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
@@ -76,7 +82,7 @@ endif()
 # Prevent an unknown build type for conan:
 clear_variable(DESTINATION CMAKE_BUILD_TYPE BACKUP CMAKE_BUILD_TYPE_BKP REPLACE ${CONAN_BUILD_TYPE})
 
-conan_cmake_run(REQUIRES catch2/2.13.4
+conan_cmake_run(REQUIRES catch2/2.13.9
                          nlohmann_json/3.9.1
                          spdlog/1.8.5
                          re2/20210601
@@ -87,7 +93,7 @@ conan_cmake_autodetect(settings build_type ${CONAN_BUILD_TYPE})
 restore_variable(DESTINATION CMAKE_BUILD_TYPE BACKUP CMAKE_BUILD_TYPE_BKP)
 conan_cmake_install(PATH_OR_REFERENCE .
                     BUILD missing
-                    REMOTE conan-center
+                    REMOTE conancenter
                     SETTINGS ${settings})
 
 find_package(Catch2 REQUIRED)
@@ -95,15 +101,11 @@ find_package(nlohmann_json REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(re2 REQUIRED)
 
-FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/whoshuu/cpr.git)
+FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
+                         GIT_TAG db351ffbbadc6c4e9239daaa26e9aefa9f0ec82d) # The commit hash for 1.8.3. Replace with the latest from: https://github.com/libcpr/cpr/releases
 set(CPR_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
 set(CURL_CA_FALLBACK ON CACHE INTERNAL "" FORCE) # Workaround for failing SSL requests
-FetchContent_GetProperties(cpr)
-if(NOT cpr_POPULATED)
-  FetchContent_Populate(cpr)
-  # Do not add install targets for cpr
-  add_subdirectory(${cpr_SOURCE_DIR} ${cpr_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
+FetchContent_MakeAvailable(cpr)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 

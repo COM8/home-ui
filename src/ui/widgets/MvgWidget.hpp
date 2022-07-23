@@ -15,7 +15,7 @@ namespace ui::widgets {
 class MvgWidget : public Gtk::Box {
  private:
     Gtk::ListBox departureslistBox{};
-    Gtk::Box loadingBox{Gtk::Orientation::ORIENTATION_VERTICAL};
+    Gtk::Box loadingBox{Gtk::Orientation::VERTICAL};
 
     bool shouldRun{false};
     std::unique_ptr<std::thread> updateThread{nullptr};

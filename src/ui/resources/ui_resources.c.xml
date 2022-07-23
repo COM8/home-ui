@@ -20,5 +20,14 @@
     <file>openWeather/4x/11d.png</file>
     <file>openWeather/4x/13d.png</file>
     <file>openWeather/4x/50d.png</file>
+
+    <file preprocess="xml-stripblanks">icons/scalable/action/display-brightness-high-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/keyboard-brightness-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/mouse-wireless-disabled-filled-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/mouse-wireless-filled-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/screen-privacy-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/sun-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/window-grow-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/window-shrink-symbolic.svg</file>
   </gresource>
 </gresources>

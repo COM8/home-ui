@@ -11,7 +11,7 @@ ActionsWidget::ActionsWidget() {
 }
 
 void ActionsWidget::prep_widget() {
-    set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
+    set_selection_mode(Gtk::SelectionMode::NONE);
     set_homogeneous(true);
     set_column_spacing(10);
     set_row_spacing(10);
@@ -20,12 +20,12 @@ void ActionsWidget::prep_widget() {
     set_margin_start(10);
     set_margin_end(10);
     set_vexpand(false);
-    set_valign(Gtk::Align::ALIGN_START);
+    set_valign(Gtk::Align::START);
 
     const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
     for (const std::string& light : settings->hassLights) {
         LightWidget* lightWidget = Gtk::make_managed<LightWidget>(std::string{light});
-        add(*lightWidget);
+        append(*lightWidget);
     }
 }
 }  // namespace ui::widgets

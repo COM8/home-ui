@@ -26,8 +26,14 @@ Checks: '*,
 -llvmlibc-callee-namespace,
 -llvmlibc-restrict-system-libc-headers,
 -fuchsia-multiple-inheritance,
--cppcoreguidelines-pro-bounds-constant-array-index,
--clang-analyzer-optin.cplusplus.VirtualCall
+-hicpp-signed-bitwise,
+-misc-no-recursion,
+-readability-function-cognitive-complexity,
+-google-readability-todo,
+-altera-unroll-loops,
+-altera-id-dependent-backward-branch,
+-bugprone-easily-swappable-parameters,
+-readability-identifier-length
 '
 WarningsAsErrors: '*'
 HeaderFilterRegex: 'src/*.hpp'

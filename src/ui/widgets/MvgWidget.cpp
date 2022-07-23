@@ -12,6 +12,7 @@
 #include <thread>
 #include <vector>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/cssprovider.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/flowbox.h>
 #include <gtkmm/grid.h>
@@ -34,19 +35,23 @@ MvgWidget::~MvgWidget() {
 
 void MvgWidget::prep_widget() {
     Gtk::ScrolledWindow* scroll = Gtk::make_managed<Gtk::ScrolledWindow>();
-    departureslistBox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
-    departureslistBox.override_background_color(Gdk::RGBA("#00000000"));  // Transparent background
-    scroll->add(departureslistBox);
+    departureslistBox.set_selection_mode(Gtk::SelectionMode::NONE);
+
+    // Transparent background:
+    Glib::RefPtr<Gtk::CssProvider> provider = Gtk::CssProvider::create();
+    departureslistBox.get_style_context()->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    departureslistBox.add_css_class("transparent-background");
+
+    scroll->set_child(departureslistBox);
     scroll->set_vexpand(true);
     scroll->set_hexpand(true);
-    add(*scroll);
+    append(*scroll);
 }
 
 void MvgWidget::update_departures_ui() {
     // Clear existing items:
-    std::vector<Gtk::Widget*> remChildren = departureslistBox.get_children();
-    for (Gtk::Widget* child : remChildren) {
-        departureslistBox.remove(*child);
+    for (Gtk::Widget* remChildren = departureslistBox.get_first_child(); remChildren; remChildren = remChildren->get_next_sibling()) {
+        departureslistBox.remove(*remChildren);
     }
     departureWidgets.clear();
 
@@ -65,14 +70,13 @@ void MvgWidget::update_departures_ui() {
         }
         departureWidgets.emplace_back(departure);
         DepartureWidget* depW = &departureWidgets.back();
-        departureslistBox.add(*depW);
+        departureslistBox.append(*depW);
         if (first) {
             depW->set_margin_top(5);
             first = false;
         }
     }
     departuresMutex.unlock();
-    departureslistBox.show_all();
 }
 
 void MvgWidget::update_departures() {

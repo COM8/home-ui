@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <gtkmm/box.h>
+#include <gtkmm/cssprovider.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/label.h>
 
@@ -16,34 +17,37 @@ DepartureWidget::DepartureWidget(std::shared_ptr<backend::mvg::Departure> depart
 void DepartureWidget::prep_widget() {
     set_margin_bottom(5);
 
-    Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
     mainBox->set_margin_start(10);
     mainBox->set_margin_end(10);
-    add(*mainBox);
+    set_child(*mainBox);
 
     // Header:
-    Gtk::Box* headerBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-    mainBox->add(*headerBox);
+    Gtk::Box* headerBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL);
+    mainBox->append(*headerBox);
     Gtk::Label* label = Gtk::make_managed<Gtk::Label>(departure->label);
     label->set_width_chars(6);
     if (!departure->lineBackgroundColor.empty()) {
-        label->override_background_color(Gdk::RGBA(departure->lineBackgroundColor));
+        Glib::RefPtr<Gtk::CssProvider> provider = Gtk::CssProvider::create();
+        provider->load_from_data(".departure-background { background-image: image(" + departure->lineBackgroundColor + "); }");
+        label->get_style_context()->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        label->add_css_class("departure-background");
     }
-    headerBox->add(*label);
+    headerBox->append(*label);
     if (departure->canceled) {
         Gtk::Label* canceled = Gtk::make_managed<Gtk::Label>("❌");
         canceled->set_margin_start(10);
-        headerBox->add(*canceled);
+        headerBox->append(*canceled);
     }
     Gtk::Label* destination = Gtk::make_managed<Gtk::Label>(departure->destination);
-    destination->set_line_wrap(false);
-    destination->set_ellipsize(Pango::EllipsizeMode::ELLIPSIZE_END);
+    destination->set_single_line_mode(true);
+    destination->set_ellipsize(Pango::EllipsizeMode::END);
     destination->set_margin_start(10);
-    headerBox->add(*destination);
+    headerBox->append(*destination);
 
     // Info:
-    Gtk::Box* infoBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-    mainBox->add(*infoBox);
+    Gtk::Box* infoBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL);
+    mainBox->append(*infoBox);
     if (!departure->canceled) {
         std::string depInfoStr;
         std::chrono::system_clock::duration diff = departure->time - std::chrono::system_clock::now();
@@ -71,7 +75,7 @@ void DepartureWidget::prep_widget() {
         }
         Gtk::Label* depInfo = Gtk::make_managed<Gtk::Label>();
         depInfo->set_markup(depInfoStr);
-        infoBox->add(*depInfo);
+        infoBox->append(*depInfo);
     }
 }
 }  // namespace ui::widgets

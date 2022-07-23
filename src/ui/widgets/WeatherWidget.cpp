@@ -16,7 +16,7 @@
 #include <spdlog/spdlog.h>
 
 namespace ui::widgets {
-WeatherWidget::WeatherWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL) {
+WeatherWidget::WeatherWidget() : Gtk::Box(Gtk::Orientation::VERTICAL) {
     prep_widget();
     disp.connect(sigc::mem_fun(*this, &WeatherWidget::on_notification_from_update_thread));
     start_thread();
@@ -29,46 +29,46 @@ WeatherWidget::~WeatherWidget() {
 }
 
 void WeatherWidget::prep_widget() {
-    set_valign(Gtk::Align::ALIGN_FILL);
-    set_halign(Gtk::Align::ALIGN_FILL);
+    set_valign(Gtk::Align::FILL);
+    set_halign(Gtk::Align::FILL);
     set_margin_top(10);
 
-    Gtk::Box* todayCurrentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-    add(*todayCurrentBox);
+    Gtk::Box* todayCurrentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL);
+    append(*todayCurrentBox);
     todayCurrentBox->set_homogeneous(false);
     todayCurrentBox->set_hexpand(true);
     todayCurrentBox->set_margin_start(10);
     todayCurrentBox->set_margin_end(10);
 
     // Current:
-    Gtk::Box* currentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    todayCurrentBox->pack_start(*currentBox);
-    currentBox->set_halign(Gtk::Align::ALIGN_CENTER);
+    Gtk::Box* currentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
+    todayCurrentBox->append(*currentBox);
+    currentBox->set_halign(Gtk::Align::CENTER);
     Gtk::Label* currentLabel = Gtk::make_managed<Gtk::Label>();
-    currentBox->add(*currentLabel);
+    currentBox->append(*currentLabel);
     currentLabel->set_markup("<span font_weight='bold'>Current</span>");
-    currentBox->add(currentImage);
-    currentImage.set_halign(Gtk::Align::ALIGN_CENTER);
-    currentBox->add(currentDescription);
-    currentBox->add(currentTemp);
+    currentBox->append(currentImage);
+    currentImage.set_halign(Gtk::Align::CENTER);
+    currentBox->append(currentDescription);
+    currentBox->append(currentTemp);
 
     // Suggested Outfit:
-    suggestedOutfit.set_valign(Gtk::Align::ALIGN_CENTER);
+    suggestedOutfit.set_valign(Gtk::Align::CENTER);
     suggestedOutfit.set_margin_start(10);
     suggestedOutfit.set_margin_end(10);
-    todayCurrentBox->set_center_widget(suggestedOutfit);
+    todayCurrentBox->append(suggestedOutfit);
 
     // Today:
-    Gtk::Box* todayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    todayCurrentBox->pack_end(*todayBox);
-    todayBox->set_halign(Gtk::Align::ALIGN_CENTER);
+    Gtk::Box* todayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
+    todayCurrentBox->append(*todayBox);
+    todayBox->set_halign(Gtk::Align::CENTER);
     Gtk::Label* todayLabel = Gtk::make_managed<Gtk::Label>();
-    todayBox->add(*todayLabel);
+    todayBox->append(*todayLabel);
     todayLabel->set_markup("<span font_weight='bold'>Today</span>");
-    todayImage.set_halign(Gtk::Align::ALIGN_CENTER);
-    todayBox->add(todayImage);
-    todayBox->add(todayDescription);
-    todayBox->add(todayMinMaxTemp);
+    todayImage.set_halign(Gtk::Align::CENTER);
+    todayBox->append(todayImage);
+    todayBox->append(todayDescription);
+    todayBox->append(todayMinMaxTemp);
 
     // Course:
     courseBox.set_homogeneous(true);
@@ -77,8 +77,8 @@ void WeatherWidget::prep_widget() {
     Gtk::ScrolledWindow* courseScroll = Gtk::make_managed<Gtk::ScrolledWindow>();
     courseScroll->set_vexpand(true);
     courseScroll->set_hexpand(true);
-    courseScroll->add(courseBox);
-    add(*courseScroll);
+    courseScroll->set_child(courseBox);
+    append(*courseScroll);
 }
 
 void WeatherWidget::update_weather_ui() {
@@ -97,7 +97,7 @@ void WeatherWidget::update_weather_ui() {
     currentTemp.set_text(std::to_string(static_cast<int>(std::round(forecast->temp))) + "°C (" + std::to_string(static_cast<int>(std::round(forecast->feelsLike))) + "°C)");
 
     // Today:
-    const backend::weather::Day* todayWeather = &(forecast->daily[0]);
+    const backend::weather::Day* todayWeather = (forecast->daily).data();
     Glib::RefPtr<Gdk::Pixbuf> todayImagePixBuf = Gdk::Pixbuf::create_from_resource("/ui/openWeather/4x/" + todayWeather->weather.icon + ".png");
     todayImagePixBuf = scale_image(todayImagePixBuf, 0.6);
     todayImage.set(todayImagePixBuf);
@@ -121,9 +121,8 @@ void WeatherWidget::update_weather_ui() {
 
     // Course:
     // Clear existing items:
-    std::vector<Gtk::Widget*> remChildren = courseBox.get_children();
-    for (Gtk::Widget* child : remChildren) {
-        courseBox.remove(*child);
+    for (Gtk::Widget* remChildren = courseBox.get_first_child(); remChildren; remChildren = remChildren->get_next_sibling()) {
+        courseBox.remove(*remChildren);
     }
     hourBoxes.clear();
 
@@ -141,23 +140,22 @@ void WeatherWidget::update_weather_ui() {
             continue;
         }
 
-        hourBoxes.emplace_back(Gtk::Orientation::ORIENTATION_VERTICAL);
+        hourBoxes.emplace_back(Gtk::Orientation::VERTICAL);
         Gtk::Box* hourBox = &hourBoxes.back();
-        courseBox.add(*hourBox);
-        hourBox->set_margin_left(5);
+        courseBox.append(*hourBox);
+        hourBox->set_margin_start(5);
         Glib::RefPtr<Gdk::Pixbuf> pixBuf = Gdk::Pixbuf::create_from_resource("/ui/openWeather/4x/" + hour.weather.icon + ".png");
         pixBuf = scale_image(pixBuf, 0.2);
         Gtk::Image* hourImage = Gtk::make_managed<Gtk::Image>(pixBuf);
-        hourBox->add(*hourImage);
+        hourBox->append(*hourImage);
         Gtk::Label* hourTempLabel = Gtk::make_managed<Gtk::Label>();
-        hourBox->add(*hourTempLabel);
+        hourBox->append(*hourTempLabel);
         hourTempLabel->set_markup("<span font_weight='bold' size='small'>" + std::to_string(static_cast<int>(std::round(hour.temp))) + "°C" + "</span>");
         Gtk::Label* hourLabel = Gtk::make_managed<Gtk::Label>();
-        hourBox->add(*hourLabel);
+        hourBox->append(*hourLabel);
         hourLabel->set_markup("<span font_weight='bold'>" + std::to_string(weatherHour) + "</span>");
     }
     forecastMutex.unlock();
-    courseBox.show_all();
 }
 
 uint8_t WeatherWidget::get_hour_of_the_day(const std::chrono::system_clock::time_point& tp) {
