@@ -71,7 +71,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     leftBox->set_vexpand(true);
     leftBox->append(actions);
     Gtk::Box* leftBottomBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
-    leftBox->insert_at_end(*leftBottomBox);
+    leftBox->append(*leftBottomBox);
     leftBottomBox->append(deviceStatus);
     leftBottomBox->set_valign(Gtk::Align::END);
     deviceStatus.set_valign(Gtk::Align::END);
