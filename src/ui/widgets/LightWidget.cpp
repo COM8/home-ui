@@ -42,12 +42,12 @@ void LightWidget::prep_widget() {
     colorBtn.signal_color_set().connect(sigc::mem_fun(*this, &LightWidget::on_color_set));
     colorBox->append(brightnessBtn);
     brightnessBtn.set_margin_start(10);
-    // brightnessBtn.set_image_from_icon_name("keyboard-brightness-symbolic", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
+    brightnessBtn.set_icons({"keyboard-brightness-symbolic"});
     brightnessBtn.set_tooltip_text("Change the light brightness");
     brightnessBtn.signal_value_changed().connect(sigc::mem_fun(*this, &LightWidget::on_brightness_value_changed));
     colorBox->append(colorTempBtn);
     colorTempBtn.set_margin_start(10);
-    // colorTempBtn.set_image_from_icon_name("weather-clear", Gtk::BuiltinIconSize::ICON_SIZE_DIALOG);
+    colorTempBtn.set_icons({"temperature-symbolic"});
     colorTempBtn.set_tooltip_text("Change the color temperature");
     colorTempBtn.signal_value_changed().connect(sigc::mem_fun(*this, &LightWidget::on_color_temp_value_changed));
 }

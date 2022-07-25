@@ -31,23 +31,11 @@ void MainWindow::prep_window() {
 
     // Header bar:
     Gtk::HeaderBar* headerBar = Gtk::make_managed<Gtk::HeaderBar>();
-    viewMoreBtn = Gtk::make_managed<Gtk::MenuButton>();
-    viewMoreBtn->set_icon_name("open-menu");
-    Gtk::PopoverMenu* viewMorePopover = Gtk::make_managed<Gtk::PopoverMenu>();
-    Gtk::Stack* viewMoreMenuStack = Gtk::make_managed<Gtk::Stack>();
-    Gtk::Box* viewMoreMenuBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
-    Gtk::Button* fullscreenBtn = Gtk::make_managed<Gtk::Button>("Fullscreen");
-    fullscreenBtn->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_full_screen_clicked));
-    viewMoreMenuBox->append(*fullscreenBtn);
-    Gtk::Button* inspectorBtn = Gtk::make_managed<Gtk::Button>("Inspector");
-    inspectorBtn->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_inspector_clicked));
-    viewMoreMenuBox->append(*inspectorBtn);
-    Gtk::Button* aboutBtn = Gtk::make_managed<Gtk::Button>("About");
-    viewMoreMenuBox->append(*aboutBtn);
-    viewMoreMenuStack->add(*viewMoreMenuBox, "main");
-    viewMorePopover->set_child(*viewMoreMenuStack);
-    viewMoreBtn->set_popover(*viewMorePopover);
-    headerBar->pack_end(*viewMoreBtn);
+
+    inspectorBtn.set_label("🐞");
+    inspectorBtn.set_tooltip_text("Inspector");
+    inspectorBtn.signal_clicked().connect(&MainWindow::on_inspector_clicked);
+    headerBar->pack_end(inspectorBtn);
 
     Gtk::StackSwitcher* stackSwitcher = Gtk::make_managed<Gtk::StackSwitcher>();
     stackSwitcher->set_stack(*stack);
@@ -66,6 +54,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
 
     // Actions:
     Gtk::Box* leftBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
+    leftBox->set_vexpand(true);
     mainBox->append(*leftBox);
     leftBox->set_homogeneous(false);
     leftBox->set_vexpand(true);
@@ -73,6 +62,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     Gtk::Box* leftBottomBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
     leftBox->append(*leftBottomBox);
     leftBottomBox->append(deviceStatus);
+    leftBottomBox->set_vexpand(true);
     leftBottomBox->set_valign(Gtk::Align::END);
     deviceStatus.set_valign(Gtk::Align::END);
 
@@ -96,7 +86,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     screenSaverBtn.set_margin_start(10);
     screenSaverBtn.signal_clicked().connect(sigc::ptr_fun(&MainWindow::on_screen_saver_clicked));
     quickActionsBox.append(screenBrightnessBtn);
-    // screenBrightnessBtn.set_icon_name("display-brightness-high-symbolic");
+    screenBrightnessBtn.set_icons({"display-brightness-high-symbolic"});
     screenBrightnessBtn.set_tooltip_text("Change the screen brightness");
     screenBrightnessBtn.set_margin_start(10);
     screenBrightnessBtn.set_value(static_cast<double>(backend::systemUtils::get_screen_brightness()));
@@ -134,7 +124,6 @@ void MainWindow::show_cursor() {
 
 //-----------------------------Events:-----------------------------
 void MainWindow::on_inspector_clicked() {
-    viewMoreBtn->get_popover()->popdown();
     gtk_window_set_interactive_debugging(true);
 }
 

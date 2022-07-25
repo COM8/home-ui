@@ -16,7 +16,7 @@ class MainWindow : public Gtk::Window {
  private:
     bool cursorHidden{false};
     Gtk::Stack* stack{nullptr};
-    Gtk::MenuButton* viewMoreBtn{nullptr};
+    Gtk::Button inspectorBtn;
     widgets::MvgWidget mvg{};
     widgets::WeatherWidget weather{};
     widgets::ActionsWidget actions{};
@@ -44,7 +44,7 @@ class MainWindow : public Gtk::Window {
     void show_cursor();
 
     //-----------------------------Events:-----------------------------
-    void on_inspector_clicked();
+    static void on_inspector_clicked();
     void on_full_screen_clicked();
     void on_toggle_full_screen_clicked();
     void on_toggle_cursor_clicked();

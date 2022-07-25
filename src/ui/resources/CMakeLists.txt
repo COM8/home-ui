@@ -30,4 +30,5 @@ set(RESOURCE_DEPS ${CMAKE_CURRENT_SOURCE_DIR}/theme.css
                   ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/sun-symbolic.svg
                   ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/window-grow-symbolic.svg
                   ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/window-shrink-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/temperature-symbolic.svg
      PARENT_SCOPE)
