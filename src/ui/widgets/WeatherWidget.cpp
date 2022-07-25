@@ -121,8 +121,8 @@ void WeatherWidget::update_weather_ui() {
 
     // Course:
     // Clear existing items:
-    for (Gtk::Widget* remChildren = courseBox.get_first_child(); remChildren; remChildren = remChildren->get_next_sibling()) {
-        courseBox.remove(*remChildren);
+    for (Gtk::Box& widget : hourBoxes) {
+        courseBox.remove(*static_cast<Gtk::Widget*>(&widget));
     }
     hourBoxes.clear();
 

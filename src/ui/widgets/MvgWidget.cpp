@@ -17,6 +17,7 @@
 #include <gtkmm/flowbox.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/widget.h>
 #include <re2/re2.h>
 #include <spdlog/spdlog.h>
 
@@ -50,8 +51,8 @@ void MvgWidget::prep_widget() {
 
 void MvgWidget::update_departures_ui() {
     // Clear existing items:
-    for (Gtk::Widget* remChildren = departureslistBox.get_first_child(); remChildren; remChildren = remChildren->get_next_sibling()) {
-        departureslistBox.remove(*remChildren);
+    for (DepartureWidget& widget : departureWidgets) {
+        departureslistBox.remove(*static_cast<Gtk::Widget*>(&widget));
     }
     departureWidgets.clear();
 

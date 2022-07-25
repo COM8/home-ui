@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <gtkmm/label.h>
 
 namespace ui::widgets {
 DeviceStatusWidget::DeviceStatusWidget() : Gtk::Box(Gtk::Orientation::VERTICAL) {
@@ -32,8 +33,8 @@ void DeviceStatusWidget::prep_widget() {
 
 void DeviceStatusWidget::update_available_devices_ui() {
     // Clear existing items:
-    for (Gtk::Widget* remChildren = devicesBox.get_first_child(); remChildren; remChildren = remChildren->get_next_sibling()) {
-        devicesBox.remove(*remChildren);
+    for (Gtk::Label& widget : deviceLabels) {
+        devicesBox.remove(*static_cast<Gtk::Widget*>(&widget));
     }
     deviceLabels.clear();
 
