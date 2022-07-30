@@ -52,7 +52,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 include(glib-resource-compiler)
 find_package(PkgConfig REQUIRED)
 # Additional search path since gtkmm-4.0 will usually be installed in /usr
-set(ENV{PKG_CONFIG_PATH} "/app/lib/pkgconfig")
+set(ENV{PKG_CONFIG_PATH} "/usr/lib/pkgconfig")
 pkg_check_modules(GTKMM gtkmm-4.0>=4.4.0 REQUIRED IMPORTED_TARGET)
 pkg_check_modules(EPOXY epoxy REQUIRED IMPORTED_TARGET)
 
