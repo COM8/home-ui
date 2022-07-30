@@ -43,3 +43,7 @@ compile_commands.json
 
 # Ignore serialized stuff
 home_ui_settings.json
+
+#Flatpak
+flatpak_build_dir/
+.flatpak-builder/
