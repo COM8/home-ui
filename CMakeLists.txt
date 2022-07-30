@@ -61,28 +61,28 @@ pkg_check_modules(ADWAITA REQUIRED libadwaita-1>=1.1.0)
 include_directories(${ADWAITA_INCLUDE_DIRS})
 
 # Disable linting for fetch content projects
-# clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
+clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 
-# FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
-#                          GIT_TAG fe111747b01ab922e2c5e4fe047c3c15084fa75c)
-# set(CPR_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
-# set(CURL_CA_FALLBACK ON CACHE INTERNAL "" FORCE) # Workaround for failing SSL requests
-# FetchContent_MakeAvailable(cpr)
+FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
+                         GIT_TAG fe111747b01ab922e2c5e4fe047c3c15084fa75c)
+set(CPR_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
+set(CURL_CA_FALLBACK ON CACHE INTERNAL "" FORCE) # Workaround for failing SSL requests
+FetchContent_MakeAvailable(cpr)
 
-# FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git
-#                           GIT_TAG v3.10.5)
-# FetchContent_MakeAvailable(json)
+FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git
+                          GIT_TAG v3.10.5)
+FetchContent_MakeAvailable(json)
 
-# set(SPDLOG_INSTALL ON)
-# FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-#                             GIT_TAG v1.9.2)
-# FetchContent_MakeAvailable(spdlog)
+set(SPDLOG_INSTALL ON)
+FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
+                            GIT_TAG v1.9.2)
+FetchContent_MakeAvailable(spdlog)
 
-# FetchContent_Declare(re2 GIT_REPOSITORY https://github.com/google/re2.git
-#                          GIT_TAG 2022-06-01)
-# FetchContent_MakeAvailable(re2)
+FetchContent_Declare(re2 GIT_REPOSITORY https://github.com/google/re2.git
+                         GIT_TAG 2022-06-01)
+FetchContent_MakeAvailable(re2)
 
-# restore_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
+restore_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 add_subdirectory(src)
