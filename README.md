@@ -27,20 +27,20 @@ flatpak install flathub org.gnome.Sdk//42 org.gnome.Platform//42
 ```
 git clone https://github.com/COM8/home-ui.git
 cd home-ui
-flatpak-builder --force-clean flatpak_build_dir flatpak/de.home_ui.yml
+flatpak-builder --force-clean flatpak_build_dir flatpak/de.home_ui.cli.yml
 ```
 
 ### Installing
 ```
-flatpak-builder --user --install --force-clean flatpak_build_dir flatpak/de.home_ui.yml
+flatpak-builder --user --install --force-clean flatpak_build_dir flatpak/de.home_ui.cli.yml
 ```
 
 ### Uninstalling
 ```
-flatpak uninstall de.home_ui
+flatpak uninstall de.home_ui.cli
 ```
 
 ### Executing
 ```
-flatpak run de.home_ui
+flatpak run de.home_ui.cli
 ```

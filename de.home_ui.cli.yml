@@ -1,4 +1,4 @@
-app-id: de.home_ui
+app-id: de.home_ui.cli
 runtime: org.gnome.Platform
 runtime-version: '42'
 sdk: org.gnome.Sdk
@@ -8,7 +8,7 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --share=network
-  - --own-name=de.home_ui
+  - --own-name=de.home_ui.cli
   - --device=dri
 modules:
   - name: home_ui
@@ -23,7 +23,7 @@ modules:
       - type: patch
         path: flatpak/patches/offline_build.patch
     post-install:
-      - install -D de.home_ui.appdata.xml /app/share/metainfo/de.home_ui.appdata.xml
+      - install -D de.home_ui.cli.appdata.xml /app/share/metainfo/de.home_ui.cli.appdata.xml
     modules:
       - name: cpr
         buildsystem: cmake-ninja

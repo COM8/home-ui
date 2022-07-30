@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <component type="desktop">
   <!--Created with jdAppdataEdit 3.0-->
-  <id>de.home_ui</id>
+  <id>de.home_ui.cli</id>
   <name>TUMexam Client</name>
   <summary>GTK4 Based UI for home automation using a Raspberry Pi.</summary>
   <developer_name>Fabian Sauter</developer_name>
-  <launchable type="desktop-id">de.home_ui.desktop</launchable>
+  <launchable type="desktop-id">de.home_ui.cli.desktop</launchable>
   <metadata_license>GFDL-1.3</metadata_license>
   <project_license>GFDL-1.3-or-later</project_license>
   <update_contact>flatpak@uwpx.org</update_contact>
