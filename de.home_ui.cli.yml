@@ -15,8 +15,8 @@ modules:
     buildsystem: cmake-ninja
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
-      - -HOME_UI_STATIC_ANALYZE=OFF
-      - -HOME_UI_ENABLE_LINTING=OFF
+      - -DHOME_UI_STATIC_ANALYZE=OFF
+      - -DHOME_UI_ENABLE_LINTING=OFF
     sources:
       - type: dir
         path: .
@@ -51,6 +51,7 @@ modules:
           - -DCMAKE_BUILD_TYPE=Release
           - -DSPDLOG_BUILD_EXAMPLE=OFF
           - -DSPDLOG_BUILD_TESTS=OFF
+          - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
         sources:
           - type: git
             url: https://github.com/gabime/spdlog.git

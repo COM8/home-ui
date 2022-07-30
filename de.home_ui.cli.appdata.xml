@@ -13,10 +13,6 @@
   <description>
     <p>GTK4 Based UI for home automation using a Raspberry Pi..</p>
   </description>
-  <screenshots>
-  </screenshots>
-  <releases>
-  </releases>
   <url type="homepage">https://github.com/COM8/home-ui</url>
   <url type="bugtracker">https://github.com/COM8/home-ui/issues</url>
   <url type="faq">https://github.com/COM8/home-ui</url>

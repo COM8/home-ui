@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 set(PROJECT_DESCRIPTION "GTK3 Based UI for home automation using a Raspberry Pi. ")
 
-project("Home-UI" VERSION 1.0.0
+project("home_ui" VERSION 1.0.0
                   DESCRIPTION "${PROJECT_DESCRIPTION}"
                   HOMEPAGE_URL "https://github.com/COM8/home-ui")
 set(VERSION_NAME "dev")

@@ -16,6 +16,11 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 flatpak install flathub org.gnome.Sdk//42 org.gnome.Platform//42
 ```
 
+```
+sudo dnf install sqlite-devel libsoup-devel
+
+```
+
 #### Debian/Ubuntu
 ```
 sudo apt install flatpak flatpak-builder
@@ -27,12 +32,12 @@ flatpak install flathub org.gnome.Sdk//42 org.gnome.Platform//42
 ```
 git clone https://github.com/COM8/home-ui.git
 cd home-ui
-flatpak-builder --force-clean flatpak_build_dir flatpak/de.home_ui.cli.yml
+flatpak-builder --force-clean flatpak_build_dir de.home_ui.cli.yml
 ```
 
 ### Installing
 ```
-flatpak-builder --user --install --force-clean flatpak_build_dir flatpak/de.home_ui.cli.yml
+flatpak-builder --user --install --force-clean flatpak_build_dir de.home_ui.cli.yml
 ```
 
 ### Uninstalling

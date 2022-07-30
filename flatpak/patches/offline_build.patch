@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 78a8301..3dabf72 100644
+index 78a8301..1769828 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -52,7 +52,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -11,7 +11,7 @@ index 78a8301..3dabf72 100644
  pkg_check_modules(GTKMM gtkmm-4.0>=4.4.0 REQUIRED IMPORTED_TARGET)
  pkg_check_modules(EPOXY epoxy REQUIRED IMPORTED_TARGET)
  
-@@ -61,28 +61,28 @@ pkg_check_modules(ADWAITA REQUIRED libadwaita-1>=1.1.0)
+@@ -61,28 +61,33 @@ pkg_check_modules(ADWAITA REQUIRED libadwaita-1>=1.1.0)
  include_directories(${ADWAITA_INCLUDE_DIRS})
  
  # Disable linting for fetch content projects
@@ -54,6 +54,11 @@ index 78a8301..3dabf72 100644
  
 -restore_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 +# restore_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
++
++find_package(cpr CONFIG REQUIRED)
++find_package(nlohmann_json CONFIG REQUIRED)
++find_package(spdlog CONFIG REQUIRED)
++find_package(re2 CONFIG REQUIRED)
  
  include_directories(${CMAKE_SOURCE_DIR}/src)
  add_subdirectory(src)
