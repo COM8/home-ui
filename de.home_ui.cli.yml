@@ -10,6 +10,7 @@ finish-args:
   - --share=network
   - --own-name=de.home_ui.cli
   - --device=dri
+  - --filesystem=home
 modules:
   - name: home_ui
     buildsystem: cmake-ninja
