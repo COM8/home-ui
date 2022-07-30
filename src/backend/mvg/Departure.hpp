@@ -3,7 +3,6 @@
 #include <chrono>
 #include <memory>
 #include <nlohmann/json.hpp>
-#include <nlohmann/json_fwd.hpp>
 #include <string>
 
 namespace backend::mvg {

@@ -39,6 +39,7 @@ build/
 .clangd/
 compile_commands.json
 .cache/
+.vscode/
 
 # Ignore serialized stuff
 home_ui_settings.json

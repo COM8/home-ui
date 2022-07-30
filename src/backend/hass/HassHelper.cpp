@@ -2,7 +2,6 @@
 #include "logger/Logger.hpp"
 #include <cassert>
 #include <nlohmann/json.hpp>
-#include <nlohmann/json_fwd.hpp>
 #include <optional>
 #include <string>
 #include <cpr/api.h>
@@ -129,7 +128,7 @@ std::string get_friendly_name(const std::string& entity, const std::string& hass
     SPDLOG_DEBUG("Received from HASS: {}", response.text);
     std::optional<std::string> friendlyName = parse_friendly_name(response.text);
     if (friendlyName) {
-        SPDLOG_INFO("Friendly name for '{}' found: {}", entity);
+        SPDLOG_INFO("Friendly name for '{}' found: {}", entity, *friendlyName);
         return *friendlyName;
     }
     return entity;

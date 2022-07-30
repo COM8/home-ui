@@ -10,8 +10,7 @@ glib_add_resource_file(TARGET ui_resources
                        RESOURCEDEF ${RESOURCE_DEF}
                        WORKING_DIR ${RESOURCE_DIR}
                        OUTFILE ui_resources.c
-                       DEPENDS ${RESOURCE_DEPS}
-                       )
+                       DEPENDS ${RESOURCE_DEPS})
 
 add_executable(${MAIN_EXECUTABLE} WIN32 main.cpp ${CMAKE_CURRENT_BINARY_DIR}/ui_resources.c)
 

@@ -2,7 +2,6 @@
 #include "cpr/body.h"
 #include "logger/Logger.hpp"
 #include <nlohmann/json.hpp>
-#include <nlohmann/json_fwd.hpp>
 #include <string>
 #include <cpr/api.h>
 #include <cpr/cpr.h>
