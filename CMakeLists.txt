@@ -60,6 +60,26 @@ pkg_check_modules(EPOXY epoxy REQUIRED IMPORTED_TARGET)
 pkg_check_modules(ADWAITA REQUIRED libadwaita-1>=1.1.0)
 include_directories(${ADWAITA_INCLUDE_DIRS})
 
+# libshumate
+include(ExternalProject)
+find_program(MESON_PATH meson REQUIRED)
+if(MESON_PATH STREQUAL "MESON_PATH-NOTFOUND")
+    message(FATAL_ERROR "meson not found. Please make sure you have mesonb installed on your system.")
+    return()
+endif()
+ExternalProject_Add(shumate GIT_REPOSITORY https://gitlab.gnome.org/GNOME/libshumate.git
+                            GIT_TAG main
+                            CONFIGURE_COMMAND ${MESON_PATH} build . -Dgtk_doc=false
+                            BUILD_COMMAND cd build && ninja
+                            BUILD_IN_SOURCE ON
+                            INSTALL_COMMAND ""
+                            COMMENT "Building shumate")
+ExternalProject_Get_Property(shumate SOURCE_DIR)
+add_library(libshumate SHARED IMPORTED)
+set_target_properties(libshumate PROPERTIES IMPORTED_LOCATION "${SOURCE_DIR}/build/shumate/libshumate-1.0.so")
+target_include_directories(libshumate INTERFACE ${SOURCE_DIR})
+add_library(shumate::shumate ALIAS libshumate)
+
 # Disable linting for fetch content projects
 clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 
