@@ -1,5 +1,5 @@
 # home-ui
-GTK3 Based UI for home automation using a Raspberry Pi
+GTK4 Based UI for home automation using a Raspberry Pi.
 
 ## Building
 ```
