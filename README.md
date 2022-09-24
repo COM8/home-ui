@@ -3,6 +3,7 @@ GTK3 Based UI for home automation using a Raspberry Pi
 
 ## Building
 ```
+sudo dnf install libsoup3-devel
 ```
 
 ## Flatpak

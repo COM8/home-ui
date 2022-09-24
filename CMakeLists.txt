@@ -12,13 +12,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 macro(home_ui_option OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     option(${OPTION_NAME} ${OPTION_TEXT} ${OPTION_DEFAULT})
+
     if(DEFINED ENV{${OPTION_NAME}})
         # Allow setting the option through an environment variable
         set(${OPTION_NAME} $ENV{${OPTION_NAME}})
     endif()
+
     if(${OPTION_NAME})
         add_definitions(-D${OPTION_NAME})
     endif()
+
     message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
 endmacro()
 
@@ -38,7 +41,7 @@ include(glib-resource-compiler)
 include(clear_variable)
 include(FetchContent)
 
-if (${HOME_UI_ENABLE_LINTING})
+if(${HOME_UI_ENABLE_LINTING})
     message(STATUS "Enabling linting")
     include(clang-tidy)
 else()
@@ -51,6 +54,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 # gtk4 stuff
 include(glib-resource-compiler)
 find_package(PkgConfig REQUIRED)
+
 # Additional search path since gtkmm-4.0 will usually be installed in /usr
 set(ENV{PKG_CONFIG_PATH} "/usr/lib/pkgconfig")
 pkg_check_modules(GTKMM gtkmm-4.0>=4.4.0 REQUIRED IMPORTED_TARGET)
@@ -63,30 +67,39 @@ include_directories(${ADWAITA_INCLUDE_DIRS})
 # libshumate
 include(ExternalProject)
 find_program(MESON_PATH meson REQUIRED)
+
 if(MESON_PATH STREQUAL "MESON_PATH-NOTFOUND")
-    message(FATAL_ERROR "meson not found. Please make sure you have mesonb installed on your system.")
+    message(FATAL_ERROR "meson not found. Please make sure you have meson installed on your system.")
     return()
 endif()
-ExternalProject_Add(shumate GIT_REPOSITORY https://gitlab.gnome.org/GNOME/libshumate.git
-                            GIT_TAG main
-                            CONFIGURE_COMMAND ${MESON_PATH} build . -Dgtk_doc=false
-                            BUILD_COMMAND cd build && ninja
-                            BUILD_IN_SOURCE ON
-                            INSTALL_COMMAND ""
-                            COMMENT "Building shumate")
-ExternalProject_Get_Property(shumate SOURCE_DIR)
+
+ExternalProject_Add(shumate_build GIT_REPOSITORY https://gitlab.gnome.org/GNOME/libshumate.git
+                                  GIT_TAG main
+                                  CONFIGURE_COMMAND ${MESON_PATH} "<BINARY_DIR>" "<SOURCE_DIR>" -Dgtk_doc=false
+                                  BUILD_COMMAND cd "<BINARY_DIR>" && ninja
+                                  CONFIGURE_HANDLED_BY_BUILD ON
+                                  INSTALL_COMMAND ""
+                                  COMMENT "Building shumate"
+                                  BUILD_BYPRODUCTS "<BINARY_DIR>/shumate/libshumate-1.0.so")
+
 add_library(libshumate SHARED IMPORTED)
-set_target_properties(libshumate PROPERTIES IMPORTED_LOCATION "${SOURCE_DIR}/build/shumate/libshumate-1.0.so")
-target_include_directories(libshumate INTERFACE ${SOURCE_DIR})
-add_library(shumate::shumate ALIAS libshumate)
+add_dependencies(libshumate shumate_build)
+
+ExternalProject_Get_Property(shumate_build BINARY_DIR)
+set(SHUMATE_LIB "${BINARY_DIR}/shumate/libshumate-1.0.so")
+set_target_properties(libshumate PROPERTIES IMPORTED_LOCATION ${SHUMATE_LIB})
+
+ExternalProject_Get_Property(shumate_build SOURCE_DIR)
+set(SHUMATE_INCLUDE_DIRS "${SOURCE_DIR}" "${BINARY_DIR}")
+target_include_directories(libshumate INTERFACE "${SHUMATE_INCLUDE_DIRS}")
 
 # Disable linting for fetch content projects
 clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 
 FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
                          GIT_TAG fe111747b01ab922e2c5e4fe047c3c15084fa75c)
-set(CPR_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
-set(CURL_CA_FALLBACK ON CACHE INTERNAL "" FORCE) # Workaround for failing SSL requests
+set(CPR_BUILD_TESTS OFF CACHE INTERNAL " " FORCE)
+set(CURL_CA_FALLBACK ON CACHE INTERNAL " " FORCE) # Workaround for failing SSL requests
 FetchContent_MakeAvailable(cpr)
 
 FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git
