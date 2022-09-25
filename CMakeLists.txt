@@ -92,6 +92,7 @@ set_target_properties(libshumate PROPERTIES IMPORTED_LOCATION ${SHUMATE_LIB})
 ExternalProject_Get_Property(shumate_build SOURCE_DIR)
 set(SHUMATE_INCLUDE_DIRS "${SOURCE_DIR}" "${BINARY_DIR}")
 target_include_directories(libshumate INTERFACE "${SHUMATE_INCLUDE_DIRS}")
+include_directories(${SHUMATE_INCLUDE_DIRS})
 
 # Disable linting for fetch content projects
 clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)

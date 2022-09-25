@@ -16,5 +16,5 @@ add_library(ui_widgets STATIC MvgWidget.cpp
                               LightWidget.hpp
                               LightningMap.cpp
                               LightningMap.hpp)
-target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM backend_mvg backend_weather backend_deviceStatus backend_hass
-                                 PRIVATE logger backend_storage ui_utils re2::re2 libshumate)
+target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM backend_mvg backend_weather backend_deviceStatus backend_hass libshumate
+                                 PRIVATE logger backend_storage ui_utils re2::re2)

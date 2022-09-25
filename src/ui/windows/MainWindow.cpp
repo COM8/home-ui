@@ -26,6 +26,7 @@ void MainWindow::prep_window() {
     // Content:
     stack = Gtk::make_managed<Gtk::Stack>();
     prep_overview_stack_page(stack);
+    prep_lightning_stack_page(stack);
     prep_setting_stack_page(stack);
     set_child(*stack);
 
@@ -102,6 +103,12 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     rightBox->append(weather);
 
     stack->add(*mainBox, "overview", "Overview");
+}
+
+void MainWindow::prep_lightning_stack_page(Gtk::Stack* stack) {
+    // Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL);
+    // mainBox->append(lightning);
+    stack->add(lightning, "lightning", "Lightning");
 }
 
 void MainWindow::prep_setting_stack_page(Gtk::Stack* stack) {

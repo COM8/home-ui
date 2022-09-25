@@ -30,5 +30,7 @@
     <file preprocess="xml-stripblanks">icons/scalable/action/window-grow-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/action/window-shrink-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/action/temperature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/lightning-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/action/lightning-map-marker-symbolic.svg</file>
   </gresource>
 </gresources>

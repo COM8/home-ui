@@ -2,6 +2,7 @@
 
 #include "ui/widgets/ActionsWidget.hpp"
 #include "ui/widgets/DeviceStatusWidget.hpp"
+#include "ui/widgets/LightningMap.hpp"
 #include "ui/widgets/MvgWidget.hpp"
 #include "ui/widgets/SettingsWidget.hpp"
 #include "ui/widgets/WeatherWidget.hpp"
@@ -27,6 +28,7 @@ class MainWindow : public Gtk::Window {
     Gtk::Button screenSaverBtn{};
     Gtk::ScaleButton screenBrightnessBtn;
     Gtk::Box quickActionsBox{Gtk::Orientation::HORIZONTAL};
+    widgets::LightningMap lightning{};
 
  public:
     MainWindow();
@@ -40,6 +42,7 @@ class MainWindow : public Gtk::Window {
     void prep_window();
     void prep_overview_stack_page(Gtk::Stack* stack);
     void prep_setting_stack_page(Gtk::Stack* stack);
+    void prep_lightning_stack_page(Gtk::Stack* stack);
     void hide_cursor();
     void show_cursor();
 
