@@ -106,8 +106,6 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
 }
 
 void MainWindow::prep_lightning_stack_page(Gtk::Stack* stack) {
-    // Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL);
-    // mainBox->append(lightning);
     stack->add(lightning, "lightning", "Lightning");
 }
 

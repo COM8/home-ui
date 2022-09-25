@@ -24,7 +24,13 @@ void to_json(nlohmann::json& j, const SettingsData& d) {
         {"hassIp", d.hassIp},
         {"hassPort", d.hassPort},
         {"hassBearerToken", d.hassBearerToken},
-        {"hassLights", d.hassLights}};
+        {"hassLights", d.hassLights},
+
+        {"lightningMapCenterLat", d.lightningMapCenterLat},
+        {"lightningMapCenterLong", d.lightningMapCenterLong},
+        {"lightningMapHomeLat", d.lightningMapHomeLat},
+        {"lightningMapHomeLong", d.lightningMapHomeLong},
+        {"lightningMapZoomLevel", d.lightningMapZoomLevel}};
 }
 
 void from_json(const nlohmann::json& j, SettingsData& d) {
@@ -46,6 +52,12 @@ void from_json(const nlohmann::json& j, SettingsData& d) {
     j.at("hassPort").get_to(d.hassPort);
     j.at("hassBearerToken").get_to(d.hassBearerToken);
     j.at("hassLights").get_to(d.hassLights);
+
+    j.at("lightningMapCenterLat").get_to(d.lightningMapCenterLat);
+    j.at("lightningMapCenterLong").get_to(d.lightningMapCenterLong);
+    j.at("lightningMapHomeLat").get_to(d.lightningMapHomeLat);
+    j.at("lightningMapHomeLong").get_to(d.lightningMapHomeLong);
+    j.at("lightningMapZoomLevel").get_to(d.lightningMapZoomLevel);
 }
 }  // namespace backend::storage
 
