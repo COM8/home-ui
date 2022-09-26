@@ -118,6 +118,7 @@ FetchContent_MakeAvailable(re2)
 
 FetchContent_Declare(websocket GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
                                GIT_TAG v11.4.3)
+set(USE_TLS ON)
 FetchContent_MakeAvailable(websocket)
 include_directories("${websocket_SOURCE_DIR}")
 
