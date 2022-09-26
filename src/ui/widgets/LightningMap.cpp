@@ -1,4 +1,5 @@
 #include "LightningMap.hpp"
+#include "backend/lightning/LightningHelper.hpp"
 #include "backend/storage/Settings.hpp"
 #include "logger/Logger.hpp"
 #include <shumate/shumate-simple-map.h>
@@ -6,6 +7,8 @@
 namespace ui::widgets {
 LightningMap::LightningMap() : map(shumate_simple_map_new()) {
     prep_widget();
+    backend::lightning::LightningHelper* lightningHelper = backend::lightning::get_instance();
+    lightningHelper->start();
 }
 
 void LightningMap::prep_widget() {

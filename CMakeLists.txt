@@ -116,6 +116,11 @@ FetchContent_Declare(re2 GIT_REPOSITORY https://github.com/google/re2.git
                          GIT_TAG 2022-06-01)
 FetchContent_MakeAvailable(re2)
 
+FetchContent_Declare(websocket GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
+                               GIT_TAG v11.4.3)
+FetchContent_MakeAvailable(websocket)
+include_directories("${websocket_SOURCE_DIR}")
+
 restore_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
