@@ -1,14 +1,23 @@
 #include "LightningMap.hpp"
+#include "backend/lightning/Lightning.hpp"
 #include "backend/lightning/LightningHelper.hpp"
 #include "backend/storage/Settings.hpp"
 #include "logger/Logger.hpp"
+#include <cassert>
 #include <shumate/shumate-simple-map.h>
 
 namespace ui::widgets {
 LightningMap::LightningMap() : map(shumate_simple_map_new()) {
     prep_widget();
     backend::lightning::LightningHelper* lightningHelper = backend::lightning::get_instance();
+    assert(lightningHelper);
+
+    lightningHelper->newLightningsEventHandler.append([this](const std::vector<backend::lightning::Lightning>& lightnings) { this->on_new_lightnings(lightnings); });
     lightningHelper->start();
+}
+
+LightningMap::~LightningMap() {
+    backend::lightning::get_instance()->stop();
 }
 
 void LightningMap::prep_widget() {
@@ -28,14 +37,14 @@ void LightningMap::prep_widget() {
     markerLayer = shumate_marker_layer_new(viewPort);
     shumate_simple_map_add_overlay_layer(map, SHUMATE_LAYER(markerLayer));
 
-    marker = shumate_marker_new();
-    ShumateLocation* markerLocation = SHUMATE_LOCATION(marker);
+    homeMarker = shumate_marker_new();
+    ShumateLocation* markerLocation = SHUMATE_LOCATION(homeMarker);
     shumate_location_set_location(markerLocation, settings->data.lightningMapHomeLat, settings->data.lightningMapHomeLong);
-    shumate_marker_layer_add_marker(markerLayer, marker);
+    shumate_marker_layer_add_marker(markerLayer, homeMarker);
 
-    markerImage.set_from_icon_name("lightning-map-marker-symbolic");
+    homeMarkerImage.set_from_icon_name("lightning-map-marker-symbolic");
     // NOLINTNEXTLINE (cppcoreguidelines-pro-type-cstyle-cast)
-    shumate_marker_set_child(marker, GTK_WIDGET(markerImage.gobj()));
+    shumate_marker_set_child(homeMarker, GTK_WIDGET(homeMarkerImage.gobj()));
 
     // Zoom to marker:
     shumate_location_set_location(SHUMATE_LOCATION(viewPort), settings->data.lightningMapCenterLat, settings->data.lightningMapCenterLong);
@@ -43,5 +52,21 @@ void LightningMap::prep_widget() {
 }
 
 //-----------------------------Events:-----------------------------
+void LightningMap::on_new_lightnings(const std::vector<backend::lightning::Lightning>& lightnings) {
+    for (const backend::lightning::Lightning& lightning : lightnings) {
+        ShumateMarker* marker = shumate_marker_new();
+        ShumateLocation* markerLocation = SHUMATE_LOCATION(marker);
+        shumate_location_set_location(markerLocation, lightning.lat, lightning.lon);
+        shumate_marker_layer_add_marker(markerLayer, marker);
+
+        Gtk::Image markerImage;
+        markerImage.set_from_icon_name("lightning-symbolic");
+        // NOLINTNEXTLINE (cppcoreguidelines-pro-type-cstyle-cast)
+        shumate_marker_set_child(marker, GTK_WIDGET(markerImage.gobj()));
+
+        lightningMarkersImages.push_back(std::move(markerImage));
+        lightningMarkers.push_back(marker);
+    }
+}
 
 }  // namespace ui::widgets

@@ -122,6 +122,11 @@ set(USE_TLS ON)
 FetchContent_MakeAvailable(websocket)
 include_directories("${websocket_SOURCE_DIR}")
 
+FetchContent_Declare(eventpp
+                     GIT_REPOSITORY https://github.com/wqking/eventpp.git
+                     GIT_TAG 6813ec217f8489d8105d52008c8aca11093fb749) # State on master from the 28.09.2022
+FetchContent_MakeAvailable(eventpp)
+
 restore_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)

@@ -87,6 +87,11 @@ void LightningHelper::parse(const std::string& s) {
                 }
             }
             SPDLOG_INFO("Received {} new lightnings.", lightnings.size());
+
+            // Invoke the event handler:
+            if (newLightningsEventHandler) {
+                newLightningsEventHandler(lightnings);
+            }
         }
     } catch (nlohmann::json::parse_error& e) {
         SPDLOG_ERROR("Error parsing weather from '{}' with: {}", s, e.what());

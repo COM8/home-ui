@@ -1,8 +1,12 @@
 #pragma once
 
+#include "Lightning.hpp"
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <vector>
+#include <eventpp/callbacklist.h>
 #include <ixwebsocket/IXWebSocket.h>
 
 namespace backend::lightning {
@@ -11,6 +15,9 @@ class LightningHelper {
     ix::WebSocket webSocket;
 
  public:
+    // Event handler:
+    eventpp::CallbackList<void(const std::vector<Lightning>&)> newLightningsEventHandler;
+
     void start();
     void stop();
     void set_coordinates(double latCenter, double longCenter, double zoomFactor, double latMax, double longMax, double latMin, double longMin);
