@@ -3,7 +3,11 @@
 #include "backend/lightning/LightningHelper.hpp"
 #include "backend/storage/Settings.hpp"
 #include "logger/Logger.hpp"
+#include "ui/widgets/LightningWidget.hpp"
 #include <cassert>
+#include <chrono>
+#include <thread>
+#include <gtkmm/mediafile.h>
 #include <shumate/shumate-simple-map.h>
 
 namespace ui::widgets {
@@ -54,18 +58,8 @@ void LightningMap::prep_widget() {
 //-----------------------------Events:-----------------------------
 void LightningMap::on_new_lightnings(const std::vector<backend::lightning::Lightning>& lightnings) {
     for (const backend::lightning::Lightning& lightning : lightnings) {
-        ShumateMarker* marker = shumate_marker_new();
-        ShumateLocation* markerLocation = SHUMATE_LOCATION(marker);
-        shumate_location_set_location(markerLocation, lightning.lat, lightning.lon);
-        shumate_marker_layer_add_marker(markerLayer, marker);
-
-        Gtk::Image markerImage;
-        markerImage.set_from_icon_name("lightning-symbolic");
-        // NOLINTNEXTLINE (cppcoreguidelines-pro-type-cstyle-cast)
-        shumate_marker_set_child(marker, GTK_WIDGET(markerImage.gobj()));
-
-        lightningMarkersImages.push_back(std::move(markerImage));
-        lightningMarkers.push_back(marker);
+        LightningWidget widget(lightning, markerLayer);
+        lightningMarkers.push_back(std::move(widget));
     }
 }
 

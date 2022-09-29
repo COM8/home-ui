@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LightningWidget.hpp"
 #include "backend/lightning/Lightning.hpp"
 #include <vector>
 #include <gtkmm/box.h>
@@ -13,8 +14,7 @@ class LightningMap : public Gtk::Box {
     ShumateMarker* homeMarker{nullptr};
     ShumateMarkerLayer* markerLayer{nullptr};
     Gtk::Image homeMarkerImage{};
-    std::vector<ShumateMarker*> lightningMarkers{};
-    std::vector<Gtk::Image> lightningMarkersImages{};
+    std::vector<LightningWidget> lightningMarkers{};
 
  public:
     LightningMap();

@@ -33,4 +33,5 @@ set(RESOURCE_DEPS ${CMAKE_CURRENT_SOURCE_DIR}/theme.css
                   ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/temperature-symbolic.svg
                   ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/lightning-symbolic.svg
                   ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/lightning-map-marker-symbolic.svg
+                  ${CMAKE_CURRENT_SOURCE_DIR}/icons/scalable/action/lightning-circle-symbolic.svg
     PARENT_SCOPE)
