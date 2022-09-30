@@ -2,7 +2,8 @@
 
 #include "LightningWidget.hpp"
 #include "backend/lightning/Lightning.hpp"
-#include <vector>
+#include <list>
+#include <mutex>
 #include <gtkmm/box.h>
 #include <gtkmm/image.h>
 #include <shumate/shumate.h>
@@ -14,7 +15,8 @@ class LightningMap : public Gtk::Box {
     ShumateMarker* homeMarker{nullptr};
     ShumateMarkerLayer* markerLayer{nullptr};
     Gtk::Image homeMarkerImage{};
-    std::vector<LightningWidget> lightningMarkers{};
+    std::list<LightningWidget> lightningMarkers{};
+    std::mutex lightningMarkersMutex{};
 
  public:
     LightningMap();
@@ -28,5 +30,6 @@ class LightningMap : public Gtk::Box {
 
     //-----------------------------Events:-----------------------------
     void on_new_lightnings(const std::vector<backend::lightning::Lightning>& lightnings);
+    bool on_tick();
 };
 }  // namespace ui::widgets

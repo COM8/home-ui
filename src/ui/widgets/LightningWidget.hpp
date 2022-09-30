@@ -31,9 +31,9 @@ class LightningWidget : public Gtk::Overlay {
 
     [[nodiscard]] const backend::lightning::Lightning& get_lightning() const;
     void remove();
+    void update();
 
     //-----------------------------Events:-----------------------------
     void on_draw_handler(const Cairo::RefPtr<Cairo::Context>& ctx, int width, int height);
-    bool on_tick();
 };
 }  // namespace ui::widgets

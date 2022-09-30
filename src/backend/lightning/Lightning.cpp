@@ -1,5 +1,6 @@
 #include "Lightning.hpp"
 #include "logger/Logger.hpp"
+#include <chrono>
 #include <memory>
 #include <optional>
 
@@ -11,7 +12,8 @@ std::optional<Lightning> Lightning::from_json(const nlohmann::json& j) {
     }
     int64_t time = 0;  // In ms Unix time
     j.at("time").get_to(time);
-    std::chrono::system_clock::time_point timeTp = std::chrono::system_clock::from_time_t(static_cast<time_t>(time));
+    std::chrono::system_clock::time_point timeTp = std::chrono::system_clock::from_time_t(static_cast<time_t>(time / 1000));
+    timeTp += std::chrono::milliseconds(time % 1000);
 
     if (!j.contains("lat")) {
         SPDLOG_ERROR("Failed to parse lightning. 'lat' filed missing.");

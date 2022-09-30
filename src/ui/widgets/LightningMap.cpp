@@ -7,6 +7,7 @@
 #include <cassert>
 #include <chrono>
 #include <thread>
+#include <glibmm/main.h>
 #include <gtkmm/mediafile.h>
 #include <shumate/shumate-simple-map.h>
 
@@ -18,6 +19,8 @@ LightningMap::LightningMap() : map(shumate_simple_map_new()) {
 
     lightningHelper->newLightningsEventHandler.append([this](const std::vector<backend::lightning::Lightning>& lightnings) { this->on_new_lightnings(lightnings); });
     lightningHelper->start();
+
+    Glib::signal_timeout().connect(sigc::mem_fun(*this, &LightningMap::on_tick), 100);
 }
 
 LightningMap::~LightningMap() {
@@ -57,10 +60,30 @@ void LightningMap::prep_widget() {
 
 //-----------------------------Events:-----------------------------
 void LightningMap::on_new_lightnings(const std::vector<backend::lightning::Lightning>& lightnings) {
+    lightningMarkersMutex.lock();
     for (const backend::lightning::Lightning& lightning : lightnings) {
         LightningWidget widget(lightning, markerLayer);
         lightningMarkers.push_back(std::move(widget));
     }
+    lightningMarkersMutex.unlock();
+}
+
+bool LightningMap::on_tick() {
+    lightningMarkersMutex.lock();
+    std::list<LightningWidget>::iterator marker = lightningMarkers.begin();
+    while (marker != lightningMarkers.end()) {
+        std::chrono::seconds secondsElapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - marker->get_lightning().time);
+        if (secondsElapsed < std::chrono::minutes(1)) {
+            marker->update();
+            marker++;
+        } else {
+            lightningMarkers.erase(marker++);
+            marker->remove();
+            SPDLOG_INFO("Removed.");
+        }
+    }
+    lightningMarkersMutex.unlock();
+    return true;
 }
 
 }  // namespace ui::widgets
