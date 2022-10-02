@@ -43,6 +43,8 @@ void MainWindow::prep_window() {
     headerBar->set_title_widget(*stackSwitcher);
     set_titlebar(*headerBar);
 
+    stack->property_visible_child_name().signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_page_changed));
+
     fullscreen();
 }
 
@@ -198,5 +200,9 @@ void MainWindow::on_full_screen_changed() {
     } else {
         fullscreenBtn.set_icon_name("window-grow-symbolic");
     }
+}
+
+void MainWindow::on_page_changed() {
+    lightning.set_is_being_displayed(stack->get_visible_child_name() == "lightning");
 }
 }  // namespace ui::windows

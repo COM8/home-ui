@@ -3,6 +3,7 @@
 #include "backend/lightning/LightningHelper.hpp"
 #include "backend/storage/Settings.hpp"
 #include "logger/Logger.hpp"
+#include "spdlog/spdlog.h"
 #include "ui/widgets/LightningWidget.hpp"
 #include <cassert>
 #include <chrono>
@@ -10,6 +11,7 @@
 #include <glibmm/main.h>
 #include <gtkmm/mediafile.h>
 #include <shumate/shumate-simple-map.h>
+#include <shumate/shumate-viewport.h>
 
 namespace ui::widgets {
 LightningMap::LightningMap() : map(shumate_simple_map_new()) {
@@ -18,7 +20,6 @@ LightningMap::LightningMap() : map(shumate_simple_map_new()) {
     assert(lightningHelper);
 
     lightningHelper->newLightningsEventHandler.append([this](const std::vector<backend::lightning::Lightning>& lightnings) { this->on_new_lightnings(lightnings); });
-    lightningHelper->start();
 
     Glib::signal_timeout().connect(sigc::mem_fun(*this, &LightningMap::on_tick), 100);
 }
@@ -58,6 +59,22 @@ void LightningMap::prep_widget() {
     shumate_viewport_set_zoom_level(viewPort, settings->data.lightningMapZoomLevel);
 }
 
+void LightningMap::set_is_being_displayed(bool isBeingDisplayed) {
+    backend::lightning::LightningHelper* lightningHelper = backend::lightning::get_instance();
+    assert(lightningHelper);
+    if (isBeingDisplayed) {
+        lightningHelper->start();
+    } else {
+        lightningHelper->stop();
+        lightningMarkersMutex.lock();
+        for (LightningWidget& widget : lightningMarkers) {
+            widget.remove();
+        }
+        lightningMarkers.clear();
+        lightningMarkersMutex.unlock();
+    }
+}
+
 //-----------------------------Events:-----------------------------
 void LightningMap::on_new_lightnings(const std::vector<backend::lightning::Lightning>& lightnings) {
     lightningMarkersMutex.lock();
@@ -79,7 +96,6 @@ bool LightningMap::on_tick() {
         } else {
             lightningMarkers.erase(marker++);
             marker->remove();
-            SPDLOG_INFO("Removed.");
         }
     }
     lightningMarkersMutex.unlock();

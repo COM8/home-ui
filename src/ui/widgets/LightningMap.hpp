@@ -28,6 +28,8 @@ class LightningMap : public Gtk::Box {
 
     void prep_widget();
 
+    void set_is_being_displayed(bool isBeingDisplayed);
+
     //-----------------------------Events:-----------------------------
     void on_new_lightnings(const std::vector<backend::lightning::Lightning>& lightnings);
     bool on_tick();

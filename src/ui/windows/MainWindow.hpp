@@ -11,6 +11,7 @@
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/scalebutton.h>
+#include <gtkmm/selectionmodel.h>
 
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
@@ -56,5 +57,6 @@ class MainWindow : public Gtk::Window {
     void on_window_state_changed();
     bool on_key_pressed(guint keyVal, guint keyCode, Gdk::ModifierType modifier);
     void on_full_screen_changed();
+    void on_page_changed();
 };
 }  // namespace ui::windows
