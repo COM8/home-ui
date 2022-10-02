@@ -98,7 +98,7 @@ include_directories(${SHUMATE_INCLUDE_DIRS})
 clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 
 FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
-                         GIT_TAG fe111747b01ab922e2c5e4fe047c3c15084fa75c)
+                         GIT_TAG 3baa80e66bbaba40f5aa0d9409d99d0727f80e1a)
 set(CPR_BUILD_TESTS OFF CACHE INTERNAL " " FORCE)
 set(CURL_CA_FALLBACK ON CACHE INTERNAL " " FORCE) # Workaround for failing SSL requests
 FetchContent_MakeAvailable(cpr)
@@ -119,6 +119,7 @@ FetchContent_MakeAvailable(re2)
 FetchContent_Declare(websocket GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
                                GIT_TAG v11.4.3)
 set(USE_TLS ON)
+set(USE_ZLIB OFF)
 FetchContent_MakeAvailable(websocket)
 include_directories("${websocket_SOURCE_DIR}")
 

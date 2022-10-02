@@ -5,7 +5,6 @@
 #include <chrono>
 #include <cstdint>
 #include <string>
-#include <bits/chrono.h>
 #include <glibmm/main.h>
 
 namespace ui::widgets {
