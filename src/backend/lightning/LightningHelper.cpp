@@ -19,10 +19,12 @@ void LightningHelper::start() {
     webSocket.setUrl("wss://live.lightningmaps.org");
     webSocket.setOnMessageCallback([this](const ix::WebSocketMessagePtr& msg) { this->on_message(msg); });
     webSocket.start();
+    SPDLOG_INFO("Lightning websocket started.");
 }
 
 void LightningHelper::stop() {
     webSocket.stop();
+    SPDLOG_INFO("Lightning websocket stopped.");
 }
 
 LightningHelper* get_instance() {
@@ -31,6 +33,43 @@ LightningHelper* get_instance() {
 }
 
 void LightningHelper::set_coordinates(double latCenter, double longCenter, double zoomFactor, double latMax, double longMax, double latMin, double longMin) {
+    if (this->latCenter != latCenter) {
+        coordinatesChanged = true;
+    }
+    this->latCenter = latCenter;
+
+    if (this->longCenter != longCenter) {
+        coordinatesChanged = true;
+    }
+    this->longCenter = longCenter;
+
+    if (this->zoomFactor != zoomFactor) {
+        coordinatesChanged = true;
+    }
+    this->zoomFactor = zoomFactor;
+
+    if (this->latMax != latMax) {
+        coordinatesChanged = true;
+    }
+    this->latMax = latMax;
+
+    if (this->longMax != longMax) {
+        longMax = true;
+    }
+    this->longMax = longMax;
+
+    if (this->latMin != latMin) {
+        coordinatesChanged = true;
+    }
+    this->latMin = latMin;
+
+    if (this->longMin != longMin) {
+        coordinatesChanged = true;
+    }
+    this->longMin = longMin;
+}
+
+void LightningHelper::set_coordinates() {
     assert(webSocket.getReadyState() == ix::ReadyState::Open);
     nlohmann::json j;
     j["v"] = 24;
@@ -65,9 +104,13 @@ void LightningHelper::on_message(const ix::WebSocketMessagePtr& msg) {
     if (msg->type == ix::WebSocketMessageType::Message) {
         SPDLOG_DEBUG("[WEBSOCKET]: {}", msg->str);
         parse(msg->str);
+        if (coordinatesChanged) {
+            coordinatesChanged = false;
+            set_coordinates();
+        }
     } else if (msg->type == ix::WebSocketMessageType::Open) {
         SPDLOG_INFO("[WEBSOCKET]: Connection established.");
-        webSocket.sendText(R"({"v":24,"i":{},"s":false,"x":0,"w":0,"tx":0,"tw":1,"a":4,"z":12,"b":true,"h":"#m=oss;t=3;s=0;o=0;b=;ts=0;z=12;y=48.1358;x=11.6228;d=2;dl=2;dc=0;","l":1,"t":1,"from_lightningmaps_org":true,"p":[48.3,12,48,11.2],"r":"A"})");
+        set_coordinates();
     } else if (msg->type == ix::WebSocketMessageType::Error) {
         SPDLOG_ERROR("[WEBSOCKET]: Error: {}", msg->errorInfo.reason);
     }

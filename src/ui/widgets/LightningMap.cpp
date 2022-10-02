@@ -139,8 +139,7 @@ void LightningMap::on_viewport_changed(ShumateViewport* viewPort, G_GNUC_UNUSED 
         shumate_viewport_widget_coords_to_location(viewPort, GTK_WIDGET(self->gobj()), static_cast<double>(self->get_width()), static_cast<double>(self->get_height()), &latBR, &lonBR);
 
         backend::lightning::get_instance()->set_coordinates(lat, lon, zoomFactor, latTL, lonBR, latBR, lonTL);
-
-        SPDLOG_INFO("Viewport changed: {}/{}", lat, lon);
+        SPDLOG_DEBUG("Viewport changed: {}/{}", lat, lon);
     }
 }
 
