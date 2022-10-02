@@ -26,6 +26,7 @@ void MainWindow::prep_window() {
     // Content:
     stack = Gtk::make_managed<Gtk::Stack>();
     prep_overview_stack_page(stack);
+    prep_lightning_stack_page(stack);
     prep_setting_stack_page(stack);
     set_child(*stack);
 
@@ -41,6 +42,8 @@ void MainWindow::prep_window() {
     stackSwitcher->set_stack(*stack);
     headerBar->set_title_widget(*stackSwitcher);
     set_titlebar(*headerBar);
+
+    stack->property_visible_child_name().signal_changed().connect(sigc::mem_fun(*this, &MainWindow::on_page_changed));
 
     fullscreen();
 }
@@ -102,6 +105,10 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     rightBox->append(weather);
 
     stack->add(*mainBox, "overview", "Overview");
+}
+
+void MainWindow::prep_lightning_stack_page(Gtk::Stack* stack) {
+    stack->add(lightning, "lightning", "Lightning");
 }
 
 void MainWindow::prep_setting_stack_page(Gtk::Stack* stack) {
@@ -193,5 +200,9 @@ void MainWindow::on_full_screen_changed() {
     } else {
         fullscreenBtn.set_icon_name("window-grow-symbolic");
     }
+}
+
+void MainWindow::on_page_changed() {
+    lightning.set_is_being_displayed(stack->get_visible_child_name() == "lightning");
 }
 }  // namespace ui::windows

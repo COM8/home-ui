@@ -3,6 +3,7 @@ GTK4 Based UI for home automation using a Raspberry Pi.
 
 ## Building
 ```
+sudo dnf install libsoup3-devel
 ```
 
 ## Flatpak
@@ -17,8 +18,13 @@ flatpak install flathub org.gnome.Sdk//42 org.gnome.Platform//42
 ```
 
 ```
-sudo dnf install sqlite-devel libsoup-devel
-
+sudo dnf install sqlite-devel libsoup-devel ninja-build
+git clone https://gitlab.gnome.org/GNOME/libshumate.git
+cd libshumate
+meson build . -Dgtk_doc=false
+cd build
+ninja
+sudo ninja install
 ```
 
 #### Debian/Ubuntu

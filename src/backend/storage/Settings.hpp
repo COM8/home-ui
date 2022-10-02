@@ -43,6 +43,15 @@ struct SettingsData {
     std::string hassBearerToken{"Your hass bearer token"};
     std::vector<std::string> hassLights;
 
+    /**
+     * Lightning map configuration.
+     **/
+    double lightningMapCenterLat{48.137154};
+    double lightningMapCenterLong{11.576124};
+    double lightningMapHomeLat{48.137154};
+    double lightningMapHomeLong{11.576124};
+    double lightningMapZoomLevel{11};
+
 } __attribute__((aligned(128)));
 
 class Settings {
