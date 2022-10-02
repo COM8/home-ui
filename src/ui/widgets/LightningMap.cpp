@@ -57,6 +57,13 @@ void LightningMap::prep_widget() {
     // Zoom to marker:
     shumate_location_set_location(SHUMATE_LOCATION(viewPort), settings->data.lightningMapCenterLat, settings->data.lightningMapCenterLong);
     shumate_viewport_set_zoom_level(viewPort, settings->data.lightningMapZoomLevel);
+
+    // Viewport events:
+
+    //NOLINTNEXTLINE (cppcoreguidelines-pro-type-cstyle-cast)
+    g_signal_connect(G_OBJECT(viewPort), "notify::longitude", G_CALLBACK(LightningMap::on_viewport_changed), this);
+    //NOLINTNEXTLINE (cppcoreguidelines-pro-type-cstyle-cast)
+    g_signal_connect(G_OBJECT(viewPort), "notify::latitude", G_CALLBACK(LightningMap::on_viewport_changed), this);
 }
 
 void LightningMap::set_is_being_displayed(bool isBeingDisplayed) {
@@ -77,29 +84,64 @@ void LightningMap::set_is_being_displayed(bool isBeingDisplayed) {
 
 //-----------------------------Events:-----------------------------
 void LightningMap::on_new_lightnings(const std::vector<backend::lightning::Lightning>& lightnings) {
+    // Ensure we don't add lightnings to the UI from a background thread:
     lightningMarkersMutex.lock();
     for (const backend::lightning::Lightning& lightning : lightnings) {
-        LightningWidget widget(lightning, markerLayer);
-        lightningMarkers.push_back(std::move(widget));
+        std::chrono::seconds secondsElapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lightning.time);
+        if (secondsElapsed < std::chrono::minutes(1)) {
+            toAddLightnings.push_back(lightning);
+        }
     }
     lightningMarkersMutex.unlock();
 }
 
 bool LightningMap::on_tick() {
     lightningMarkersMutex.lock();
+    // Update/Remove existing markers:
     std::list<LightningWidget>::iterator marker = lightningMarkers.begin();
     while (marker != lightningMarkers.end()) {
         std::chrono::seconds secondsElapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - marker->get_lightning().time);
         if (secondsElapsed < std::chrono::minutes(1)) {
             marker->update();
-            marker++;
+            ++marker;
         } else {
-            lightningMarkers.erase(marker++);
             marker->remove();
+            marker = lightningMarkers.erase(marker);
         }
     }
+
+    // Add new markers:
+    for (const backend::lightning::Lightning& lightning : toAddLightnings) {
+        LightningWidget widget(lightning, markerLayer);
+        lightningMarkers.push_back(std::move(widget));
+    }
+    toAddLightnings.clear();
     lightningMarkersMutex.unlock();
     return true;
+}
+
+void LightningMap::on_viewport_changed(ShumateViewport* viewPort, G_GNUC_UNUSED GParamSpec* /*pspec*/, LightningMap* self) {
+    std::chrono::milliseconds sinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - self->lastLatLongUpdate);
+    if (sinceLastUpdate > std::chrono::milliseconds(500)) {
+        self->lastLatLongUpdate = std::chrono::steady_clock::now();
+
+        ShumateLocation* viewPortLocation = SHUMATE_LOCATION(viewPort);
+        double lat = shumate_location_get_latitude(viewPortLocation);
+        double lon = shumate_location_get_longitude(viewPortLocation);
+        double zoomFactor = shumate_viewport_get_zoom_level(viewPort);
+        double latTL = 0;
+        double lonTL = 0;
+        // NOLINTNEXTLINE (cppcoreguidelines-pro-type-cstyle-cast)
+        shumate_viewport_widget_coords_to_location(viewPort, GTK_WIDGET(self->gobj()), 0, 0, &latTL, &lonTL);
+        double latBR = 0;
+        double lonBR = 0;
+        // NOLINTNEXTLINE (cppcoreguidelines-pro-type-cstyle-cast)
+        shumate_viewport_widget_coords_to_location(viewPort, GTK_WIDGET(self->gobj()), static_cast<double>(self->get_width()), static_cast<double>(self->get_height()), &latBR, &lonBR);
+
+        backend::lightning::get_instance()->set_coordinates(lat, lon, zoomFactor, latTL, lonBR, latBR, lonTL);
+
+        SPDLOG_INFO("Viewport changed: {}/{}", lat, lon);
+    }
 }
 
 }  // namespace ui::widgets
