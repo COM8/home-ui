@@ -47,3 +47,4 @@ home_ui_settings.json
 #Flatpak
 flatpak_build_dir/
 .flatpak-builder/
+repo/
