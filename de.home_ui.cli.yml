@@ -23,6 +23,8 @@ modules:
         path: .
       - type: patch
         path: flatpak/patches/offline_build.patch
+      - type: patch
+        path: flatpak/patches/libshumate_lib_name.patch
     post-install:
       - install -D de.home_ui.cli.appdata.xml /app/share/metainfo/de.home_ui.cli.appdata.xml
     modules:
