@@ -29,7 +29,7 @@ void DepartureWidget::prep_widget() {
     label->set_width_chars(6);
     if (!departure->lineBackgroundColor.empty()) {
         Glib::RefPtr<Gtk::CssProvider> provider = Gtk::CssProvider::create();
-        provider->load_from_data(".departure-background { background-image: image(" + departure->lineBackgroundColor + "); }");
+        provider->load_from_data(".departure-background { color: #FFFFFF; background-image: image(" + departure->lineBackgroundColor + "); }");
         label->get_style_context()->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
         label->add_css_class("departure-background");
     }
