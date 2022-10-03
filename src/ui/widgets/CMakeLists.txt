@@ -19,4 +19,4 @@ add_library(ui_widgets STATIC MvgWidget.cpp
                               LightningWidget.cpp
                               LightningWidget.hpp)
 target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM backend_mvg backend_weather backend_deviceStatus backend_hass
-                                 PRIVATE logger backend_storage ui_utils re2::re2 ${SHUMATE_LIBRARIES} backend_lightning)
+                                 PRIVATE logger backend_storage ui_utils re2::re2 libshumate backend_lightning)
