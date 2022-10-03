@@ -39,6 +39,7 @@ void WeatherWidget::prep_widget() {
     todayCurrentBox->set_hexpand(true);
     todayCurrentBox->set_margin_start(10);
     todayCurrentBox->set_margin_end(10);
+    todayCurrentBox->set_halign(Gtk::Align::CENTER);
 
     // Current:
     Gtk::Box* currentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
@@ -49,6 +50,7 @@ void WeatherWidget::prep_widget() {
     currentLabel->set_markup("<span font_weight='bold'>Current</span>");
     currentBox->append(currentImage);
     currentImage.set_halign(Gtk::Align::CENTER);
+    currentImage.set_size_request(50, 50);
     currentBox->append(currentDescription);
     currentBox->append(currentTemp);
 
@@ -66,6 +68,7 @@ void WeatherWidget::prep_widget() {
     todayBox->append(*todayLabel);
     todayLabel->set_markup("<span font_weight='bold'>Today</span>");
     todayImage.set_halign(Gtk::Align::CENTER);
+    todayImage.set_size_request(50, 50);
     todayBox->append(todayImage);
     todayBox->append(todayDescription);
     todayBox->append(todayMinMaxTemp);
@@ -90,7 +93,7 @@ void WeatherWidget::update_weather_ui() {
     forecastMutex.lock();
     // Current:
     Glib::RefPtr<Gdk::Pixbuf> currentImagePixBuf = Gdk::Pixbuf::create_from_resource("/ui/openWeather/4x/" + forecast->weather.icon + ".png");
-    currentImagePixBuf = scale_image(currentImagePixBuf, 0.6);
+    currentImagePixBuf = scale_image(currentImagePixBuf, 1.0);
     currentImage.set(currentImagePixBuf);
 
     currentDescription.set_label(forecast->weather.description);
@@ -99,7 +102,7 @@ void WeatherWidget::update_weather_ui() {
     // Today:
     const backend::weather::Day* todayWeather = (forecast->daily).data();
     Glib::RefPtr<Gdk::Pixbuf> todayImagePixBuf = Gdk::Pixbuf::create_from_resource("/ui/openWeather/4x/" + todayWeather->weather.icon + ".png");
-    todayImagePixBuf = scale_image(todayImagePixBuf, 0.6);
+    todayImagePixBuf = scale_image(todayImagePixBuf, 1.0);
     todayImage.set(todayImagePixBuf);
     todayDescription.set_label(todayWeather->weather.description);
     todayMinMaxTemp.set_label("Min: " + std::to_string(static_cast<int>(std::round(todayWeather->temp.min))) + "°C Max: " + std::to_string(static_cast<int>(std::round(todayWeather->temp.max))) + "°C");
@@ -147,6 +150,7 @@ void WeatherWidget::update_weather_ui() {
         Glib::RefPtr<Gdk::Pixbuf> pixBuf = Gdk::Pixbuf::create_from_resource("/ui/openWeather/4x/" + hour.weather.icon + ".png");
         pixBuf = scale_image(pixBuf, 0.2);
         Gtk::Image* hourImage = Gtk::make_managed<Gtk::Image>(pixBuf);
+        hourImage->set_size_request(25, 25);
         hourBox->append(*hourImage);
         Gtk::Label* hourTempLabel = Gtk::make_managed<Gtk::Label>();
         hourBox->append(*hourTempLabel);
