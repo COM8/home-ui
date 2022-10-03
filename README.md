@@ -57,6 +57,9 @@ flatpak-builder --user --install --force-clean flatpak_build_dir de.home_ui.cli.
 ### Cross-Compiling
 In case you would like to cross-compile for the Raspberry Pi (aarch64), this can be done as follows:
 ```
+sudo dnf install qemu-system-arm qemu-user-static
+sudo systemctl restart systemd-binfmt.service
+
 flatpak install flathub org.gnome.Sdk/aarch64/42 org.gnome.Platform/aarch64/42
 flatpak-builder --arch=aarch64 --repo=repo --force-clean flatpak_build_dir de.home_ui.cli.yml
 flatpak build-bundle --arch=aarch64 ./repo/ de.home_ui.cli.flatpak de.home_ui.cli
