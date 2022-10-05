@@ -1,7 +1,8 @@
+name: Flatpak
+
 on:
   workflow_dispatch:
 
-name: Flatpak
 jobs:
   flatpak:
     name: "Flatpak"
