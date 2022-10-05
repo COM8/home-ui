@@ -63,10 +63,9 @@ sudo systemctl restart systemd-binfmt.service
 flatpak install flathub org.gnome.Sdk/aarch64/42 org.gnome.Platform/aarch64/42
 flatpak-builder --arch=aarch64 --repo=repo --force-clean flatpak_build_dir de.home_ui.cli.yml
 flatpak build-bundle --arch=aarch64 ./repo/ de.home_ui.cli.flatpak de.home_ui.cli
-flatpak --user remote-add --no-gpg-verify home-ui-repo repo
 
 # Copy the "repo" dir to the target system
-
+flatpak --user remote-add --no-gpg-verify home-ui-repo repo
 flatpak --user install home-ui-repo de.home_ui.cli
 ```
 
