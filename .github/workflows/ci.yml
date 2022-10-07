@@ -1,0 +1,42 @@
+name: CI
+
+on: [push]
+
+jobs:
+  debug-gcc:
+    runs-on: ubuntu-latest
+    container: com8/gtkmm4:latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: false
+    - name: "[Release g++] Build & Test"
+      uses: ashutoshvarma/action-cmake-build@master
+      with:
+        build-dir: ${{github.workspace}}/build
+        source-dir: ${{github.workspace}}
+        cc: gcc
+        cxx: g++
+        build-type: Debug
+        run-test: false
+        ctest-options: -V
+    
+  release-gcc:
+    runs-on: ubuntu-latest
+    container: com8/gtkmm4:latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: false
+    - name: "[Release g++] Build & Test"
+      uses: ashutoshvarma/action-cmake-build@master
+      with:
+        build-dir: ${{github.workspace}}/build
+        source-dir: ${{github.workspace}}
+        cc: gcc
+        cxx: g++
+        build-type: Release
+        run-test: false
+        ctest-options: -V
