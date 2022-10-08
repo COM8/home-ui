@@ -27,7 +27,7 @@ void toggle_light(const std::string& entity, const std::string& hassIp, const st
     SPDLOG_INFO("Light '{}' toggled.", entity);
 }
 
-void set_light_bightness(uint8_t brightness, const std::string& entity, const std::string& hassIp, const std::string& hassPort, const std::string& bearerToken) {
+void set_light_brightness(uint8_t brightness, const std::string& entity, const std::string& hassIp, const std::string& hassPort, const std::string& bearerToken) {
     SPDLOG_INFO("Setting brightness for light '{}' to '{}'...", entity, brightness);
     const nlohmann::json bodyJ{{"entity_id", entity}, {"brightness", brightness}};
     const std::string bodyStr = bodyJ.dump();

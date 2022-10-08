@@ -116,7 +116,7 @@ void LightWidget::on_brightness_value_changed(double value) {
         brightness = static_cast<uint8_t>(value);
     }
     const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
-    backend::hass::set_light_bightness(brightness, entity, settings->hassIp, settings->hassPort, settings->hassBearerToken);
+    backend::hass::set_light_brightness(brightness, entity, settings->hassIp, settings->hassPort, settings->hassBearerToken);
 }
 
 void LightWidget::on_color_temp_value_changed(double value) {
