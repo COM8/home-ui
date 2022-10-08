@@ -1,5 +1,7 @@
 #pragma once
 
+#include "backend/lightning/Lightning.hpp"
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -26,6 +28,8 @@ class LightWidget : public Gtk::Box {
     std::string friendlyName;
     std::mutex friendlyNameMutex{};
 
+    std::chrono::steady_clock::time_point lastFlicker = std::chrono::steady_clock::now();
+
  public:
     explicit LightWidget(std::string&& entity);
     LightWidget(LightWidget&&) = delete;
@@ -43,6 +47,7 @@ class LightWidget : public Gtk::Box {
     void update_name();
     void update_name_ui();
     void thread_run();
+    void flicker_light();
 
     //-----------------------------Events:-----------------------------
     void on_toggle_clicked();
@@ -50,5 +55,6 @@ class LightWidget : public Gtk::Box {
     void on_brightness_value_changed(double value);
     void on_color_temp_value_changed(double value);
     void on_color_set();
+    void on_new_lightnings(const std::vector<backend::lightning::Lightning>& lightnings);
 };
 }  // namespace ui::widgets

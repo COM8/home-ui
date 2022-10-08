@@ -1,9 +1,13 @@
 #include "LightWidget.hpp"
 #include "backend/hass/HassHelper.hpp"
+#include "backend/lightning/LightningHelper.hpp"
 #include "backend/storage/Settings.hpp"
+#include "spdlog/spdlog.h"
 #include <chrono>
 #include <cstdint>
 #include <string>
+#include <thread>
+#include <bits/chrono.h>
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/rgba.h>
 #include <gtkmm/box.h>
@@ -18,6 +22,10 @@ LightWidget::LightWidget(std::string&& entity) : Gtk::Box(Gtk::Orientation::VERT
     prep_widget();
     disp.connect(sigc::mem_fun(*this, &LightWidget::on_notification_from_update_thread));
     start_thread();
+
+    backend::lightning::LightningHelper* lightningHelper = backend::lightning::get_instance();
+    assert(lightningHelper);
+    lightningHelper->newLightningsEventHandler.append([this](const std::vector<backend::lightning::Lightning>& lightnings) { this->on_new_lightnings(lightnings); });
 }
 
 LightWidget::~LightWidget() {
@@ -101,6 +109,18 @@ void LightWidget::stop_thread() {
     updateThread = nullptr;
 }
 
+void LightWidget::flicker_light() {
+    std::chrono::seconds sinceLastFlicker = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - lastFlicker);
+    SPDLOG_INFO("Time since last flicker: {}", sinceLastFlicker.count());
+    if (sinceLastFlicker > std::chrono::seconds(5)) {
+        lastFlicker = std::chrono::steady_clock::now();
+
+        toggle();
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        toggle();
+    }
+}
+
 //-----------------------------Events:-----------------------------
 void LightWidget::on_toggle_clicked() { toggle(); }
 
@@ -142,5 +162,13 @@ void LightWidget::on_color_set() {
     s *= 100;
     const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
     backend::hass::set_light_color(h, s, entity, settings->hassIp, settings->hassPort, settings->hassBearerToken);
+}
+
+void LightWidget::on_new_lightnings(const std::vector<backend::lightning::Lightning>& /*lightnings*/) {
+    const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
+    assert(settings);
+    if (backend::hass::is_light_on(entity, settings->hassIp, settings->hassPort, settings->hassBearerToken)) {
+        flicker_light();
+    }
 }
 }  // namespace ui::widgets

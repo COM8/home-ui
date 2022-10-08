@@ -108,7 +108,7 @@ std::optional<std::string> parse_friendly_name(const std::string& response) {
     } catch (nlohmann::json::parse_error& e) {
         SPDLOG_ERROR("Error parsing friendly name from '{}' with: {}", response, e.what());
     }
-    return nullptr;
+    return std::nullopt;
 }
 
 std::string get_friendly_name(const std::string& entity, const std::string& hassIp, const std::string& hassPort, const std::string& bearerToken) {
@@ -132,5 +132,39 @@ std::string get_friendly_name(const std::string& entity, const std::string& hass
         return *friendlyName;
     }
     return entity;
+}
+
+std::string parse_state(const std::string& response) {
+    try {
+        nlohmann::json j = nlohmann::json::parse(response);
+        if (!j.contains("state")) {
+            SPDLOG_ERROR("Error parsing state from '{}' with: 'state' not found", response);
+            return "";
+        }
+        std::string state;
+        j["state"].get_to(state);
+        return state;
+    } catch (nlohmann::json::parse_error& e) {
+        SPDLOG_ERROR("Error parsing state from '{}' with: {}", response, e.what());
+    }
+    return "";
+}
+
+bool is_light_on(const std::string& entity, const std::string& hassIp, const std::string& hassPort, const std::string& bearerToken) {
+    SPDLOG_INFO("Requesting friendly name for '{}'...", entity);
+    cpr::Response response = cpr::Get(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/states/" + entity},
+                                      cpr::Bearer{bearerToken},
+                                      cpr::Header{{"Content-Type", "application/json"}});
+    if (response.status_code != 200) {
+        if (response.error.code == cpr::ErrorCode::OK) {
+            SPDLOG_ERROR("Requesting friendly name for '{}' failed. Status code: {}\nResponse: {}", entity, response.status_code, response.text);
+        } else {
+            SPDLOG_ERROR("Requesting friendly name for '{}' failed. Status code: {}\nError: {}", entity, response.status_code, response.error.message);
+        }
+        return false;
+    }
+
+    SPDLOG_DEBUG("Received from HASS: {}", response.text);
+    return parse_state(response.text) == "on";
 }
 }  // namespace backend::hass
