@@ -89,7 +89,6 @@ modules:
         sources:
           - type: git
             url: https://github.com/google/re2.git
-            tag: 2022-06-01
             commit: 5723bb8950318135ed9cf4fc76bed988a087f536
       - name: shumate
         buildsystem: meson
