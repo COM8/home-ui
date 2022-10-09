@@ -9,7 +9,7 @@
 namespace backend::systemUtils {
 void activate_screensaver() {
     // NOLINTNEXTLINE (cert-env33-c, concurrency-mt-unsafe)
-    int result = std::system("xdg-screensaver activate");
+    int result = std::system("/usr/bin/xdg-screensaver activate");
     SPDLOG_INFO("Screen locked with: {}", result);
 }
 
