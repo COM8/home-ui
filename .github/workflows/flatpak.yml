@@ -26,6 +26,6 @@ jobs:
         platforms: arm64
     - uses: flatpak/flatpak-github-actions/flatpak-builder@v4
       with:
-        bundle: palette.flatpak
+        bundle: de.home_ui.cli.flatpak
         manifest-path: de.home_ui.cli.yml
         arch: ${{ matrix.arch }}
