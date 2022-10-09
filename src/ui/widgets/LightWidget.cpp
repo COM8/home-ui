@@ -7,7 +7,6 @@
 #include <cstdint>
 #include <string>
 #include <thread>
-#include <bits/chrono.h>
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/rgba.h>
 #include <gtkmm/box.h>
