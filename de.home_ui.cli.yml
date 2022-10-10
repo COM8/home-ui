@@ -12,6 +12,7 @@ finish-args:
   - --device=dri
   - --filesystem=home
   - --filesystem=/sys
+  - --filesystem=/usr/bin
 modules:
   - name: home_ui
     buildsystem: cmake-ninja
