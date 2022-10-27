@@ -11,7 +11,7 @@ finish-args:
   - --own-name=de.home_ui.cli
   - --device=dri
   - --filesystem=home
-  - --filesystem=/sys
+  - --filesystem=/sys/class/backlight/rpi_backlight
   - --filesystem=/usr/bin
 modules:
   - name: home_ui
