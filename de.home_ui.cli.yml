@@ -7,12 +7,13 @@ finish-args:
   - --share=ipc
   - --socket=fallback-x11
   - --socket=wayland
+  - --socket=session-bus
   - --share=network
   - --own-name=de.home_ui.cli
   - --device=dri
   - --filesystem=home
+  - --filesystem=host
   - --filesystem=/sys/class/backlight/rpi_backlight
-  - --filesystem=/usr/bin
 modules:
   - name: home_ui
     buildsystem: cmake-ninja
@@ -20,6 +21,7 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
       - -DHOME_UI_STATIC_ANALYZE=OFF
       - -DHOME_UI_ENABLE_LINTING=OFF
+      - -DHOME_UI_FLATPAK_BUILD=ON
     sources:
       - type: dir
         path: .
