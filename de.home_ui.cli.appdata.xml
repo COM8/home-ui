@@ -2,7 +2,7 @@
 <component type="desktop">
   <!--Created with jdAppdataEdit 3.0-->
   <id>de.home_ui.cli</id>
-  <name>TUMexam Client</name>
+  <name>Home UI</name>
   <summary>GTK4 Based UI for home automation using a Raspberry Pi.</summary>
   <developer_name>Fabian Sauter</developer_name>
   <launchable type="desktop-id">de.home_ui.cli.desktop</launchable>
