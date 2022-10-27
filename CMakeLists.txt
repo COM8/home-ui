@@ -29,6 +29,7 @@ message(STATUS "C++ Home UI Options")
 message(STATUS "=======================================================")
 home_ui_option(HOME_UI_STATIC_ANALYZE "Set to ON to enable the GCC 10 static analysis. If enabled, HOME_UI_ENABLE_LINTING has to be disabled." OFF)
 home_ui_option(HOME_UI_ENABLE_LINTING "Set to ON to enable clang linting. If enabled, HOME_UI_STATIC_ANALYZE has to be disabled." OFF)
+home_ui_option(HOME_UI_FLATPAK_BUILD "Set to ON in case it is built for flatpak." OFF)
 message(STATUS "=======================================================")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
@@ -46,6 +47,10 @@ if(${HOME_UI_ENABLE_LINTING})
     include(clang-tidy)
 else()
     message(STATUS "Linting is disabled")
+endif()
+
+if(HOME_UI_FLATPAK_BUILD)
+    add_compile_definitions(HOME_UI_FLATPAK_BUILD=1)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")

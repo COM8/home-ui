@@ -2,19 +2,32 @@
 #include "logger/Logger.hpp"
 #include <cstdint>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <string>
 #include <spdlog/spdlog.h>
 
 namespace backend::systemUtils {
 void activate_screensaver() {
+#ifdef HOME_UI_FLATPAK_BUILD
+    const std::filesystem::path xdgPath = "/var/run/host/usr/bin/xdg-screensaver activate";
+#else
+    const std::filesystem::path xdgPath = "/usr/bin/xdg-screensaver activate";
+#endif  // HOME_UI_FLATPAK_BUILD
+
     // NOLINTNEXTLINE (cert-env33-c, concurrency-mt-unsafe)
-    int result = std::system("/usr/bin/xdg-screensaver activate");
+    int result = std::system(xdgPath.c_str());
     SPDLOG_INFO("Screen locked with: {}", result);
 }
 
 uint8_t get_screen_brightness() {
-    std::ifstream file("/sys/class/backlight/rpi_backlight/brightness");
+#ifdef HOME_UI_FLATPAK_BUILD
+    const std::filesystem::path brightnessPath = "/var/run/host/sys/class/backlight/rpi_backlight/brightness";
+#else
+    const std::filesystem::path brightnessPath = "/sys/class/backlight/rpi_backlight/brightness";
+#endif  // HOME_UI_FLATPAK_BUILD
+
+    std::ifstream file(brightnessPath);
     if (file.is_open()) {
         try {
             std::string brightnessStr;
