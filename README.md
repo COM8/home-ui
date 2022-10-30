@@ -1,8 +1,8 @@
-# home-ui
+# Home-UI
 GTK4 Based UI for home automation using a Raspberry Pi.
 
 ## Examples
-TODO
+![Overview in dark mode](images/overview_dark.png)
 
 ## Building
 
