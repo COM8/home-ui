@@ -108,7 +108,7 @@ include_directories(${SHUMATE_INCLUDE_DIRS})
 clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
 
 FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
-                         GIT_TAG 3baa80e66bbaba40f5aa0d9409d99d0727f80e1a)
+                         GIT_TAG 1cb247a6dae0fddbb27ffb3ea63506b0fd83e636)
 set(CPR_BUILD_TESTS OFF CACHE INTERNAL " " FORCE)
 set(CURL_CA_FALLBACK ON CACHE INTERNAL " " FORCE) # Workaround for failing SSL requests
 FetchContent_MakeAvailable(cpr)
