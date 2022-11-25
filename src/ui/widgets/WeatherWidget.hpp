@@ -23,7 +23,7 @@ class WeatherWidget : public Gtk::Box {
     Gtk::Label currentTemp;
     Gtk::Image todayImage;
     Gtk::Label todayDescription;
-    Gtk::Label todayMinMaxTemp;
+    Gtk::Label todayMinmaxColorTemp;
     Gtk::Box courseBox{Gtk::Orientation::HORIZONTAL};
     Gtk::Label suggestedOutfit;
 

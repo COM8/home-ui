@@ -1,5 +1,6 @@
 #pragma once
 
+#include "backend/hass/HassHelper.hpp"
 #include "backend/lightning/Lightning.hpp"
 #include <chrono>
 #include <memory>
@@ -25,8 +26,8 @@ class LightWidget : public Gtk::Box {
     bool shouldRun{false};
     std::unique_ptr<std::thread> updateThread{nullptr};
     Glib::Dispatcher disp;
-    std::string friendlyName;
-    std::mutex friendlyNameMutex{};
+    std::shared_ptr<backend::hass::HassLight> lightInfo;
+    std::mutex lightInfoMutex{};
 
     std::chrono::steady_clock::time_point lastFlicker = std::chrono::steady_clock::now();
 
@@ -44,8 +45,8 @@ class LightWidget : public Gtk::Box {
     void start_thread();
     void stop_thread();
 
-    void update_name();
-    void update_name_ui();
+    void update_light_info();
+    void update_light_info_ui();
     void thread_run();
     void flicker_light();
 

@@ -71,7 +71,7 @@ void WeatherWidget::prep_widget() {
     todayImage.set_size_request(50, 50);
     todayBox->append(todayImage);
     todayBox->append(todayDescription);
-    todayBox->append(todayMinMaxTemp);
+    todayBox->append(todayMinmaxColorTemp);
 
     // Course:
     courseBox.set_homogeneous(true);
@@ -105,7 +105,7 @@ void WeatherWidget::update_weather_ui() {
     todayImagePixBuf = scale_image(todayImagePixBuf, 1.0);
     todayImage.set(todayImagePixBuf);
     todayDescription.set_label(todayWeather->weather.description);
-    todayMinMaxTemp.set_label("Min: " + std::to_string(static_cast<int>(std::round(todayWeather->temp.min))) + "°C Max: " + std::to_string(static_cast<int>(std::round(todayWeather->temp.max))) + "°C");
+    todayMinmaxColorTemp.set_label("Min: " + std::to_string(static_cast<int>(std::round(todayWeather->temp.min))) + "°C Max: " + std::to_string(static_cast<int>(std::round(todayWeather->temp.max))) + "°C");
 
     // Suggested Outfit:
     std::string outfit;

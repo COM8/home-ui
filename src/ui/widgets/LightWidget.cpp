@@ -9,6 +9,7 @@
 #include <thread>
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/rgba.h>
+#include <gtkmm/adjustment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
@@ -48,16 +49,19 @@ void LightWidget::prep_widget() {
     append(*colorBox);
     colorBox->append(colorBtn);
     colorBtn.signal_color_set().connect(sigc::mem_fun(*this, &LightWidget::on_color_set));
+    colorBtn.set_sensitive(false);
     colorBox->append(brightnessBtn);
     brightnessBtn.set_margin_start(10);
     brightnessBtn.set_icons({"keyboard-brightness-symbolic"});
     brightnessBtn.set_tooltip_text("Change the light brightness");
     brightnessBtn.signal_value_changed().connect(sigc::mem_fun(*this, &LightWidget::on_brightness_value_changed));
+    brightnessBtn.set_sensitive(false);
     colorBox->append(colorTempBtn);
     colorTempBtn.set_margin_start(10);
     colorTempBtn.set_icons({"temperature-symbolic"});
     colorTempBtn.set_tooltip_text("Change the color temperature");
     colorTempBtn.signal_value_changed().connect(sigc::mem_fun(*this, &LightWidget::on_color_temp_value_changed));
+    colorTempBtn.set_sensitive(false);
 }
 
 void LightWidget::toggle() {
@@ -67,28 +71,59 @@ void LightWidget::toggle() {
     toggleBtn.set_sensitive(true);
 }
 
-void LightWidget::update_name_ui() {
-    friendlyNameMutex.lock();
-    nameLabel.set_markup("<span font_weight='bold'>" + friendlyName + "</span>");
-    friendlyNameMutex.unlock();
+void LightWidget::update_light_info_ui() {
+    lightInfoMutex.lock();
+    nameLabel.set_markup("<span font_weight='bold'>" + (lightInfo ? lightInfo->friendlyName : entity) + "</span>");
+    if (!lightInfo) {
+        colorTempBtn.set_sensitive(false);
+        brightnessBtn.set_sensitive(false);
+        colorBtn.set_sensitive(false);
+        set_visible(false);
+        lightInfoMutex.unlock();
+        return;
+    }
+
+    backend::hass::HassLight info = *lightInfo;
+    lightInfoMutex.unlock();
+
+    if (!info.inRbgMode) {
+        colorTempBtn.set_value(info.colorTemp);
+        colorTempBtn.set_adjustment(Gtk::Adjustment::create(info.colorTemp, info.minColorTemp, info.maxColorTemp));
+    }
+    colorTempBtn.set_sensitive(true);
+
+    brightnessBtn.set_value(info.brightness);
+    brightnessBtn.set_sensitive(true);
+
+    float r = 0;
+    float g = 0;
+    float b = 0;
+    gtk_hsv_to_rgb(static_cast<float>(info.hue / 360), static_cast<float>(info.saturation / 100), 1, &r, &g, &b);
+
+    colorBtn.set_rgba(Gdk::RGBA(r, g, b));
+    colorBtn.set_sensitive(true);
+
+    set_visible(true);
 }
 
-void LightWidget::update_name() {
-    SPDLOG_INFO("Updating friendly name for '{}'...", entity);
+void LightWidget::update_light_info() {
+    SPDLOG_INFO("Updating light info for '{}'...", entity);
     const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
-    std::string friendlyName = backend::hass::get_friendly_name(entity, settings->hassIp, settings->hassPort, settings->hassBearerToken);
-    friendlyNameMutex.lock();
-    this->friendlyName = friendlyName;
-    friendlyNameMutex.unlock();
+
+    std::shared_ptr<backend::hass::HassLight> lightInfo = backend::hass::get_light_info(entity, settings->hassIp, settings->hassPort, settings->hassBearerToken);
+
+    lightInfoMutex.lock();
+    this->lightInfo = lightInfo;
+    lightInfoMutex.unlock();
     disp.emit();
-    SPDLOG_INFO("Friendly name updated for '{}'.", entity);
+    SPDLOG_INFO("Light info updated for '{}'.", entity);
 }
 
 void LightWidget::thread_run() {
     SPDLOG_INFO("Light thread for '{}' started.", entity);
     while (shouldRun) {
-        update_name();
-        std::this_thread::sleep_for(std::chrono::minutes(5));
+        update_light_info();
+        std::this_thread::sleep_for(std::chrono::seconds(30));
     }
     SPDLOG_INFO("Light thread for '{}' stoped.", entity);
 }
@@ -123,9 +158,16 @@ void LightWidget::flicker_light() {
 //-----------------------------Events:-----------------------------
 void LightWidget::on_toggle_clicked() { toggle(); }
 
-void LightWidget::on_notification_from_update_thread() { update_name_ui(); }
+void LightWidget::on_notification_from_update_thread() { update_light_info_ui(); }
 
 void LightWidget::on_brightness_value_changed(double value) {
+    lightInfoMutex.lock();
+    if (!lightInfo || (lightInfo->brightness == value)) {
+        lightInfoMutex.unlock();
+        return;
+    }
+    lightInfoMutex.unlock();
+
     uint8_t brightness = 255;
     if (value > 255) {
         brightness = 255;
@@ -139,14 +181,23 @@ void LightWidget::on_brightness_value_changed(double value) {
 }
 
 void LightWidget::on_color_temp_value_changed(double value) {
-    uint8_t temp = 255;
-    if (value > 127) {
-        temp = 255;
-    } else if (value < 1) {
-        temp = 1;
+    lightInfoMutex.lock();
+    if (!lightInfo || lightInfo->colorTemp == value) {
+        lightInfoMutex.unlock();
+        return;
+    }
+    backend::hass::HassLight info = *lightInfo;
+    lightInfoMutex.unlock();
+
+    uint16_t temp = 0;
+    if (value > info.maxColorTemp) {
+        temp = info.maxColorTemp;
+    } else if (value < info.minColorTemp) {
+        temp = info.minColorTemp;
     } else {
         temp = static_cast<uint8_t>(value);
     }
+
     const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
     backend::hass::set_light_color_temp(temp, entity, settings->hassIp, settings->hassPort, settings->hassBearerToken);
 }
@@ -159,6 +210,14 @@ void LightWidget::on_color_set() {
     gtk_rgb_to_hsv(color.get_red(), color.get_green(), color.get_blue(), &h, &s, &v);
     h *= 360;
     s *= 100;
+
+    lightInfoMutex.lock();
+    if (!lightInfo || (lightInfo->hue == h && lightInfo->saturation == s)) {
+        lightInfoMutex.unlock();
+        return;
+    }
+    lightInfoMutex.unlock();
+
     const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
     backend::hass::set_light_color(h, s, entity, settings->hassIp, settings->hassPort, settings->hassBearerToken);
 }
