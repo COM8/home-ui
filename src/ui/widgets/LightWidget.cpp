@@ -110,7 +110,7 @@ void LightWidget::stop_thread() {
 
 void LightWidget::flicker_light() {
     std::chrono::seconds sinceLastFlicker = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - lastFlicker);
-    SPDLOG_INFO("Time since last flicker: {}", sinceLastFlicker.count());
+    SPDLOG_INFO("Time since last flicker: {}s", sinceLastFlicker.count());
     if (sinceLastFlicker > std::chrono::seconds(5)) {
         lastFlicker = std::chrono::steady_clock::now();
 
