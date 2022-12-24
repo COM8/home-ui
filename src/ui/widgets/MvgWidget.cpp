@@ -40,8 +40,9 @@ void MvgWidget::prep_widget() {
 
     // Transparent background:
     Glib::RefPtr<Gtk::CssProvider> provider = Gtk::CssProvider::create();
-    departureslistBox.get_style_context()->add_provider(provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    departureslistBox.add_css_class("transparent-background");
+    departureslistBox.add_css_class("boxed-list");
+    departureslistBox.set_margin_start(10);
+    departureslistBox.set_margin_end(10);
 
     scroll->set_child(departureslistBox);
     scroll->set_vexpand(true);
@@ -50,32 +51,40 @@ void MvgWidget::prep_widget() {
 }
 
 void MvgWidget::update_departures_ui() {
-    // Clear existing items:
-    for (DepartureWidget& widget : departureWidgets) {
-        departureslistBox.remove(*static_cast<Gtk::Widget*>(&widget));
-    }
-    departureWidgets.clear();
+    const size_t MAX_COUNT = 10;
+    size_t newMaxWidgetCount = departures.size() >= MAX_COUNT ? MAX_COUNT : departures.size();
 
+    // Remove widgets that are too many:
+    while (departureWidgets.size() > newMaxWidgetCount) {
+        DepartureWidget& widget = departureWidgets.back();
+        departureslistBox.remove(*static_cast<Gtk::Widget*>(&widget));
+        departureWidgets.pop_back();
+    }
+
+    // Add widgets so there are enough:
+    while (departureWidgets.size() < newMaxWidgetCount) {
+        departureslistBox.append(departureWidgets.emplace_back());
+        if (departureWidgets.size() == 1) {
+            departureWidgets.back().set_margin_top(5);
+        }
+    }
+
+    // Load optional regex:
     std::optional<re2::RE2> reg = std::nullopt;
     backend::storage::Settings* settings = backend::storage::get_settings_instance();
     if (settings->data.mvgDestRegexEnabled) {
         reg.emplace(settings->data.mvgDestRegex);
     }
 
-    // Add new items:
-    bool first = true;
+    // Update items:
     departuresMutex.lock();
-    for (const std::shared_ptr<backend::mvg::Departure>& departure : departures) {
-        if (settings->data.mvgDestRegexEnabled && !re2::RE2::FullMatch(departure->destination, *reg)) {
+    for (size_t i = 0, e = 0; i < newMaxWidgetCount; i++) {
+        if (reg && !re2::RE2::FullMatch(departures[i]->destination, *reg)) {
             continue;
         }
-        departureWidgets.emplace_back(departure);
-        DepartureWidget* depW = &departureWidgets.back();
-        departureslistBox.append(*depW);
-        if (first) {
-            depW->set_margin_top(5);
-            first = false;
-        }
+
+        departureWidgets[e].set_departure(departures[i]);
+        e++;
     }
     departuresMutex.unlock();
 }
