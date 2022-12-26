@@ -31,14 +31,14 @@ The home-ui can be built and installed using Flatpak.
 ```
 sudo dnf install flatpak flatpak-builder
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub org.gnome.Sdk//42 org.gnome.Platform//42
+flatpak install flathub org.gnome.Sdk/43 org.gnome.Platform/43
 ```
 
 #### Debian/Ubuntu
 ```
 sudo apt install flatpak flatpak-builder
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub org.gnome.Sdk//42 org.gnome.Platform//42
+flatpak install flathub org.gnome.Sdk/43 org.gnome.Platform/43
 ```
 
 ### Building
