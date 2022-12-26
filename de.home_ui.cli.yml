@@ -111,8 +111,8 @@ modules:
           - -Dbuild-tests=false
         sources:
           - type: archive
-            url: https://download.gnome.org/sources/gtkmm/4.9/gtkmm-4.9.1.tar.xz
-            sha256: 236304d559d0369c1543abfe9e0fee6920f1615ffaafcf51a50407d05702ad3e
+            url: https://download.gnome.org/sources/gtkmm/4.8/gtkmm-4.8.0.tar.xz
+            sha256: c82786d46e2b07346b6397ca7f1929d952f4922fa5c9db3dee08498b9a136cf5
         cleanup:
           - /include
         modules:
