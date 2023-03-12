@@ -1,7 +1,7 @@
-#include "MvgWidget.hpp"
+#include "DbWidget.hpp"
 #include "DepartureWidget.hpp"
-#include "backend/mvg/Departure.hpp"
-#include "backend/mvg/MvgHelper.hpp"
+#include "backend/db/DbHelper.hpp"
+#include "backend/db/Departure.hpp"
 #include "backend/storage/Serializer.hpp"
 #include "logger/Logger.hpp"
 #include <backend/storage/Settings.hpp>
@@ -22,19 +22,19 @@
 #include <spdlog/spdlog.h>
 
 namespace ui::widgets {
-MvgWidget::MvgWidget() {
+DbWidget::DbWidget() {
     prep_widget();
-    disp.connect(sigc::mem_fun(*this, &MvgWidget::on_notification_from_update_thread));
+    disp.connect(sigc::mem_fun(*this, &DbWidget::on_notification_from_update_thread));
     start_thread();
 }
 
-MvgWidget::~MvgWidget() {
+DbWidget::~DbWidget() {
     if (shouldRun) {
         stop_thread();
     }
 }
 
-void MvgWidget::prep_widget() {
+void DbWidget::prep_widget() {
     Gtk::ScrolledWindow* scroll = Gtk::make_managed<Gtk::ScrolledWindow>();
     departureslistBox.set_selection_mode(Gtk::SelectionMode::NONE);
 
@@ -50,51 +50,58 @@ void MvgWidget::prep_widget() {
     append(*scroll);
 }
 
-void MvgWidget::update_departures_ui() {
-    const size_t MAX_COUNT = 10;
+void DbWidget::update_departures_ui() {
+    static const size_t MAX_COUNT = 10;
     size_t newMaxWidgetCount = departures.size() >= MAX_COUNT ? MAX_COUNT : departures.size();
 
+    // Load optional regex:
+    std::optional<re2::RE2> reg = std::nullopt;
+    backend::storage::Settings* settings = backend::storage::get_settings_instance();
+    if (settings->data.dbDestRegexEnabled) {
+        reg.emplace(settings->data.dbDestRegex);
+    }
+
+    departuresMutex.lock();
+
+    std::vector<std::shared_ptr<backend::db::Departure>> validDepartures;
+    validDepartures.reserve(departures.size());
+
+    // Filter departures and make sure we do not show more than allowed:
+    for (size_t i = 0; i < departures.size() && newMaxWidgetCount > validDepartures.size(); i++) {
+        if (reg && !re2::RE2::FullMatch(departures[i]->destination, *reg)) {
+            continue;
+        }
+        validDepartures.push_back(departures[i]);
+    }
+
     // Remove widgets that are too many:
-    while (departureWidgets.size() > newMaxWidgetCount) {
+    while (departureWidgets.size() > validDepartures.size()) {
         DepartureWidget& widget = departureWidgets.back();
         departureslistBox.remove(*static_cast<Gtk::Widget*>(&widget));
         departureWidgets.pop_back();
     }
 
     // Add widgets so there are enough:
-    while (departureWidgets.size() < newMaxWidgetCount) {
+    while (departureWidgets.size() < validDepartures.size()) {
         departureslistBox.append(departureWidgets.emplace_back());
         if (departureWidgets.size() == 1) {
             departureWidgets.back().set_margin_top(5);
         }
     }
 
-    // Load optional regex:
-    std::optional<re2::RE2> reg = std::nullopt;
-    backend::storage::Settings* settings = backend::storage::get_settings_instance();
-    if (settings->data.mvgDestRegexEnabled) {
-        reg.emplace(settings->data.mvgDestRegex);
-    }
-
     // Update items:
-    departuresMutex.lock();
-    for (size_t i = 0, e = 0; i < newMaxWidgetCount; i++) {
-        if (reg && !re2::RE2::FullMatch(departures[i]->destination, *reg)) {
-            continue;
-        }
-
-        departureWidgets[e].set_departure(departures[i]);
-        e++;
+    for (size_t i = 0; i < validDepartures.size(); i++) {
+        departureWidgets[i].set_departure(departures[i]);
     }
     departuresMutex.unlock();
 }
 
-void MvgWidget::update_departures() {
+void DbWidget::update_departures() {
     SPDLOG_INFO("Updating departures...");
-    std::vector<std::shared_ptr<backend::mvg::Departure>> departures;
+    std::vector<std::shared_ptr<backend::db::Departure>> departures;
     try {
         backend::storage::Settings* settings = backend::storage::get_settings_instance();
-        departures = backend::mvg::request_departures(settings->data.mvgLocation, settings->data.mvgBusEnabled, settings->data.mvgUBahnEnabled, settings->data.mvgSBahnEnabled, settings->data.mvgTramEnabled);
+        departures = backend::db::request_departures(settings->data.dbStationId, settings->data.dbLookAhead, settings->data.dbLookBehind);
     } catch (const std::exception& e) {
         SPDLOG_ERROR("Failed to update departures with: {}", e.what());
     }
@@ -105,7 +112,7 @@ void MvgWidget::update_departures() {
     SPDLOG_INFO("Departures updated.");
 }
 
-void MvgWidget::thread_run() {
+void DbWidget::thread_run() {
     SPDLOG_INFO("Departure thread started.");
     while (shouldRun) {
         update_departures();
@@ -114,14 +121,14 @@ void MvgWidget::thread_run() {
     SPDLOG_INFO("Departure thread stoped.");
 }
 
-void MvgWidget::start_thread() {
+void DbWidget::start_thread() {
     assert(!updateThread);
     assert(!shouldRun);
     shouldRun = true;
-    updateThread = std::make_unique<std::thread>(&MvgWidget::thread_run, this);
+    updateThread = std::make_unique<std::thread>(&DbWidget::thread_run, this);
 }
 
-void MvgWidget::stop_thread() {
+void DbWidget::stop_thread() {
     assert(updateThread);
     assert(shouldRun);
     shouldRun = false;
@@ -130,6 +137,6 @@ void MvgWidget::stop_thread() {
 }
 
 //-----------------------------Events:-----------------------------
-void MvgWidget::on_notification_from_update_thread() { update_departures_ui(); }
+void DbWidget::on_notification_from_update_thread() { update_departures_ui(); }
 
 }  // namespace ui::widgets

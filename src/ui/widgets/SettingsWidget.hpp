@@ -7,13 +7,9 @@
 namespace ui::widgets {
 class SettingsWidget : public Gtk::Box {
  private:
-    Gtk::CheckButton mvgBusCBtn{"Bus"};
-    Gtk::CheckButton mvgUbanCBtn{"U-Bahn"};
-    Gtk::CheckButton mvgSbahnCBtn{"S-Bahn"};
-    Gtk::CheckButton mvgTramCBtn{"Tram"};
-    Gtk::Entry mvgLocation;
-    Gtk::CheckButton mvgDestRegexCBtn{"Use destination regex"};
-    Gtk::Entry mvgDestRegex;
+    Gtk::Entry dbStationId;
+    Gtk::CheckButton dbDestRegexCBtn{"Use destination regex"};
+    Gtk::Entry dbDestRegex;
 
     Gtk::Entry weatherLat;
     Gtk::Entry weatherLong;

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "ui/widgets/ActionsWidget.hpp"
+#include "ui/widgets/DbWidget.hpp"
 #include "ui/widgets/DeviceStatusWidget.hpp"
 #include "ui/widgets/LightningMap.hpp"
-#include "ui/widgets/MvgWidget.hpp"
 #include "ui/widgets/SettingsWidget.hpp"
 #include "ui/widgets/WeatherWidget.hpp"
 #include <gtkmm.h>
@@ -19,7 +19,7 @@ class MainWindow : public Gtk::Window {
     bool cursorHidden{false};
     Gtk::Stack* stack{nullptr};
     Gtk::Button inspectorBtn;
-    widgets::MvgWidget mvg{};
+    widgets::DbWidget mvg{};
     widgets::WeatherWidget weather{};
     widgets::ActionsWidget actions{};
     widgets::DeviceStatusWidget deviceStatus{};

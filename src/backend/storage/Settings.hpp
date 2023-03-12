@@ -12,16 +12,16 @@
 namespace backend::storage {
 struct SettingsData {
     /**
-     * The location id, where the MVG widget should fetch departures for.
-     * Default value: "de:09162:530" (München Alte Heide)
+     * The location id, where the DB widget should fetch departures for.
+     * Default value: "8003022" (Hulb)
+     * Head over to [0] and get the location ID from there (Developer Tools -> XHR)
+     * [0]: https://bahn.expert/
      **/
-    std::string mvgLocation{"de:09162:530"};
-    bool mvgBusEnabled = true;
-    bool mvgTramEnabled = true;
-    bool mvgSBahnEnabled = true;
-    bool mvgUBahnEnabled = true;
-    std::string mvgDestRegex{"Garching, Forschungszentrum"};
-    bool mvgDestRegexEnabled = true;
+    std::string dbStationId = "8003022";
+    int dbLookAhead = 10;
+    int dbLookBehind = 10;
+    std::string dbDestRegex{"Garching, Forschungszentrum"};
+    bool dbDestRegexEnabled = true;
 
     /**
      * The open weather map location for the weather forecast. 

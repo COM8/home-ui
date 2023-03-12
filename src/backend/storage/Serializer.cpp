@@ -7,13 +7,11 @@
 namespace backend::storage {
 void to_json(nlohmann::json& j, const SettingsData& d) {
     j = nlohmann::json{
-        {"mvgLocation", d.mvgLocation},
-        {"mvgBusEnabled", d.mvgBusEnabled},
-        {"mvgSBahnEnabled", d.mvgSBahnEnabled},
-        {"mvgUBahnEnabled", d.mvgUBahnEnabled},
-        {"mvgTramEnabled", d.mvgTramEnabled},
-        {"mvgDestRegex", d.mvgDestRegex},
-        {"mvgDestRegexEnabled", d.mvgDestRegexEnabled},
+        {"dbStationId", d.dbStationId},
+        {"dbLookAhead", d.dbLookAhead},
+        {"dbLookBehind", d.dbLookBehind},
+        {"dbDestRegex", d.dbDestRegex},
+        {"dbDestRegexEnabled", d.dbDestRegexEnabled},
 
         {"weatherLat", d.weatherLat},
         {"weatherLong", d.weatherLong},
@@ -34,13 +32,11 @@ void to_json(nlohmann::json& j, const SettingsData& d) {
 }
 
 void from_json(const nlohmann::json& j, SettingsData& d) {
-    j.at("mvgLocation").get_to(d.mvgLocation);
-    j.at("mvgBusEnabled").get_to(d.mvgBusEnabled);
-    j.at("mvgSBahnEnabled").get_to(d.mvgSBahnEnabled);
-    j.at("mvgUBahnEnabled").get_to(d.mvgUBahnEnabled);
-    j.at("mvgTramEnabled").get_to(d.mvgTramEnabled);
-    j.at("mvgDestRegex").get_to(d.mvgDestRegex);
-    j.at("mvgDestRegexEnabled").get_to(d.mvgDestRegexEnabled);
+    j.at("dbStationId").get_to(d.dbStationId);
+    j.at("dbLookAhead").get_to(d.dbLookAhead);
+    j.at("dbLookBehind").get_to(d.dbLookBehind);
+    j.at("dbDestRegex").get_to(d.dbDestRegex);
+    j.at("dbDestRegexEnabled").get_to(d.dbDestRegexEnabled);
 
     j.at("weatherLat").get_to(d.weatherLat);
     j.at("weatherLong").get_to(d.weatherLong);

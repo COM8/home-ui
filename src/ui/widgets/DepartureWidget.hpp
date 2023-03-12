@@ -1,6 +1,6 @@
 #pragma once
 
-#include "backend/mvg/Departure.hpp"
+#include "backend/db/Departure.hpp"
 #include <memory>
 #include <gtkmm/box.h>
 #include <gtkmm/cssprovider.h>
@@ -10,7 +10,7 @@
 namespace ui::widgets {
 class DepartureWidget : public Gtk::ListBoxRow {
  private:
-    std::shared_ptr<backend::mvg::Departure> departure;
+    std::shared_ptr<backend::db::Departure> departure;
 
     Gtk::Box mainBox{Gtk::Orientation::VERTICAL};
     Gtk::Box headerBox{Gtk::Orientation::HORIZONTAL};
@@ -18,6 +18,7 @@ class DepartureWidget : public Gtk::ListBoxRow {
     Glib::RefPtr<Gtk::CssProvider> labelProvider = Gtk::CssProvider::create();
     Gtk::Label canceled{"❌"};
     Gtk::Label destination{};
+    Gtk::Label delayMsg{};
 
     Gtk::Box infoBox{Gtk::Orientation::HORIZONTAL};
     Gtk::Label depInfo{};
@@ -35,6 +36,6 @@ class DepartureWidget : public Gtk::ListBoxRow {
     void update_departure_ui();
 
  public:
-    void set_departure(std::shared_ptr<backend::mvg::Departure> departure);
+    void set_departure(std::shared_ptr<backend::db::Departure> departure);
 };
 }  // namespace ui::widgets

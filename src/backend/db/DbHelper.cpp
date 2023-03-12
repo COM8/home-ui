@@ -1,19 +1,17 @@
-#include "MvgHelper.hpp"
+#include "DbHelper.hpp"
 #include "cpr/body.h"
 #include "logger/Logger.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 #include <cpr/api.h>
 #include <cpr/cpr.h>
-#include <cpr/cprtypes.h>
-#include <cpr/payload.h>
 #include <cpr/response.h>
 #include <cpr/session.h>
 #include <spdlog/spdlog.h>
 
-namespace backend::mvg {
-cpr::Url build_url(const std::string& stationId, bool bus, bool ubahn, bool sbahn, bool tram) {
-    return cpr::Url("https://www.mvg.de/api/fahrinfo/departure/" + stationId + "?footway=0" + "&bus=" + (bus ? "true" : "false") + "&ubahn=" + (ubahn ? "true" : "false") + "&sbahn=" + (sbahn ? "true" : "false") + "&tram=" + (tram ? "true" : "false"));
+namespace backend::db {
+cpr::Url build_url(const std::string& stationId, size_t lookAhead, size_t lookBehind) {
+    return cpr::Url("https://bahn.expert/api/iris/v2/abfahrten/" + stationId + "?lookahead=" + std::to_string(lookAhead) + "&lookbehind=" + std::to_string(lookBehind));
 }
 
 std::vector<std::shared_ptr<Departure>> parse_response(const std::string& response) {
@@ -24,7 +22,7 @@ std::vector<std::shared_ptr<Departure>> parse_response(const std::string& respon
         if (!j.contains("departures")) {
             SPDLOG_ERROR("Failed to parse departures. 'departures' filed missing.");
             SPDLOG_DEBUG("Response: {}", response);
-            return std::vector<std::shared_ptr<Departure>>();
+            return {};
         }
 
         nlohmann::json::array_t array;
@@ -45,12 +43,12 @@ std::vector<std::shared_ptr<Departure>> parse_response(const std::string& respon
     } catch (nlohmann::json::parse_error& e) {
         SPDLOG_ERROR("Error parsing departures from '{}' with: {}", response, e.what());
     }
-    return std::vector<std::shared_ptr<Departure>>();
+    return {};
 }
 
-std::vector<std::shared_ptr<Departure>> request_departures(const std::string& stationId, bool bus, bool ubahn, bool sbahn, bool tram) {
+std::vector<std::shared_ptr<Departure>> request_departures(const std::string& stationId, size_t lookAhead, size_t lookBehind) {
     cpr::Session session;
-    session.SetUrl(build_url(stationId, bus, ubahn, sbahn, tram));
+    session.SetUrl(build_url(stationId, lookAhead, lookBehind));
 
     SPDLOG_DEBUG("Requesting departure times for station '{}'...", stationId);
     cpr::Response response = session.Get();
@@ -60,9 +58,9 @@ std::vector<std::shared_ptr<Departure>> request_departures(const std::string& st
         } else {
             SPDLOG_ERROR("Requesting departures failed. Status code: {}\nError: {}", response.status_code, response.error.message);
         }
-        return std::vector<std::shared_ptr<Departure>>();
+        return {};
     }
     SPDLOG_DEBUG("Departures requested successfully. Parsing...");
     return parse_response(response.text);
 }
-}  // namespace backend::mvg
+}  // namespace backend::db

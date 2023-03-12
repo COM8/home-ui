@@ -39,37 +39,24 @@ void SettingsWidget::prep_widget() {
 
     // MVG:
     Gtk::Label* mvgSectionLabel = Gtk::make_managed<Gtk::Label>();
-    mvgSectionLabel->set_markup("<span font_weight='bold'>MVG</span>");
+    mvgSectionLabel->set_markup("<span font_weight='bold'>DB</span>");
     mvgSectionLabel->set_halign(Gtk::Align::START);
     contentBox->append(*mvgSectionLabel);
-    Gtk::FlowBox* productGrid = Gtk::make_managed<Gtk::FlowBox>();
-    productGrid->set_selection_mode(Gtk::SelectionMode::NONE);
-    productGrid->set_homogeneous(false);
-    productGrid->set_hexpand(true);
-    mvgUbanCBtn.set_active(true);
-    productGrid->append(mvgUbanCBtn);
-    mvgSbahnCBtn.set_active(true);
-    productGrid->append(mvgSbahnCBtn);
-    mvgBusCBtn.set_active(true);
-    productGrid->append(mvgBusCBtn);
-    mvgTramCBtn.set_active(true);
-    productGrid->append(mvgTramCBtn);
-    contentBox->append(*productGrid);
-    Gtk::Label* mvgLocationLabel = Gtk::make_managed<Gtk::Label>();
-    mvgLocationLabel->set_text("Location for departures:");
-    mvgLocationLabel->set_margin_top(10);
-    mvgLocationLabel->set_halign(Gtk::Align::START);
-    contentBox->append(*mvgLocationLabel);
-    mvgLocation.set_placeholder_text("de:09162:530");
-    contentBox->append(mvgLocation);
-    Gtk::Label* mvgDestRegexLabel = Gtk::make_managed<Gtk::Label>();
-    mvgDestRegexLabel->set_text("Destination regex:");
-    mvgDestRegexLabel->set_margin_top(10);
-    mvgDestRegexLabel->set_halign(Gtk::Align::START);
-    contentBox->append(*mvgDestRegexLabel);
-    mvgDestRegex.set_placeholder_text("Garching, Forschungszentrum");
-    contentBox->append(mvgDestRegex);
-    contentBox->append(mvgDestRegexCBtn);
+    Gtk::Label* dbLocationLabel = Gtk::make_managed<Gtk::Label>();
+    dbLocationLabel->set_text("Location for departures:");
+    dbLocationLabel->set_margin_top(10);
+    dbLocationLabel->set_halign(Gtk::Align::START);
+    contentBox->append(*dbLocationLabel);
+    dbStationId.set_placeholder_text("8003022");
+    contentBox->append(dbStationId);
+    Gtk::Label* dbDestRegexLabel = Gtk::make_managed<Gtk::Label>();
+    dbDestRegexLabel->set_text("Destination regex:");
+    dbDestRegexLabel->set_margin_top(10);
+    dbDestRegexLabel->set_halign(Gtk::Align::START);
+    contentBox->append(*dbDestRegexLabel);
+    dbDestRegex.set_placeholder_text("Hulb");
+    contentBox->append(dbDestRegex);
+    contentBox->append(dbDestRegexCBtn);
 
     // Weather:
     Gtk::Label* weatherSectionLabel = Gtk::make_managed<Gtk::Label>();
@@ -113,13 +100,9 @@ void SettingsWidget::prep_widget() {
 void SettingsWidget::load_settings() {
     SPDLOG_INFO("Loading settings...");
     const backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
-    mvgBusCBtn.set_active(settings->mvgBusEnabled);
-    mvgUbanCBtn.set_active(settings->mvgUBahnEnabled);
-    mvgSbahnCBtn.set_active(settings->mvgSBahnEnabled);
-    mvgTramCBtn.set_active(settings->mvgTramEnabled);
-    mvgLocation.set_text(settings->mvgLocation);
-    mvgDestRegex.set_text(settings->mvgDestRegex);
-    mvgDestRegexCBtn.set_active(settings->mvgDestRegexEnabled);
+    dbStationId.set_text(settings->dbStationId);
+    dbDestRegex.set_text(settings->dbDestRegex);
+    dbDestRegexCBtn.set_active(settings->dbDestRegexEnabled);
 
     weatherLat.set_text(settings->weatherLat);
     weatherLong.set_text(settings->weatherLong);
@@ -130,13 +113,9 @@ void SettingsWidget::load_settings() {
 void SettingsWidget::save_settings() {
     SPDLOG_INFO("Saving settings...");
     backend::storage::SettingsData* settings = &(backend::storage::get_settings_instance()->data);
-    settings->mvgBusEnabled = mvgBusCBtn.get_active();
-    settings->mvgUBahnEnabled = mvgUbanCBtn.get_active();
-    settings->mvgSBahnEnabled = mvgSbahnCBtn.get_active();
-    settings->mvgTramEnabled = mvgTramCBtn.get_active();
-    settings->mvgLocation = mvgLocation.get_text();
-    settings->mvgDestRegex = mvgDestRegex.get_text();
-    settings->mvgDestRegexEnabled = mvgDestRegexCBtn.get_active();
+    settings->dbStationId = dbStationId.get_text();
+    settings->dbDestRegex = dbDestRegex.get_text();
+    settings->dbDestRegexEnabled = dbDestRegexCBtn.get_active();
 
     settings->weatherLat = weatherLat.get_text();
     settings->weatherLong = weatherLong.get_text();

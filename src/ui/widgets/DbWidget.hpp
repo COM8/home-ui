@@ -1,6 +1,6 @@
 #pragma once
 
-#include "backend/mvg/Departure.hpp"
+#include "backend/db/Departure.hpp"
 #include "ui/widgets/DepartureWidget.hpp"
 #include <memory>
 #include <mutex>
@@ -12,7 +12,7 @@
 #include <gtkmm/listbox.h>
 
 namespace ui::widgets {
-class MvgWidget : public Gtk::Box {
+class DbWidget : public Gtk::Box {
  private:
     Gtk::ListBox departureslistBox{};
     Gtk::Box loadingBox{Gtk::Orientation::VERTICAL};
@@ -20,17 +20,17 @@ class MvgWidget : public Gtk::Box {
     bool shouldRun{false};
     std::unique_ptr<std::thread> updateThread{nullptr};
     Glib::Dispatcher disp;
-    std::vector<std::shared_ptr<backend::mvg::Departure>> departures{};
+    std::vector<std::shared_ptr<backend::db::Departure>> departures{};
     std::vector<DepartureWidget> departureWidgets{};
     std::mutex departuresMutex{};
 
  public:
-    MvgWidget();
-    MvgWidget(MvgWidget&&) = delete;
-    MvgWidget(const MvgWidget&) = delete;
-    MvgWidget& operator=(MvgWidget&&) = delete;
-    MvgWidget& operator=(const MvgWidget&) = delete;
-    ~MvgWidget() override;
+    DbWidget();
+    DbWidget(DbWidget&&) = delete;
+    DbWidget(const DbWidget&) = delete;
+    DbWidget& operator=(DbWidget&&) = delete;
+    DbWidget& operator=(const DbWidget&) = delete;
+    ~DbWidget() override;
 
  private:
     void prep_widget();
