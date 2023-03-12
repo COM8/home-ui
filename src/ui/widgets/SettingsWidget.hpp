@@ -10,6 +10,8 @@ class SettingsWidget : public Gtk::Box {
     Gtk::Entry dbStationId;
     Gtk::CheckButton dbDestRegexCBtn{"Use destination regex"};
     Gtk::Entry dbDestRegex;
+    Gtk::CheckButton dbStopsAtRegexCBtn{"Use stops at regex"};
+    Gtk::Entry dbStopsAtRegex;
 
     Gtk::Entry weatherLat;
     Gtk::Entry weatherLong;

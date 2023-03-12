@@ -37,11 +37,11 @@ void SettingsWidget::prep_widget() {
     Gtk::Box* contentBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
     scroll->set_child(*contentBox);
 
-    // MVG:
-    Gtk::Label* mvgSectionLabel = Gtk::make_managed<Gtk::Label>();
-    mvgSectionLabel->set_markup("<span font_weight='bold'>DB</span>");
-    mvgSectionLabel->set_halign(Gtk::Align::START);
-    contentBox->append(*mvgSectionLabel);
+    // DB:
+    Gtk::Label* dbSectionLabel = Gtk::make_managed<Gtk::Label>();
+    dbSectionLabel->set_markup("<span font_weight='bold'>DB</span>");
+    dbSectionLabel->set_halign(Gtk::Align::START);
+    contentBox->append(*dbSectionLabel);
     Gtk::Label* dbLocationLabel = Gtk::make_managed<Gtk::Label>();
     dbLocationLabel->set_text("Location for departures:");
     dbLocationLabel->set_margin_top(10);
@@ -57,6 +57,14 @@ void SettingsWidget::prep_widget() {
     dbDestRegex.set_placeholder_text("Hulb");
     contentBox->append(dbDestRegex);
     contentBox->append(dbDestRegexCBtn);
+    Gtk::Label* dbStopsAtRegexLabel = Gtk::make_managed<Gtk::Label>();
+    dbStopsAtRegexLabel->set_text("Stops at regex:");
+    dbStopsAtRegexLabel->set_margin_top(10);
+    dbStopsAtRegexLabel->set_halign(Gtk::Align::START);
+    contentBox->append(*dbStopsAtRegexLabel);
+    dbStopsAtRegex.set_placeholder_text("Goldberg");
+    contentBox->append(dbStopsAtRegex);
+    contentBox->append(dbStopsAtRegexCBtn);
 
     // Weather:
     Gtk::Label* weatherSectionLabel = Gtk::make_managed<Gtk::Label>();
@@ -103,6 +111,8 @@ void SettingsWidget::load_settings() {
     dbStationId.set_text(settings->dbStationId);
     dbDestRegex.set_text(settings->dbDestRegex);
     dbDestRegexCBtn.set_active(settings->dbDestRegexEnabled);
+    dbStopsAtRegex.set_text(settings->dbStopsAtRegex);
+    dbStopsAtRegexCBtn.set_active(settings->dbStopsAtRegexEnabled);
 
     weatherLat.set_text(settings->weatherLat);
     weatherLong.set_text(settings->weatherLong);
@@ -116,6 +126,8 @@ void SettingsWidget::save_settings() {
     settings->dbStationId = dbStationId.get_text();
     settings->dbDestRegex = dbDestRegex.get_text();
     settings->dbDestRegexEnabled = dbDestRegexCBtn.get_active();
+    settings->dbStopsAtRegex = dbStopsAtRegex.get_text();
+    settings->dbStopsAtRegexEnabled = dbStopsAtRegexCBtn.get_active();
 
     settings->weatherLat = weatherLat.get_text();
     settings->weatherLong = weatherLong.get_text();

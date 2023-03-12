@@ -19,7 +19,7 @@ class MainWindow : public Gtk::Window {
     bool cursorHidden{false};
     Gtk::Stack* stack{nullptr};
     Gtk::Button inspectorBtn;
-    widgets::DbWidget mvg{};
+    widgets::DbWidget db{};
     widgets::WeatherWidget weather{};
     widgets::ActionsWidget actions{};
     widgets::DeviceStatusWidget deviceStatus{};

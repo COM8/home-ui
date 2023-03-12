@@ -54,11 +54,18 @@ void DbWidget::update_departures_ui() {
     static const size_t MAX_COUNT = 10;
     size_t newMaxWidgetCount = departures.size() >= MAX_COUNT ? MAX_COUNT : departures.size();
 
-    // Load optional regex:
-    std::optional<re2::RE2> reg = std::nullopt;
     backend::storage::Settings* settings = backend::storage::get_settings_instance();
+
+    // Load optional destination regex:
+    std::optional<re2::RE2> destReg = std::nullopt;
     if (settings->data.dbDestRegexEnabled) {
-        reg.emplace(settings->data.dbDestRegex);
+        destReg.emplace(settings->data.dbDestRegex);
+    }
+
+    // Load optional stops at regex:
+    std::optional<re2::RE2> stopsAtReg = std::nullopt;
+    if (settings->data.dbStopsAtRegexEnabled) {
+        stopsAtReg.emplace(settings->data.dbStopsAtRegex);
     }
 
     departuresMutex.lock();
@@ -68,9 +75,25 @@ void DbWidget::update_departures_ui() {
 
     // Filter departures and make sure we do not show more than allowed:
     for (size_t i = 0; i < departures.size() && newMaxWidgetCount > validDepartures.size(); i++) {
-        if (reg && !re2::RE2::FullMatch(departures[i]->destination, *reg)) {
+        // Matches the destination:
+        if (destReg && !re2::RE2::FullMatch(departures[i]->destination, *destReg)) {
             continue;
         }
+
+        // Matches stops at:
+        if (stopsAtReg) {
+            bool found = false;
+            for (const backend::db::Stop& stop : departures[i]->nextStops) {
+                if (re2::RE2::FullMatch(stop.name, *stopsAtReg)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                continue;
+            }
+        }
+
         validDepartures.push_back(departures[i]);
     }
 
@@ -91,7 +114,7 @@ void DbWidget::update_departures_ui() {
 
     // Update items:
     for (size_t i = 0; i < validDepartures.size(); i++) {
-        departureWidgets[i].set_departure(departures[i]);
+        departureWidgets[i].set_departure(validDepartures[i]);
     }
     departuresMutex.unlock();
 }

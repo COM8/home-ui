@@ -98,8 +98,8 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     Gtk::Box* rightBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
     rightBox->set_homogeneous(true);
     mainBox->append(*rightBox);
-    // MVG:
-    rightBox->append(mvg);
+    // DB:
+    rightBox->append(db);
 
     // Weather:
     rightBox->append(weather);

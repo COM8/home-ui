@@ -12,6 +12,8 @@ void to_json(nlohmann::json& j, const SettingsData& d) {
         {"dbLookBehind", d.dbLookBehind},
         {"dbDestRegex", d.dbDestRegex},
         {"dbDestRegexEnabled", d.dbDestRegexEnabled},
+        {"dbStopsAtRegex", d.dbStopsAtRegex},
+        {"dbStopsAtRegexEnabled", d.dbStopsAtRegexEnabled},
 
         {"weatherLat", d.weatherLat},
         {"weatherLong", d.weatherLong},
@@ -37,6 +39,8 @@ void from_json(const nlohmann::json& j, SettingsData& d) {
     j.at("dbLookBehind").get_to(d.dbLookBehind);
     j.at("dbDestRegex").get_to(d.dbDestRegex);
     j.at("dbDestRegexEnabled").get_to(d.dbDestRegexEnabled);
+    j.at("dbStopsAtRegex").get_to(d.dbStopsAtRegex);
+    j.at("dbStopsAtRegexEnabled").get_to(d.dbStopsAtRegexEnabled);
 
     j.at("weatherLat").get_to(d.weatherLat);
     j.at("weatherLong").get_to(d.weatherLong);

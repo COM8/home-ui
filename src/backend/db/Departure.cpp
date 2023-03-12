@@ -144,12 +144,10 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
         departureObj.at("delay").get_to(delay);
     }
 
-    if (!departureObj.contains("cancelled")) {
-        SPDLOG_ERROR("Failed to parse departure. 'cancelled' filed missing.");
-        return nullptr;
-    }
     bool cancelled = false;
-    departureObj.at("cancelled").get_to(cancelled);
+    if (departureObj.contains("cancelled")) {
+        departureObj.at("cancelled").get_to(cancelled);
+    }
 
     if (!j.contains("productClass")) {
         SPDLOG_ERROR("Failed to parse departure. 'productClass' filed missing.");

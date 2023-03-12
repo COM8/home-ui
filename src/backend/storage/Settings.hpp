@@ -22,6 +22,8 @@ struct SettingsData {
     int dbLookBehind = 10;
     std::string dbDestRegex{"Garching, Forschungszentrum"};
     bool dbDestRegexEnabled = true;
+    std::string dbStopsAtRegex{"Goldberg"};
+    bool dbStopsAtRegexEnabled = true;
 
     /**
      * The open weather map location for the weather forecast. 
