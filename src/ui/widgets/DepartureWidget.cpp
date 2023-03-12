@@ -1,5 +1,6 @@
 #include "DepartureWidget.hpp"
 #include "backend/date/date.hpp"
+#include "backend/db/Departure.hpp"
 #include <cassert>
 #include <chrono>
 #include <cstddef>
@@ -52,7 +53,31 @@ void DepartureWidget::update_departure_ui() {
     static const std::string S_BAHN_COLOR = "#408335";
     labelProvider->load_from_data(".departure-background { color: #FFFFFF; background-image: image(" + S_BAHN_COLOR + "); }");
     canceled.set_visible(departure->canceled);
-    destination.set_label(departure->destination);
+
+    std::string destinationStr;
+
+    if (departure->destination != departure->destinationScheduled) {
+        destinationStr += "<span strikethrough='true' strikethrough_color='#8b0000'>";
+        destinationStr += departure->destinationScheduled;
+        destinationStr += "</span> ";
+    }
+    destinationStr += "<b>" + departure->destination + "</b>";
+
+    std::string viaStr;
+    for (const backend::db::Stop& stop : departure->nextStops) {
+        if (stop.showVia) {
+            if (!viaStr.empty()) {
+                viaStr += ", ";
+            }
+            viaStr += stop.name;
+        }
+    }
+
+    if (!viaStr.empty()) {
+        destinationStr += " via " + viaStr;
+    }
+
+    destination.set_markup(destinationStr);
 
     // Info:
     if (!departure->canceled) {
@@ -122,7 +147,7 @@ void DepartureWidget::update_departure_ui() {
 
     // Delay Info:
     if (!departure->infoMessages.empty()) {
-        std::string msg = "<span foreground='#8b0000'>";
+        std::string msg = "⚠️ <span foreground='#8b0000'>";
 
         for (size_t i = 0; i < departure->infoMessages.size(); i++) {
             msg += departure->infoMessages[i];

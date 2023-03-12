@@ -2,12 +2,14 @@
 #include "backend/date/date.hpp"
 #include "logger/Logger.hpp"
 #include "nlohmann/json.hpp"
+#include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <ctime>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 #include <bits/types/time_t.h>
 #include <spdlog/spdlog.h>
@@ -41,6 +43,58 @@ std::vector<std::string> parse_info_messages(const nlohmann::json& j) {
         result.emplace_back(text);
     }
     return result;
+}
+
+std::string get_destination(const std::vector<Stop>& nextStops) {
+    assert(!nextStops.empty());
+
+    for (size_t i = nextStops.size(); i >= 1; i--) {
+        if (!nextStops[i - 1].canceled) {
+            return nextStops[i - 1].name;
+        }
+    }
+    return nextStops[nextStops.size() - 1].name;
+}
+
+std::tuple<std::vector<Stop>, std::vector<Stop>> parse_stops(const nlohmann::json& j, const std::string& curStopPlace) {
+    std::vector<Stop> prevStops;
+    std::vector<Stop> nextStops;
+
+    if (!j.contains("route")) {
+        SPDLOG_ERROR("Failed to parse departure. 'route' filed missing.");
+        return {};
+    }
+    nlohmann::json::array_t routeArr;
+    j.at("route").get_to(routeArr);
+
+    bool nextStop = false;
+    for (const nlohmann::json& jStop : routeArr) {
+        if (!jStop.contains("name")) {
+            SPDLOG_WARN("Failed to parse departure route stop. 'name' filed missing. Skipping...");
+            continue;
+        }
+        std::string name;
+        jStop.at("name").get_to(name);
+
+        bool cancelled = false;
+        if (jStop.contains("cancelled")) {
+            jStop.at("cancelled").get_to(cancelled);
+        }
+
+        bool showVia = false;
+        if (jStop.contains("showVia")) {
+            jStop.at("showVia").get_to(showVia);
+        }
+
+        if (nextStop || name == curStopPlace) {
+            nextStop = true;
+            nextStops.emplace_back(Stop{name, cancelled, showVia});
+        } else {
+            prevStops.emplace_back(Stop{name, cancelled, showVia});
+        }
+    }
+
+    return std::make_tuple(std::move(prevStops), std::move(nextStops));
 }
 
 std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
@@ -85,12 +139,10 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
     std::string platformScheduled;
     departureObj.at("scheduledPlatform").get_to(platformScheduled);
 
-    if (!departureObj.contains("delay")) {
-        SPDLOG_ERROR("Failed to parse departure. 'delay' filed missing.");
-        return nullptr;
-    }
     int delay{0};
-    departureObj.at("delay").get_to(delay);
+    if (departureObj.contains("delay")) {
+        departureObj.at("delay").get_to(delay);
+    }
 
     if (!departureObj.contains("cancelled")) {
         SPDLOG_ERROR("Failed to parse departure. 'cancelled' filed missing.");
@@ -110,8 +162,8 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
         SPDLOG_ERROR("Failed to parse departure. 'scheduledDestination' filed missing.");
         return nullptr;
     }
-    std::string destination;
-    j.at("scheduledDestination").get_to(destination);
+    std::string destinationScheduled;
+    j.at("scheduledDestination").get_to(destinationScheduled);
 
     if (!j.contains("train")) {
         SPDLOG_ERROR("Failed to parse departure. 'train' filed missing.");
@@ -127,7 +179,24 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
     std::string trainName;
     trainObj.at("name").get_to(trainName);
 
+    if (!j.contains("currentStopPlace")) {
+        SPDLOG_ERROR("Failed to parse departure. 'currentStopPlace' filed missing.");
+        return nullptr;
+    }
+    nlohmann::json curStopPlaceObj;
+    j.at("currentStopPlace").get_to(curStopPlaceObj);
+
+    if (!curStopPlaceObj.contains("name")) {
+        SPDLOG_ERROR("Failed to parse departure. 'name' filed missing.");
+        return nullptr;
+    }
+    std::string curStopPlace;
+    curStopPlaceObj.at("name").get_to(curStopPlace);
+
     std::vector<std::string> infoMessages = parse_info_messages(j);
+
+    std::tuple<std::vector<Stop>, std::vector<Stop>> prevNextStops = parse_stops(j, curStopPlace);
+    std::string destination = get_destination(std::get<1>(prevNextStops));
 
     return std::make_shared<Departure>(Departure{
         depTime,
@@ -139,6 +208,10 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
         productClass,
         trainName,
         destination,
+        destinationScheduled,
+        curStopPlace,
+        std::get<0>(prevNextStops),
+        std::get<1>(prevNextStops),
         std::move(infoMessages)});
 }
 }  // namespace backend::db

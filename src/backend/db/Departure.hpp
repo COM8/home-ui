@@ -7,6 +7,12 @@
 #include <vector>
 
 namespace backend::db {
+struct Stop {
+    std::string name;
+    bool canceled;
+    bool showVia;
+} __attribute__((aligned(64)));
+
 struct Departure {
     std::chrono::system_clock::time_point depTime;
     std::chrono::system_clock::time_point depTimeScheduled;
@@ -16,7 +22,13 @@ struct Departure {
     bool canceled;
     std::string productClass;
     std::string trainName;
+
     std::string destination;
+    std::string destinationScheduled;
+
+    std::string curStopPlace;
+    std::vector<Stop> prevStops;
+    std::vector<Stop> nextStops;
 
     std::vector<std::string> infoMessages;
 
