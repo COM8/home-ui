@@ -6,11 +6,14 @@
 #include "logger/Logger.hpp"
 #include <backend/storage/Settings.hpp>
 #include <cassert>
+#include <chrono>
 #include <cstddef>
 #include <memory>
 #include <optional>
 #include <thread>
 #include <vector>
+#include <date/date.h>
+#include <date/tz.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/enums.h>
@@ -68,6 +71,9 @@ void DbWidget::update_departures_ui() {
         stopsAtReg.emplace(settings->data.dbStopsAtRegex);
     }
 
+    const date::time_zone* tz = date::current_zone();
+    auto now = date::make_zoned(tz, std::chrono::system_clock::now() - std::chrono::minutes(1)).get_local_time();
+
     departuresMutex.lock();
 
     std::vector<std::shared_ptr<backend::db::Departure>> validDepartures;
@@ -75,6 +81,13 @@ void DbWidget::update_departures_ui() {
 
     // Filter departures and make sure we do not show more than allowed:
     for (size_t i = 0; i < departures.size() && newMaxWidgetCount > validDepartures.size(); i++) {
+        auto depTime = date::make_zoned(tz, departures[i]->depTime).get_local_time();
+
+        // Skip departures that are past:
+        if (depTime < now) {
+            continue;
+        }
+
         // Matches the destination:
         if (destReg && !re2::RE2::FullMatch(departures[i]->destination, *destReg)) {
             continue;
