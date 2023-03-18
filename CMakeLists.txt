@@ -123,7 +123,7 @@ FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
 FetchContent_MakeAvailable(spdlog)
 
 FetchContent_Declare(re2 GIT_REPOSITORY https://github.com/google/re2.git
-                         GIT_TAG 2022-06-01)
+                         GIT_TAG 2023-03-01)
 FetchContent_MakeAvailable(re2)
 
 FetchContent_Declare(websocket GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
