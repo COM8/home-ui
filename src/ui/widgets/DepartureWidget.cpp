@@ -109,7 +109,7 @@ void DepartureWidget::update_departure_ui() {
         }
 
         // Departure Time:
-        if (departure->delay != 0) {
+        if (departure->depTime != departure->depTimeScheduled) {
             depInfoStr += "<span strikethrough='true' strikethrough_color='#8b0000'>";
             depInfoStr += date::format("%H:%M", depTimeScheduled);
             depInfoStr += "</span> ";
