@@ -1,5 +1,4 @@
 #include "Departure.hpp"
-#include "backend/date/date.hpp"
 #include "logger/Logger.hpp"
 #include "nlohmann/json.hpp"
 #include <cassert>
@@ -11,7 +10,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
-#include <bits/types/time_t.h>
+#include <date/date.h>
 #include <spdlog/spdlog.h>
 
 namespace backend::db {

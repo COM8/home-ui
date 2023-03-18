@@ -1,12 +1,14 @@
 #include "DepartureWidget.hpp"
-#include "backend/date/date.hpp"
 #include "backend/db/Departure.hpp"
+#include "spdlog/spdlog.h"
 #include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
 #include <string>
+#include <date/date.h>
+#include <date/tz.h>
 #include <gtkmm/box.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/enums.h>
@@ -82,7 +84,13 @@ void DepartureWidget::update_departure_ui() {
     // Info:
     if (!departure->canceled) {
         std::string depInfoStr;
-        std::chrono::system_clock::duration diff = departure->depTime - std::chrono::system_clock::now();
+
+        const date::time_zone* tz = date::current_zone();
+        auto depTimeScheduled = date::make_zoned(tz, departure->depTimeScheduled).get_local_time();
+        auto depTime = date::make_zoned(tz, departure->depTime).get_local_time();
+        auto now = date::make_zoned(tz, std::chrono::system_clock::now()).get_local_time();
+
+        auto diff = depTime - now;
         auto minutes = std::chrono::duration_cast<std::chrono::minutes>(diff).count();
 
         // Platform changes:
@@ -103,7 +111,7 @@ void DepartureWidget::update_departure_ui() {
         // Departure Time:
         if (departure->delay != 0) {
             depInfoStr += "<span strikethrough='true' strikethrough_color='#8b0000'>";
-            depInfoStr += date::format("%H:%M", departure->depTimeScheduled);
+            depInfoStr += date::format("%H:%M", depTimeScheduled);
             depInfoStr += "</span> ";
 
             depInfoStr += "<span font_weight='bold' foreground='";
@@ -113,11 +121,11 @@ void DepartureWidget::update_departure_ui() {
                 depInfoStr += "#008b00";
             }
             depInfoStr += "'>";
-            depInfoStr += date::format("%H:%M", departure->depTime);
+            depInfoStr += date::format("%H:%M", depTime);
             depInfoStr += " </span> ";
 
         } else {
-            depInfoStr += date::format("%H:%M", departure->depTime) + " ";
+            depInfoStr += date::format("%H:%M", depTime) + " ";
         }
 
         // Departure minutes:

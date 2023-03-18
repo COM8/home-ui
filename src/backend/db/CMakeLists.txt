@@ -5,5 +5,5 @@ add_library(backend_db Departure.cpp
                        DbHelper.cpp
                        DbHelper.hpp)
 
-target_link_libraries(backend_db PRIVATE logger cpr::cpr backend_date
+target_link_libraries(backend_db PRIVATE logger cpr::cpr date::date date::date-tz
                                   PUBLIC nlohmann_json::nlohmann_json)

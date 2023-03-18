@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 
-add_subdirectory(date)
 add_subdirectory(storage)
 add_subdirectory(db)
 add_subdirectory(weather)

@@ -117,7 +117,7 @@ FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git
                           GIT_TAG v3.10.5)
 FetchContent_MakeAvailable(json)
 
-set(SPDLOG_INSTALL ON)
+set(SPDLOG_INSTALL ON CACHE INTERNAL " " FORCE)
 FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
                             GIT_TAG v1.9.2)
 FetchContent_MakeAvailable(spdlog)
@@ -128,6 +128,11 @@ FetchContent_MakeAvailable(re2)
 
 FetchContent_Declare(websocket GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
                                GIT_TAG v11.4.3)
+
+set(BUILD_TZ_LIB ON CACHE INTERNAL " " FORCE)
+FetchContent_Declare(date GIT_REPOSITORY https://github.com/HowardHinnant/date.git
+                          GIT_TAG 50acf3ffd8b09deeec6980be824f2ac54a50b095)
+FetchContent_MakeAvailable(date)
 set(USE_TLS ON)
 set(USE_ZLIB OFF)
 FetchContent_MakeAvailable(websocket)
