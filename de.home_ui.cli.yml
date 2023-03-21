@@ -103,6 +103,15 @@ modules:
             sha256: 77a192f0dfec082b8de20b1939f3adf03eed41114d49fdaae2bbb2729ceb015a
         cleanup:
           - /include
+      - name: date 
+        buildsystem: cmake-ninja
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=Release
+          - -DBUILD_TZ_LIB=ON
+        sources:
+          - type: git
+            url: https://github.com/HowardHinnant/date.git
+            commit: 50acf3ffd8b09deeec6980be824f2ac54a50b095
       - name: gtkmm
         buildsystem: meson
         config-opts:
