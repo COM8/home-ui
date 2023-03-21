@@ -66,7 +66,7 @@ include(glib-resource-compiler)
 find_package(PkgConfig REQUIRED)
 
 # Additional search path since gtkmm-4.0 will usually be installed in /usr
-set(ENV{PKG_CONFIG_PATH} "/usr/lib/pkgconfig")
+set(ENV{PKG_CONFIG_PATH} "/app/lib/pkgconfig")
 pkg_check_modules(GTKMM gtkmm-4.0>=4.4.0 REQUIRED IMPORTED_TARGET)
 pkg_check_modules(EPOXY epoxy REQUIRED IMPORTED_TARGET)
 
@@ -75,75 +75,16 @@ pkg_check_modules(ADWAITA REQUIRED libadwaita-1>=1.1.0)
 include_directories(${ADWAITA_INCLUDE_DIRS})
 
 # libshumate
-include(ExternalProject)
-find_program(MESON_PATH meson REQUIRED)
-
-if(MESON_PATH STREQUAL "MESON_PATH-NOTFOUND")
-    message(FATAL_ERROR "meson not found. Please make sure you have meson installed on your system.")
-    return()
-endif()
-
-ExternalProject_Add(shumate_build GIT_REPOSITORY https://gitlab.gnome.org/GNOME/libshumate.git
-                                  GIT_TAG main
-                                  CONFIGURE_COMMAND ${MESON_PATH} "<BINARY_DIR>" "<SOURCE_DIR>" -Dgtk_doc=false
-                                  BUILD_COMMAND cd "<BINARY_DIR>" && ninja
-                                  CONFIGURE_HANDLED_BY_BUILD ON
-                                  INSTALL_COMMAND ""
-                                  COMMENT "Building shumate"
-                                  BUILD_BYPRODUCTS "<BINARY_DIR>/shumate/libshumate-1.0.so")
-
-add_library(libshumate SHARED IMPORTED)
-add_dependencies(libshumate shumate_build)
-
-ExternalProject_Get_Property(shumate_build BINARY_DIR)
-set(SHUMATE_LIB "${BINARY_DIR}/shumate/libshumate-1.0.so")
-set_target_properties(libshumate PROPERTIES IMPORTED_LOCATION ${SHUMATE_LIB})
-
-ExternalProject_Get_Property(shumate_build SOURCE_DIR)
-set(SHUMATE_INCLUDE_DIRS "${SOURCE_DIR}" "${BINARY_DIR}")
-target_include_directories(libshumate INTERFACE "${SHUMATE_INCLUDE_DIRS}")
+pkg_check_modules(SHUMATE REQUIRED shumate-1.0>=1.0.0)
 include_directories(${SHUMATE_INCLUDE_DIRS})
 
-# Disable linting for fetch content projects
-clear_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
-
-FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
-                         GIT_TAG 1cb247a6dae0fddbb27ffb3ea63506b0fd83e636)
-set(CPR_BUILD_TESTS OFF CACHE INTERNAL " " FORCE)
-set(CURL_CA_FALLBACK ON CACHE INTERNAL " " FORCE) # Workaround for failing SSL requests
-FetchContent_MakeAvailable(cpr)
-
-FetchContent_Declare(json GIT_REPOSITORY https://github.com/nlohmann/json.git
-                          GIT_TAG v3.10.5)
-FetchContent_MakeAvailable(json)
-
-set(SPDLOG_INSTALL ON CACHE INTERNAL " " FORCE)
-FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-                            GIT_TAG v1.9.2)
-FetchContent_MakeAvailable(spdlog)
-
-FetchContent_Declare(re2 GIT_REPOSITORY https://github.com/google/re2.git
-                         GIT_TAG 2023-03-01)
-FetchContent_MakeAvailable(re2)
-
-FetchContent_Declare(websocket GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
-                               GIT_TAG v11.4.3)
-
-set(BUILD_TZ_LIB ON CACHE INTERNAL " " FORCE)
-FetchContent_Declare(date GIT_REPOSITORY https://github.com/HowardHinnant/date.git
-                          GIT_TAG 50acf3ffd8b09deeec6980be824f2ac54a50b095)
-FetchContent_MakeAvailable(date)
-set(USE_TLS ON)
-set(USE_ZLIB OFF)
-FetchContent_MakeAvailable(websocket)
-include_directories("${websocket_SOURCE_DIR}")
-
-FetchContent_Declare(eventpp
-                     GIT_REPOSITORY https://github.com/wqking/eventpp.git
-                     GIT_TAG 6813ec217f8489d8105d52008c8aca11093fb749) # State on master from the 28.09.2022
-FetchContent_MakeAvailable(eventpp)
-
-restore_variable(DESTINATION CMAKE_CXX_CLANG_TIDY BACKUP CMAKE_CXX_CLANG_TIDY_BKP)
+find_package(cpr CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(re2 CONFIG REQUIRED)
+find_package(ixwebsocket CONFIG REQUIRED)
+find_package(eventpp CONFIG REQUIRED)
+find_package(date CONFIG REQUIRED)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 add_subdirectory(src)

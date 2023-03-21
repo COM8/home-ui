@@ -19,4 +19,4 @@ add_library(ui_widgets STATIC DbWidget.cpp
                               LightningWidget.cpp
                               LightningWidget.hpp)
 target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM backend_weather backend_deviceStatus backend_hass
-                                 PRIVATE logger backend_storage ui_utils re2::re2 libshumate backend_lightning backend_db date::date date::date-tz)
+                                 PRIVATE logger backend_storage ui_utils re2::re2 ${SHUMATE_LIBRARIES} backend_lightning backend_db date::date date::date-tz)
