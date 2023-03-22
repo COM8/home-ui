@@ -18,8 +18,8 @@ struct SettingsData {
      * [0]: https://bahn.expert/
      **/
     std::string dbStationId = "8003022";
-    int dbLookAhead = 150;
-    int dbLookBehind = 10;
+    int dbLookAheadCount = 150;
+    int dbLookBehindCount = 10;
     std::string dbDestRegex{"Garching, Forschungszentrum"};
     bool dbDestRegexEnabled = true;
     std::string dbStopsAtRegex{"Goldberg"};

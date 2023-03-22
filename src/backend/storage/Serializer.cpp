@@ -8,8 +8,8 @@ namespace backend::storage {
 void to_json(nlohmann::json& j, const SettingsData& d) {
     j = nlohmann::json{
         {"dbStationId", d.dbStationId},
-        {"dbLookAhead", d.dbLookAhead},
-        {"dbLookBehind", d.dbLookBehind},
+        {"dbLookAheadCount", d.dbLookAheadCount},
+        {"dbLookBehindCount", d.dbLookBehindCount},
         {"dbDestRegex", d.dbDestRegex},
         {"dbDestRegexEnabled", d.dbDestRegexEnabled},
         {"dbStopsAtRegex", d.dbStopsAtRegex},
@@ -36,8 +36,8 @@ void to_json(nlohmann::json& j, const SettingsData& d) {
 
 void from_json(const nlohmann::json& j, SettingsData& d) {
     j.at("dbStationId").get_to(d.dbStationId);
-    j.at("dbLookAhead").get_to(d.dbLookAhead);
-    j.at("dbLookBehind").get_to(d.dbLookBehind);
+    j.at("dbLookAheadCount").get_to(d.dbLookAheadCount);
+    j.at("dbLookBehindCount").get_to(d.dbLookBehindCount);
     j.at("dbDestRegex").get_to(d.dbDestRegex);
     j.at("dbDestRegexEnabled").get_to(d.dbDestRegexEnabled);
     j.at("dbStopsAtRegex").get_to(d.dbStopsAtRegex);

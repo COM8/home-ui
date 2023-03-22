@@ -68,20 +68,20 @@ void SettingsWidget::prep_widget() {
     contentBox->append(dbStopsAtRegex);
     contentBox->append(dbStopsAtRegexCBtn);
     contentBox->append(dbFilterDepartedTrainsCBtn);
-    Gtk::Label* dbLookAheadLabel = Gtk::make_managed<Gtk::Label>();
-    dbLookAheadLabel->set_text("Look ahead count:");
-    dbLookAheadLabel->set_margin_top(10);
-    dbLookAheadLabel->set_halign(Gtk::Align::START);
-    contentBox->append(*dbLookAheadLabel);
-    dbLookAhead.set_placeholder_text("150");
-    contentBox->append(dbLookAhead);
-    Gtk::Label* dbLookBehindLabel = Gtk::make_managed<Gtk::Label>();
-    dbLookBehindLabel->set_text("Look behind count:");
-    dbLookBehindLabel->set_margin_top(10);
-    dbLookBehindLabel->set_halign(Gtk::Align::START);
-    contentBox->append(*dbLookBehindLabel);
-    dbLookBehind.set_placeholder_text("150");
-    contentBox->append(dbLookBehind);
+    Gtk::Label* dbLookAheadCountLabel = Gtk::make_managed<Gtk::Label>();
+    dbLookAheadCountLabel->set_text("Look ahead count:");
+    dbLookAheadCountLabel->set_margin_top(10);
+    dbLookAheadCountLabel->set_halign(Gtk::Align::START);
+    contentBox->append(*dbLookAheadCountLabel);
+    dbLookAheadCount.set_placeholder_text("150");
+    contentBox->append(dbLookAheadCount);
+    Gtk::Label* dbLookBehindCountLabel = Gtk::make_managed<Gtk::Label>();
+    dbLookBehindCountLabel->set_text("Look behind count:");
+    dbLookBehindCountLabel->set_margin_top(10);
+    dbLookBehindCountLabel->set_halign(Gtk::Align::START);
+    contentBox->append(*dbLookBehindCountLabel);
+    dbLookBehindCount.set_placeholder_text("150");
+    contentBox->append(dbLookBehindCount);
 
     // Weather:
     Gtk::Label* weatherSectionLabel = Gtk::make_managed<Gtk::Label>();
@@ -131,8 +131,8 @@ void SettingsWidget::load_settings() {
     dbStopsAtRegex.set_text(settings->dbStopsAtRegex);
     dbStopsAtRegexCBtn.set_active(settings->dbStopsAtRegexEnabled);
     dbFilterDepartedTrainsCBtn.set_active(settings->dbFilterDepartedTrains);
-    dbLookAhead.set_text(std::to_string(settings->dbLookAhead));
-    dbLookBehind.set_text(std::to_string(settings->dbLookBehind));
+    dbLookAheadCount.set_text(std::to_string(settings->dbLookAheadCount));
+    dbLookBehindCount.set_text(std::to_string(settings->dbLookBehindCount));
 
     weatherLat.set_text(settings->weatherLat);
     weatherLong.set_text(settings->weatherLong);
@@ -149,8 +149,8 @@ void SettingsWidget::save_settings() {
     settings->dbStopsAtRegex = dbStopsAtRegex.get_text();
     settings->dbStopsAtRegexEnabled = dbStopsAtRegexCBtn.get_active();
     settings->dbFilterDepartedTrains = dbFilterDepartedTrainsCBtn.get_active();
-    settings->dbLookAhead = static_cast<int>(std::strtol(dbLookAhead.get_text().c_str(), nullptr, 10));
-    settings->dbLookBehind = static_cast<int>(std::strtol(dbLookBehind.get_text().c_str(), nullptr, 10));
+    settings->dbLookAheadCount = static_cast<int>(std::strtol(dbLookAheadCount.get_text().c_str(), nullptr, 10));
+    settings->dbLookBehindCount = static_cast<int>(std::strtol(dbLookBehindCount.get_text().c_str(), nullptr, 10));
 
     settings->weatherLat = weatherLat.get_text();
     settings->weatherLong = weatherLong.get_text();
