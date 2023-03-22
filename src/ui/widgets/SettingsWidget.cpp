@@ -2,6 +2,8 @@
 #include "backend/storage/Serializer.hpp"
 #include "backend/storage/Settings.hpp"
 #include "logger/Logger.hpp"
+#include <cstdlib>
+#include <string>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
@@ -65,6 +67,21 @@ void SettingsWidget::prep_widget() {
     dbStopsAtRegex.set_placeholder_text("Goldberg");
     contentBox->append(dbStopsAtRegex);
     contentBox->append(dbStopsAtRegexCBtn);
+    contentBox->append(dbFilterDepartedTrainsCBtn);
+    Gtk::Label* dbLookAheadLabel = Gtk::make_managed<Gtk::Label>();
+    dbLookAheadLabel->set_text("Look ahead count:");
+    dbLookAheadLabel->set_margin_top(10);
+    dbLookAheadLabel->set_halign(Gtk::Align::START);
+    contentBox->append(*dbLookAheadLabel);
+    dbLookAhead.set_placeholder_text("150");
+    contentBox->append(dbLookAhead);
+    Gtk::Label* dbLookBehindLabel = Gtk::make_managed<Gtk::Label>();
+    dbLookBehindLabel->set_text("Look behind count:");
+    dbLookBehindLabel->set_margin_top(10);
+    dbLookBehindLabel->set_halign(Gtk::Align::START);
+    contentBox->append(*dbLookBehindLabel);
+    dbLookBehind.set_placeholder_text("150");
+    contentBox->append(dbLookBehind);
 
     // Weather:
     Gtk::Label* weatherSectionLabel = Gtk::make_managed<Gtk::Label>();
@@ -113,6 +130,9 @@ void SettingsWidget::load_settings() {
     dbDestRegexCBtn.set_active(settings->dbDestRegexEnabled);
     dbStopsAtRegex.set_text(settings->dbStopsAtRegex);
     dbStopsAtRegexCBtn.set_active(settings->dbStopsAtRegexEnabled);
+    dbFilterDepartedTrainsCBtn.set_active(settings->dbFilterDepartedTrains);
+    dbLookAhead.set_text(std::to_string(settings->dbLookAhead));
+    dbLookBehind.set_text(std::to_string(settings->dbLookBehind));
 
     weatherLat.set_text(settings->weatherLat);
     weatherLong.set_text(settings->weatherLong);
@@ -128,6 +148,9 @@ void SettingsWidget::save_settings() {
     settings->dbDestRegexEnabled = dbDestRegexCBtn.get_active();
     settings->dbStopsAtRegex = dbStopsAtRegex.get_text();
     settings->dbStopsAtRegexEnabled = dbStopsAtRegexCBtn.get_active();
+    settings->dbFilterDepartedTrains = dbFilterDepartedTrainsCBtn.get_active();
+    settings->dbLookAhead = static_cast<int>(std::strtol(dbLookAhead.get_text().c_str(), nullptr, 10));
+    settings->dbLookBehind = static_cast<int>(std::strtol(dbLookBehind.get_text().c_str(), nullptr, 10));
 
     settings->weatherLat = weatherLat.get_text();
     settings->weatherLong = weatherLong.get_text();

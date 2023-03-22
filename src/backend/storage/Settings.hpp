@@ -24,6 +24,7 @@ struct SettingsData {
     bool dbDestRegexEnabled = true;
     std::string dbStopsAtRegex{"Goldberg"};
     bool dbStopsAtRegexEnabled = true;
+    bool dbFilterDepartedTrains = true;
 
     /**
      * The open weather map location for the weather forecast. 

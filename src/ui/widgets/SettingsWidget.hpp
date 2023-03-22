@@ -12,6 +12,9 @@ class SettingsWidget : public Gtk::Box {
     Gtk::Entry dbDestRegex;
     Gtk::CheckButton dbStopsAtRegexCBtn{"Use stops at regex"};
     Gtk::Entry dbStopsAtRegex;
+    Gtk::CheckButton dbFilterDepartedTrainsCBtn{"Filter departed trains"};
+    Gtk::Entry dbLookAhead;
+    Gtk::Entry dbLookBehind;
 
     Gtk::Entry weatherLat;
     Gtk::Entry weatherLong;

@@ -84,7 +84,7 @@ void DbWidget::update_departures_ui() {
         auto depTime = date::make_zoned(tz, departures[i]->depTime).get_local_time();
 
         // Skip departures that are past:
-        if (depTime < now) {
+        if (settings->data.dbFilterDepartedTrains && depTime < now) {
             continue;
         }
 
