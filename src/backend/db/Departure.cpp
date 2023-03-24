@@ -112,7 +112,7 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
     departureObj.at("scheduledTime").get_to(depTimeScheduledStr);
     std::istringstream depTimeScheduledStrSs{depTimeScheduledStr};
     std::chrono::system_clock::time_point depTimeScheduled;
-    depTimeScheduledStrSs >> date::parse("%Y-%m-%dT%T.000%Z", depTimeScheduled);
+    depTimeScheduledStrSs >> date::parse("%Y-%m-%dT%T%Z", depTimeScheduled);
 
     if (!departureObj.contains("time")) {
         SPDLOG_ERROR("Failed to parse departure. 'time' filed missing.");
@@ -122,7 +122,7 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
     departureObj.at("time").get_to(depTimeStr);
     std::istringstream depTimeStrSs{depTimeStr};
     std::chrono::system_clock::time_point depTime;
-    depTimeStrSs >> date::parse("%Y-%m-%dT%T.000%Z", depTime);
+    depTimeStrSs >> date::parse("%Y-%m-%dT%T%Z", depTime);
 
     if (!departureObj.contains("platform")) {
         SPDLOG_ERROR("Failed to parse departure. 'platform' filed missing.");
