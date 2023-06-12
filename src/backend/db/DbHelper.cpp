@@ -16,7 +16,7 @@ cpr::Url build_url(const std::string& stationId, size_t lookAhead, size_t lookBe
 
 std::vector<std::shared_ptr<Departure>> parse_response(const std::string& response) {
     try {
-        nlohmann::json j = nlohmann::json::parse(response);
+        const nlohmann::json j = nlohmann::json::parse(response);
 
         // Departures:
         if (!j.contains("departures")) {
@@ -51,7 +51,7 @@ std::vector<std::shared_ptr<Departure>> request_departures(const std::string& st
     session.SetUrl(build_url(stationId, lookAhead, lookBehind));
 
     SPDLOG_DEBUG("Requesting departure times for station '{}'...", stationId);
-    cpr::Response response = session.Get();
+    const cpr::Response response = session.Get();
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Requesting departures failed. Status code: {}\nResponse: {}", response.status_code, response.text);

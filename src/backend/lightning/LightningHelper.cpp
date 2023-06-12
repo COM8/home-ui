@@ -118,7 +118,7 @@ void LightningHelper::on_message(const ix::WebSocketMessagePtr& msg) {
 
 void LightningHelper::parse(const std::string& s) {
     try {
-        nlohmann::json j = nlohmann::json::parse(s);
+        const nlohmann::json j = nlohmann::json::parse(s);
         if (j.contains("strokes")) {
             nlohmann::json::array_t array;
             j.at("strokes").get_to(array);

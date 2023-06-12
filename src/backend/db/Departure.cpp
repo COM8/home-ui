@@ -193,7 +193,7 @@ std::shared_ptr<Departure> Departure::from_json(const nlohmann::json& j) {
     std::vector<std::string> infoMessages = parse_info_messages(j);
 
     std::tuple<std::vector<Stop>, std::vector<Stop>> prevNextStops = parse_stops(j, curStopPlace);
-    std::string destination = get_destination(std::get<1>(prevNextStops));
+    const std::string destination = get_destination(std::get<1>(prevNextStops));
 
     return std::make_shared<Departure>(Departure{
         depTime,

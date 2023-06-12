@@ -3,7 +3,7 @@
 
 namespace backend::weather {
 Forecast Forecast::from_json(const nlohmann::json& j) {
-    const nlohmann::json current = j["current"];
+    const nlohmann::json& current = j["current"];
     double temp = 0;
     current.at("temp").get_to(temp);
     double feelsLike = 0;
@@ -34,7 +34,7 @@ Forecast Forecast::from_json(const nlohmann::json& j) {
 Hour Hour::from_json(const nlohmann::json& j) {
     size_t time = 0;
     j.at("dt").get_to(time);
-    std::chrono::system_clock::time_point timeTp = std::chrono::system_clock::from_time_t(static_cast<time_t>(time));
+    const std::chrono::system_clock::time_point timeTp = std::chrono::system_clock::from_time_t(static_cast<time_t>(time));
 
     double temp = 0;
     j.at("temp").get_to(temp);
@@ -51,7 +51,7 @@ Hour Hour::from_json(const nlohmann::json& j) {
 Day Day::from_json(const nlohmann::json& j) {
     size_t time = 0;
     j.at("dt").get_to(time);
-    std::chrono::system_clock::time_point timeTp = std::chrono::system_clock::from_time_t(static_cast<time_t>(time));
+    const std::chrono::system_clock::time_point timeTp = std::chrono::system_clock::from_time_t(static_cast<time_t>(time));
 
     double rain = 0;
     if (j.contains("rain")) {

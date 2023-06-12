@@ -14,10 +14,10 @@ void toggle_light(const std::string& entity, const std::string& hassIp, const st
     SPDLOG_INFO("Toggeling light '{}'...", entity);
     const nlohmann::json bodyJ{{"entity_id", entity}};
     const std::string bodyStr = bodyJ.dump();
-    cpr::Response response = cpr::Post(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/services/light/toggle"},
-                                       cpr::Bearer{bearerToken},
-                                       cpr::Header{{"Content-Type", "application/json"}},
-                                       cpr::Body{bodyStr});
+    const cpr::Response response = cpr::Post(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/services/light/toggle"},
+                                             cpr::Bearer{bearerToken},
+                                             cpr::Header{{"Content-Type", "application/json"}},
+                                             cpr::Body{bodyStr});
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Toggeling light '{}' failed. Status code: {}\nResponse: {}", entity, response.status_code, response.text);
@@ -33,10 +33,10 @@ void set_light_brightness(uint8_t brightness, const std::string& entity, const s
     SPDLOG_INFO("Setting brightness for light '{}' to '{}'...", entity, brightness);
     const nlohmann::json bodyJ{{"entity_id", entity}, {"brightness", brightness}};
     const std::string bodyStr = bodyJ.dump();
-    cpr::Response response = cpr::Post(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/services/light/turn_on"},
-                                       cpr::Bearer{bearerToken},
-                                       cpr::Header{{"Content-Type", "application/json"}},
-                                       cpr::Body{bodyStr});
+    const cpr::Response response = cpr::Post(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/services/light/turn_on"},
+                                             cpr::Bearer{bearerToken},
+                                             cpr::Header{{"Content-Type", "application/json"}},
+                                             cpr::Body{bodyStr});
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Setting brightness for light '{}' failed. Status code: {}\nResponse: {}", entity, response.status_code, response.text);
@@ -52,10 +52,10 @@ void set_light_color_temp(uint16_t mireds, const std::string& entity, const std:
     SPDLOG_INFO("Setting color temperature for light '{}' to '{}'...", entity, mireds);
     const nlohmann::json bodyJ{{"entity_id", entity}, {"color_temp", mireds}};
     const std::string bodyStr = bodyJ.dump();
-    cpr::Response response = cpr::Post(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/services/light/turn_on"},
-                                       cpr::Bearer{bearerToken},
-                                       cpr::Header{{"Content-Type", "application/json"}},
-                                       cpr::Body{bodyStr});
+    const cpr::Response response = cpr::Post(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/services/light/turn_on"},
+                                             cpr::Bearer{bearerToken},
+                                             cpr::Header{{"Content-Type", "application/json"}},
+                                             cpr::Body{bodyStr});
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Setting color temperature for light '{}' failed. Status code: {}\nResponse: {}", entity, response.status_code, response.text);
@@ -77,10 +77,10 @@ void set_light_color(double hue, double saturation, const std::string& entity, c
     nlohmann::json::array_t hsArr{hue, saturation};
     const nlohmann::json bodyJ{{"entity_id", entity}, {"hs_color", hsArr}};
     const std::string bodyStr = bodyJ.dump();
-    cpr::Response response = cpr::Post(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/services/light/turn_on"},
-                                       cpr::Bearer{bearerToken},
-                                       cpr::Header{{"Content-Type", "application/json"}},
-                                       cpr::Body{bodyStr});
+    const cpr::Response response = cpr::Post(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/services/light/turn_on"},
+                                             cpr::Bearer{bearerToken},
+                                             cpr::Header{{"Content-Type", "application/json"}},
+                                             cpr::Body{bodyStr});
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Setting color for light '{}' failed. Status code: {}\nResponse: {}", entity, response.status_code, response.text);
@@ -115,7 +115,7 @@ std::optional<std::string> parse_friendly_name_j(const nlohmann::json& j) {
 
 std::optional<std::string> parse_friendly_name(const std::string& response) {
     try {
-        nlohmann::json j = nlohmann::json::parse(response);
+        const nlohmann::json j = nlohmann::json::parse(response);
         return parse_friendly_name_j(j);
     } catch (nlohmann::json::parse_error& e) {
         SPDLOG_ERROR("Error parsing json from '{}' with: {}", response, e.what());
@@ -125,9 +125,9 @@ std::optional<std::string> parse_friendly_name(const std::string& response) {
 
 std::string get_friendly_name(const std::string& entity, const std::string& hassIp, const std::string& hassPort, const std::string& bearerToken) {
     SPDLOG_INFO("Requesting friendly name for '{}'...", entity);
-    cpr::Response response = cpr::Get(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/states/" + entity},
-                                      cpr::Bearer{bearerToken},
-                                      cpr::Header{{"Content-Type", "application/json"}});
+    const cpr::Response response = cpr::Get(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/states/" + entity},
+                                            cpr::Bearer{bearerToken},
+                                            cpr::Header{{"Content-Type", "application/json"}});
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Requesting friendly name for '{}' failed. Status code: {}\nResponse: {}", entity, response.status_code, response.text);
@@ -163,7 +163,7 @@ std::string parse_state_j(const nlohmann::json& j) {
 
 std::string parse_state(const std::string& response) {
     try {
-        nlohmann::json j = nlohmann::json::parse(response);
+        const nlohmann::json j = nlohmann::json::parse(response);
         return parse_state_j(j);
     } catch (nlohmann::json::parse_error& e) {
         SPDLOG_ERROR("Error parsing json from '{}' with: {}", response, e.what());
@@ -173,9 +173,9 @@ std::string parse_state(const std::string& response) {
 
 bool is_light_on(const std::string& entity, const std::string& hassIp, const std::string& hassPort, const std::string& bearerToken) {
     SPDLOG_INFO("Requesting friendly name for '{}'...", entity);
-    cpr::Response response = cpr::Get(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/states/" + entity},
-                                      cpr::Bearer{bearerToken},
-                                      cpr::Header{{"Content-Type", "application/json"}});
+    const cpr::Response response = cpr::Get(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/states/" + entity},
+                                            cpr::Bearer{bearerToken},
+                                            cpr::Header{{"Content-Type", "application/json"}});
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Requesting friendly name for '{}' failed. Status code: {}\nResponse: {}", entity, response.status_code, response.text);
@@ -191,9 +191,9 @@ bool is_light_on(const std::string& entity, const std::string& hassIp, const std
 
 std::shared_ptr<HassLight> get_light_info(const std::string& entity, const std::string& hassIp, const std::string& hassPort, const std::string& bearerToken) {
     SPDLOG_INFO("Requesting light info for '{}'...", entity);
-    cpr::Response response = cpr::Get(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/states/" + entity},
-                                      cpr::Bearer{bearerToken},
-                                      cpr::Header{{"Content-Type", "application/json"}});
+    const cpr::Response response = cpr::Get(cpr::Url{"http://" + hassIp + ":" + hassPort + "/api/states/" + entity},
+                                            cpr::Bearer{bearerToken},
+                                            cpr::Header{{"Content-Type", "application/json"}});
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Requesting light info for '{}' failed. Status code: {}\nResponse: {}", entity, response.status_code, response.text);
@@ -206,7 +206,7 @@ std::shared_ptr<HassLight> get_light_info(const std::string& entity, const std::
     SPDLOG_DEBUG("Received from HASS: {}", response.text);
 
     try {
-        nlohmann::json j = nlohmann::json::parse(response.text);
+        const nlohmann::json j = nlohmann::json::parse(response.text);
         return HassLight::from_json(j);
     } catch (nlohmann::json::parse_error& e) {
         SPDLOG_ERROR("Error parsing json from '{}' with: {}", response.text, e.what());
@@ -223,7 +223,7 @@ std::shared_ptr<HassLight> HassLight::from_json(const nlohmann::json& j) {
     if (state == "unavailable") {
         return nullptr;
     }
-    bool isOn = state == "on";
+    const bool isOn = state == "on";
 
     if (!j.contains("attributes")) {
         SPDLOG_ERROR("Error parsing HassLight from '{}' with: 'attributes' not found", j.dump());
@@ -238,7 +238,7 @@ std::shared_ptr<HassLight> HassLight::from_json(const nlohmann::json& j) {
     }
     std::string colorMode;
     jAttr.at("color_mode").get_to(colorMode);
-    bool inRbgMode = colorMode == "rgb";
+    const bool inRbgMode = colorMode == "rgb";
 
     if (!jAttr.contains("brightness")) {
         SPDLOG_ERROR("Error parsing HassLight from '{}' with: 'brightness' not found", j.dump());

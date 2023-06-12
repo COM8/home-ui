@@ -11,7 +11,7 @@ cpr::Url build_url(const std::string& lat, const std::string& lon, const std::st
 
 std::shared_ptr<Forecast> parse_response(const std::string& response) {
     try {
-        nlohmann::json j = nlohmann::json::parse(response);
+        const nlohmann::json j = nlohmann::json::parse(response);
         return std::make_shared<Forecast>(Forecast::from_json(j));
     } catch (nlohmann::json::parse_error& e) {
         SPDLOG_ERROR("Error parsing weather from '{}' with: {}", response, e.what());
@@ -24,7 +24,7 @@ std::shared_ptr<Forecast> request_weather(const std::string& lat, const std::str
     session.SetUrl(build_url(lat, lon, apiKey));
 
     SPDLOG_DEBUG("Requesting weather for lat '{}', lon '{}'...", lat, lon);
-    cpr::Response response = session.Get();
+    const cpr::Response response = session.Get();
     if (response.status_code != 200) {
         if (response.error.code == cpr::ErrorCode::OK) {
             SPDLOG_ERROR("Requesting weather failed. Status code: {}\nResponse: {}", response.status_code, response.text);

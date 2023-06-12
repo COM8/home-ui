@@ -21,17 +21,17 @@ void setup_logger(const spdlog::level::level_enum level) {
         std::filesystem::create_directory(logger::log_folder);
     }
     spdlog::init_thread_pool(THREAD_QUEUE_LENGTH, 1);
-    spdlog::sink_ptr console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    const spdlog::sink_ptr console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_pattern("[%^%=8l%$] [thread %t]\t%v");
 #ifdef _WIN32
-    std::string s = (logger::log_folder / "home_ui.log").string();
-    spdlog::sink_ptr file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(s, FILE_ROTATION_TIME, 3);
+    const std::string s = (logger::log_folder / "home_ui.log").string();
+    const spdlog::sink_ptr file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(s, FILE_ROTATION_TIME, 3);
 #else  // _WIN32
-    spdlog::sink_ptr file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logger::log_folder / "home_ui.log", FILE_ROTATION_TIME, 3);
+    const spdlog::sink_ptr file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logger::log_folder / "home_ui.log", FILE_ROTATION_TIME, 3);
 #endif
     file_sink->set_pattern("[%H:%M:%S %z] [%=8l] [thread %t] [%@]\t%v");
     std::vector<spdlog::sink_ptr> sinks{file_sink, console_sink};
-    std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::async_logger>("", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+    const std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::async_logger>("", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
     logger->set_level(level);
     spdlog::set_default_logger(logger);
 }

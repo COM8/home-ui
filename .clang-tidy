@@ -34,7 +34,8 @@ Checks: '*,
 -altera-id-dependent-backward-branch,
 -bugprone-easily-swappable-parameters,
 -readability-identifier-length,
--altera-unroll-loops
+-altera-unroll-loops,
+-modernize-return-braced-init-list
 '
 WarningsAsErrors: '*'
 HeaderFilterRegex: 'src/*.hpp'
